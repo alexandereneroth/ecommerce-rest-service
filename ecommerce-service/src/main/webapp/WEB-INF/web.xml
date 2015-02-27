@@ -5,16 +5,16 @@
 	id="WebApp_ID" version="3.1">
 
     <servlet>
-        <servlet-name>JAX-RS-Application</servlet-name>
+        <servlet-name>ecom-service</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>se.coredev.jaxrs.service</param-value>
+            <param-value>se.groupone.ecommerce.service</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
-        <servlet-name>JAX-RS-Application</servlet-name>
+        <servlet-name>ecom-service</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
 
