@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: jersey-container-servlet-core-2.16.jar javax.inject-2.4.0-
- b09.jar jersey-common-2.16.jar javax.ws.rs-api-2.0.1.jar javax.annota
- tion-api-1.2.jar jersey-guava-2.16.jar hk2-api-2.4.0-b09.jar hk2-util
- s-2.4.0-b09.jar aopalliance-repackaged-2.4.0-b09.jar hk2-locator-2.4.
- 0-b09.jar javassist-3.18.1-GA.jar osgi-resource-locator-1.0.1.jar jer
- sey-server-2.16.jar jersey-client-2.16.jar jersey-media-jaxb-2.16.jar
-  validation-api-1.1.0.Final.jar gson-2.3.1.jar
-
