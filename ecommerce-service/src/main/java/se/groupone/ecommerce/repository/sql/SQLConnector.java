@@ -70,7 +70,7 @@ public final class SQLConnector
 		}
 	}
 	
-	public boolean queryInsert(final String query)
+	public boolean query(final String query)
 	{
 		try
 		{

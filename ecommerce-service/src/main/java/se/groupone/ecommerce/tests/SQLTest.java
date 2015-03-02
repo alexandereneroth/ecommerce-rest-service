@@ -35,6 +35,7 @@ public class SQLTest
 		String queryResult = "SELECT user_name FROM ecomm.customer;";
 		
 		assertTrue(sql.queryInsert(queryInsert));
+		assertFalse(sql.queryInsert(queryInsert));
 		ResultSet rs = sql.queryResult(queryResult);
 		rs.next();
 		assertEquals("kira", rs.getString("user_name"));
