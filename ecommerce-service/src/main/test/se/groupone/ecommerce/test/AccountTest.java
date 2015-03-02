@@ -1,4 +1,4 @@
-package se.groupone.ecommerce.tests;
+package se.groupone.ecommerce.test;
 import static org.junit.Assert.*;
 
 import org.junit.Test;

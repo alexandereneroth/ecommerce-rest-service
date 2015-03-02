@@ -1,4 +1,4 @@
-package se.groupone.ecommerce.tests;
+package se.groupone.ecommerce.test;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
