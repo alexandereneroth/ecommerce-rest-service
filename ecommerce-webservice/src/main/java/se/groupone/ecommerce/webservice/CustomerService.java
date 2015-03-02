@@ -8,8 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-@Path("user")
-public class UserService
+@Path("customer")
+public class CustomerService
 {
 	@GET
 	public Response getAllUsers()
