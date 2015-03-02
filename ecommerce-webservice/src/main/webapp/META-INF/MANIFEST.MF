@@ -5,6 +5,7 @@ Class-Path: jersey-container-servlet-core-2.16.jar javax.inject-2.4.0-
  s-2.4.0-b09.jar aopalliance-repackaged-2.4.0-b09.jar hk2-locator-2.4.
  0-b09.jar javassist-3.18.1-GA.jar osgi-resource-locator-1.0.1.jar jer
  sey-server-2.16.jar jersey-client-2.16.jar jersey-media-jaxb-2.16.jar
-  validation-api-1.1.0.Final.jar gson-2.3.1.jar ecommerce-service-1.0-
- SNAPSHOT.jar
+  validation-api-1.1.0.Final.jar gson-2.3.1.jar junit-4.12.jar hamcres
+ t-core-1.3.jar hamcrest-all-1.3.jar mockito-all-1.9.5.jar ecommerce-s
+ ervice-1.0-SNAPSHOT.jar
 
