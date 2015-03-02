@@ -1,8 +1,8 @@
 package se.groupone.ecommerce.repository.memory;
 
-import se.gruopone.ecommerce.models.Customer
-import se.groupone.ecommerce.models.Order
-import se.groupone.ecommerce.repositories.OrderRepository
+import se.groupone.ecommerce.model.Customer;
+import se.groupone.ecommerce.model.Order;
+import se.groupone.ecommerce.repository.OrderRepository;
 import java.util.ArrayList;
 import java.util.HashMap;
 

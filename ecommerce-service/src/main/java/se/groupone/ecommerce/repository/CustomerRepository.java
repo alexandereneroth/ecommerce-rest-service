@@ -1,5 +1,5 @@
 package se.groupone.ecommerce.repository;
-import se.groupone.ecommerce.model.Customer
+import se.groupone.ecommerce.model.Customer;
 import java.util.HashMap;
 public interface CustomerRepository 
 {

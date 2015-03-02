@@ -1,7 +1,7 @@
 package se.groupone.ecommerce.repository.memory;
 
-import se.groupone.ecommerce.model.Customer
-import se.groupone.ecommerce.repository.CustomerRepository
+import se.groupone.ecommerce.model.Customer;
+import se.groupone.ecommerce.repository.CustomerRepository;
 import java.util.HashMap;
 
 public class InMemoryCustomers implements CustomerRepository 

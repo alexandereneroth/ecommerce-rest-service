@@ -1,6 +1,6 @@
 package se.groupone.ecommerce.repository;
-import se.groupone.ecommerce.model.Customer
-import se.groupone.ecommerce.model.Order
+import se.groupone.ecommerce.model.Customer;
+import se.groupone.ecommerce.model.Order;
 import java.util.HashMap;
 
 public interface OrderRepository
