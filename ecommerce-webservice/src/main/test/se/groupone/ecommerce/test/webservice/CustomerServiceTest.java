@@ -4,20 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-// Uppdatera en användare 
-//
-// Ta bort en användare (eller sätta den som inaktiv)
-//
-// Skapa en order för en användare
-//
-// Hämta en användares alla order
-//
-// Hämta en viss order för en användare 
-//
-// Uppdatera en order för en användare 
-//
-// Ta bort en order för en användare
-
 public class CustomerServiceTest
 {
 	// Hämta en användare med ett visst id
@@ -45,6 +31,48 @@ public class CustomerServiceTest
 	// Uppdatera en användare 
 	@Test
 	public void canUpdateUser()
+	{
+		assertTrue("unimplemented", false); // TODO
+	}
+	
+	// Ta bort en användare (eller sätta den som inaktiv)
+	@Test
+	public void canRemoveCustomer()
+	{
+		assertTrue("unimplemented", false); // TODO
+	}
+	
+	// Skapa en order för en användare
+	@Test
+	public void canCreateCustomerOrder()
+	{
+		assertTrue("unimplemented", false); // TODO
+	}
+	
+	// Hämta en användares alla order
+	@Test
+	public void canGetCustomerOrders()
+	{
+		assertTrue("unimplemented", false); // TODO
+	}
+	
+	// Hämta en viss order för en användare 
+	@Test
+	public void canGetCustomerOrder()
+	{
+		assertTrue("unimplemented", false); // TODO
+	}
+	
+	// Uppdatera en order för en användare 
+	@Test
+	public void canUpdateCustomerOrder()
+	{
+		assertTrue("unimplemented", false); // TODO
+	}
+	
+	// Ta bort en order för en användare
+	@Test
+	public void canRemoveCustomerOrder()
 	{
 		assertTrue("unimplemented", false); // TODO
 	}
