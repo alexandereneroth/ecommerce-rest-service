@@ -12,34 +12,34 @@ import javax.ws.rs.core.Response;
 public class CustomerService
 {
 	@GET
-	public Response getAllUsers()
+	public Response getAllCustomers()
 	{
 		throw new RuntimeException("unimplemented");// TODO
 	}
 
 	@GET
 	@Path("{user-id}")
-	public Response getUser(@PathParam("user-id") final String userId)
+	public Response getCustomer(@PathParam("customer-id") final String customerId)
 	{
 		throw new RuntimeException("unimplemented");// TODO
 	}
 
 	@POST
-	public Response postUser()
+	public Response postCustomer()
 	{
 		throw new RuntimeException("unimplemented");// TODO
 	}
 
 	@PUT
-	@Path("{user-id}")
-	public Response putUser(@PathParam("user-id") final String userId)
+	@Path("{customer-id}")
+	public Response putCustomer(@PathParam("customer-id") final String customerId)
 	{
 		throw new RuntimeException("unimplemented");// TODO
 	}
 
 	@DELETE
-	@Path("{user-id}")
-	public Response deleteUser(@PathParam("user-id") final String userId)
+	@Path("{customer-id}")
+	public Response deleteCustomer(@PathParam("customer-id") final String customerId)
 	{
 		throw new RuntimeException("unimplemented");// TODO
 	}
