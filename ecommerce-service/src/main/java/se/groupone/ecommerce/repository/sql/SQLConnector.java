@@ -58,7 +58,7 @@ public final class SQLConnector
 		catch (SQLException e) { System.err.println(e.getMessage()); return false; }
 	}
 	
-	public ResultSet query(final String query)
+	public ResultSet queryResult(final String query)
 	{
 		try
 		{
@@ -67,6 +67,20 @@ public final class SQLConnector
 		catch (SQLException e)
 		{
 			System.err.println("Error performing query: "+e.getMessage()); return null;
+		}
+	}
+	
+	public boolean queryInsert(final String query)
+	{
+		try
+		{
+			statement.execute(query);
+			return true;
+		}
+		catch (SQLException e)
+		{
+			System.err.println("Error performing query: "+e.getMessage());
+			return false;
 		}
 	}
 }
