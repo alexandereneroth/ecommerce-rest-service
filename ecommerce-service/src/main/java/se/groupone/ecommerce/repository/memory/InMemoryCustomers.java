@@ -10,12 +10,14 @@ public class InMemoryCustomers implements CustomerRepository
 	private HashMap<String, Customer> accounts = new HashMap<String, Customer>();
 	
 	@Override
-	public void addCustomer(Customer customer)
+	public boolean addCustomer(Customer customer)
 	{
 		if(!accounts.containsKey(customer.getUsername()))
 		{
 			accounts.put(customer.getUsername(), customer);
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -41,9 +43,14 @@ public class InMemoryCustomers implements CustomerRepository
 	}
 
 	@Override
-	public void removeCustomer(String username) 
+	public boolean removeCustomer(String username) 
 	{
-		accounts.remove(username);
+		if(accounts.containsKey(username))
+		{
+			accounts.remove(username);
+			return true;
+		}
+		return false;
 	}
 
 }

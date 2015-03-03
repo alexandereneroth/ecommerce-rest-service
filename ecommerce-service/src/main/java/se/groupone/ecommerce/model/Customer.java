@@ -1,15 +1,17 @@
 package se.groupone.ecommerce.model;
 import java.util.ArrayList;
 
+import org.hamcrest.core.IsInstanceOf;
+
 public final class Customer
 {
-	private final String username;
-    private String firstName,
-    			   lastName,
-                   address,
-                   mobileNumber,
-                   password,
-                   email;
+    private String username,
+    			   		 password,
+    			   		 email,
+    			   		 firstName,
+    			   		 lastName,
+    			   		 address,
+    			   		 mobileNumber;
     private ArrayList<String> orders = new ArrayList<String>();
     private ShoppingCart shoppingCart = new ShoppingCart();
     
@@ -140,5 +142,29 @@ public final class Customer
 	public String getUsername()
 	{
 		return username;
+	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if(other == this)
+		{
+			return true;
+		}
+		if(other instanceof Customer)
+		{
+			Customer cu = (Customer)other;
+			if(this.getUsername().equals(cu.getUsername())
+			&& this.getPassword().equals(cu.getPassword())
+			&& this.getEmail().equals(cu.getEmail())
+			&& this.getFirstName().equals(cu.getFirstName())
+			&& this.getLastName().equals(cu.getLastName())
+			&& this.getAddress().equals(cu.getAddress())
+			&& this.getMobileNumber().equals(cu.getMobileNumber()))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

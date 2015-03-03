@@ -3,7 +3,7 @@ import se.groupone.ecommerce.model.Customer;
 import java.util.HashMap;
 public interface CustomerRepository 
 {
-	public void addCustomer(Customer customer);
+	public boolean addCustomer(Customer customer);
 	
 	public Customer getCustomer(String username);
 	
@@ -11,6 +11,6 @@ public interface CustomerRepository
 	
 	public void updateCustomer(Customer customer);
 	
-	public void removeCustomer(String username);
+	public boolean removeCustomer(String username);
 	
 }

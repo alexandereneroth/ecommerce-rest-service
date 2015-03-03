@@ -21,10 +21,10 @@ public final class SQLConnector
 	private ResultSet rs;
 	
 	public SQLConnector(final String host,
-				 final String port,
-				 final String username,
-				 final String password,
-				 final String database)
+					    final String port,
+					    final String username,
+					    final String password,
+					    final String database)
 	{
 		this.host = host;
 		this.port = port;
@@ -32,8 +32,14 @@ public final class SQLConnector
 		this.password = password;
 		this.database = database;
 		
-		try { Class.forName(sqlDriver); }
-		catch (ClassNotFoundException e) { System.err.println("Could not load database driver: "+e.getMessage()); }
+		try 
+		{
+			Class.forName(sqlDriver);
+		}
+		catch (ClassNotFoundException e)
+		{
+			System.err.println("Could not load database driver: "+e.getMessage()); 
+		}
 	}
 	
 	public boolean connect()
@@ -47,15 +53,21 @@ public final class SQLConnector
 		catch (SQLException e)
 		{
 			System.err.println("Could not connect to database: "+e.getMessage());
-			e.printStackTrace();
 			return false;
 		}
 	}
 
 	public boolean disconnect()
 	{
-		try { con.close(); return true; }
-		catch (SQLException e) { System.err.println(e.getMessage()); return false; }
+		try 
+		{
+			con.close();
+			return true; 
+		}
+		catch (SQLException e) 
+		{
+			System.err.println(e.getMessage()); return false;
+		}
 	}
 	
 	public ResultSet queryResult(final String query)
