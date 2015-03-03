@@ -101,21 +101,17 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 
 		@Override
 		public Customer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-		{
-//          String userName,
-//          String password,
-//          String email,
-//          String firstName,
-//          String lastName,
-//          String address,
-//          String mobileNumber
-			
+		{		
 			final JsonObject customerJson = json.getAsJsonObject();
 			final String userName = customerJson.get("userName").getAsString();
 			final String password = customerJson.get("password").getAsString();
 			final String email = customerJson.get("email").getAsString();
+			final String firstName = customerJson.get("firstName").getAsString();
+			final String lastName = customerJson.get("lastName").getAsString();
+			final String address = customerJson.get("address").getAsString();
+			final String mobileNumber = customerJson.get("mobileNumber").getAsString();
 			
-			return new Customer(userName, )
+			return new Customer(userName, password, email, firstName, lastName, address, mobileNumber );
 		}
 		
 	}
