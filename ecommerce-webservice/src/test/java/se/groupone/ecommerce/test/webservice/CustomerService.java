@@ -1,4 +1,4 @@
-package se.groupone.ecommerce.webservice;
+package se.groupone.ecommerce.test.webservice;
 
 import javax.ws.rs.DELETE;
 
