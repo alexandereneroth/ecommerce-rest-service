@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public final class Customer
 {
-	private final String userName;
+	private final String username;
     private String firstName,
     			   lastName,
                    address,
@@ -14,7 +14,7 @@ public final class Customer
     private ShoppingCart shoppingCart = new ShoppingCart();
     
     public Customer(
-                    String userName,
+                    String username,
                     String password,
                     String email,
                     String firstName,
@@ -23,7 +23,7 @@ public final class Customer
                     String mobileNumber
                     )
     {
-        this.userName = userName;
+        this.username = username;
         this.password = password;
         this.email = email;
         this.firstName = firstName;
@@ -59,7 +59,7 @@ public final class Customer
     {
     	if(!shoppingCart.getProducts().isEmpty())
     	{
-    		orders.add(userName.concat(new Integer(orders.size()+1).toString()));
+    		orders.add(username.concat(new Integer(orders.size()+1).toString()));
     	}
     }
     
@@ -139,6 +139,6 @@ public final class Customer
 
 	public String getUsername()
 	{
-		return userName;
+		return username;
 	}
 }

@@ -88,7 +88,7 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 		public JsonElement serialize(Customer customer, Type typeOfSrc, JsonSerializationContext context)
 		{   
 			final JsonObject customerJson = new JsonObject();
-			customerJson.add("userName", new JsonPrimitive(customer.getUsername()));
+			customerJson.add("username", new JsonPrimitive(customer.getUsername()));
 			customerJson.add("password", new JsonPrimitive(customer.getPassword()));
 			customerJson.add("email", new JsonPrimitive(customer.getEmail()));
 			customerJson.add("firstName", new JsonPrimitive(customer.getFirstName()));
@@ -103,7 +103,7 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 		public Customer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 		{		
 			final JsonObject customerJson = json.getAsJsonObject();
-			final String userName = customerJson.get("userName").getAsString();
+			final String userName = customerJson.get("username").getAsString();
 			final String password = customerJson.get("password").getAsString();
 			final String email = customerJson.get("email").getAsString();
 			final String firstName = customerJson.get("firstName").getAsString();
