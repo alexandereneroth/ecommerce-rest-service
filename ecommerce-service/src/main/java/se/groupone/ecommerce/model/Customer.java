@@ -1,12 +1,15 @@
 package se.groupone.ecommerce.model;
 import java.util.ArrayList;
 
-public final class Customer extends Account
+public final class Customer
 {
+	private final String userName;
     private String firstName,
     			   lastName,
                    address,
-                   mobileNumber;
+                   mobileNumber,
+                   password,
+                   email;
     private ArrayList<String> orders = new ArrayList<String>();
     private ShoppingCart shoppingCart = new ShoppingCart();
     
@@ -20,7 +23,9 @@ public final class Customer extends Account
                     String mobileNumber
                     )
     {
-        super(userName, password, email); 
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
@@ -54,7 +59,7 @@ public final class Customer extends Account
     {
     	if(!shoppingCart.getProducts().isEmpty())
     	{
-    		orders.add(super.getUsername().concat(new Integer(orders.size()+1).toString()));
+    		orders.add(userName.concat(new Integer(orders.size()+1).toString()));
     	}
     }
     
@@ -110,5 +115,30 @@ public final class Customer extends Account
 	public String toString()
 	{
 		return firstName+" "+lastName;
+	}
+
+	public String getPassword()
+	{
+		return password;
+	}
+
+	public void setPassword(String password)
+	{
+		this.password = password;
+	}
+
+	public String getEmail()
+	{
+		return email;
+	}
+
+	public void setEmail(String email)
+	{
+		this.email = email;
+	}
+
+	public String getUsername()
+	{
+		return userName;
 	}
 }

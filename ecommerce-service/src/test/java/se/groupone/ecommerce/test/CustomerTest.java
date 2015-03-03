@@ -14,6 +14,7 @@ public class CustomerTest
 	@Test
 	public void get()
 	{
+		assertEquals(cu.getUsername(), "Kira");
 		assertEquals(cu.getPassword(), "elf");
 		assertEquals(cu.getEmail(), "erik.welander@hotmail.com");
 		assertEquals(cu.getFirstName(), "Erik");
@@ -21,7 +22,6 @@ public class CustomerTest
 		assertEquals(cu.getAddress(), "Tersv");
 		assertEquals(cu.getMobileNumber(), "073");
 		assertEquals(cu.toString(), "Erik Welander");
-		assertEquals(cu.getLoginStatus(), false);
 		assertNull(cu.getOrder(0));
 		assertEquals(cu.getOrders(), new ArrayList<Order>());
 	}
@@ -35,7 +35,6 @@ public class CustomerTest
 		cu.setLastName("De Geer");
 		cu.setAddress("SommarBo 228");
 		cu.setMobileNumber("0768646474");
-		cu.setLoginStatus(true);
 		
 		assertEquals(cu.getPassword(), "Keff");
 		assertEquals(cu.getEmail(), "steffekeff@n");
@@ -43,7 +42,6 @@ public class CustomerTest
 		assertEquals(cu.getLastName(), "De Geer");
 		assertEquals(cu.getAddress(), "SommarBo 228");
 		assertEquals(cu.getMobileNumber(), "0768646474");
-		assertEquals(cu.getLoginStatus(), true);		
 	}
 	
 	@Test
