@@ -6,17 +6,12 @@ import org.junit.Test;
 
 public class CustomerServiceTest
 {
-	// Hämta en användare med ett visst id
-	@Test
-	public void canGetCustomerOfId()
-	{
-		assertTrue("unimplemented", false); // TODO
-	}
-	
+
 	// Skapa en ny användare
 	@Test
 	public void canCreateCustomer()
 	{
+		
 		assertTrue("unimplemented", false); // TODO
 	}
 
@@ -24,6 +19,13 @@ public class CustomerServiceTest
 	//användaren i Location-headern
 	@Test
 	public void assertLocationHeaderOfCreatedCustomerIsCorrect()
+	{
+		assertTrue("unimplemented", false); // TODO
+	}
+	
+	// Hämta en användare med ett visst id
+	@Test
+	public void canGetCustomerOfId()
 	{
 		assertTrue("unimplemented", false); // TODO
 	}
