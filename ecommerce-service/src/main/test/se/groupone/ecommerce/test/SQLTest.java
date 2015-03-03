@@ -34,11 +34,12 @@ public class SQLTest
 		
 		String queryResult = "SELECT user_name FROM ecomm.customer;";
 		
-		assertTrue(sql.queryInsert(queryInsert));
+		assertTrue(sql.query(queryInsert));
+		assertFalse(sql.query(queryInsert));
 		ResultSet rs = sql.queryResult(queryResult);
 		rs.next();
 		assertEquals("kira", rs.getString("user_name"));
-		
+		assertTrue(sql.query("DELETE FROM customer where user_name = 'kira'"));
 		assertTrue(sql.disconnect());
 	}
 	
