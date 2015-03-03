@@ -37,7 +37,7 @@ public final class Order
 		return dateShipped;
 	}
 
-	public String getUserName() 
+	public String getUsername() 
 	{
 		return userName;
 	}
