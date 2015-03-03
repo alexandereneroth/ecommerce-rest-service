@@ -103,7 +103,7 @@ public final class Customer extends Account
 		if(index >= 0 && index < orders.size()){
 			return orders.get(index);
 		}
-		return "";
+		return null;
     }
 	
 	@Override
