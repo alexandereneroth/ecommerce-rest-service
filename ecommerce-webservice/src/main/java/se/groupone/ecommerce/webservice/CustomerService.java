@@ -46,9 +46,10 @@ public class CustomerService
 {
 	
 	@GET
-	@Path("{user-id}")
-	public Response getCustomer(@PathParam("customer-id") final String customerId)
+	@Path("{username}")
+	public Response getCustomer(@PathParam("username") final String username)
 	{
+		
 		throw new RuntimeException("unimplemented");// TODO
 	}
 
@@ -59,15 +60,15 @@ public class CustomerService
 	}
 
 	@PUT
-	@Path("{customer-id}")
-	public Response putCustomer(@PathParam("customer-id") final String customerId)
+	@Path("{username}")
+	public Response putCustomer(@PathParam("username") final String customerId)
 	{
 		throw new RuntimeException("unimplemented");// TODO
 	}
 
 	@DELETE
-	@Path("{customer-id}")
-	public Response deleteCustomer(@PathParam("customer-id") final String customerId)
+	@Path("{username}")
+	public Response deleteCustomer(@PathParam("username") final String customerId)
 	{
 		throw new RuntimeException("unimplemented");// TODO
 	}
