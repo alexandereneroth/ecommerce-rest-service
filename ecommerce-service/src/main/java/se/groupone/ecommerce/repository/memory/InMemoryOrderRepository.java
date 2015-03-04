@@ -3,10 +3,11 @@ package se.groupone.ecommerce.repository.memory;
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.repository.OrderRepository;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class InMemoryOrders implements OrderRepository
+public class InMemoryOrderRepository implements OrderRepository
 {
 	private HashMap<String, Order> orders = new HashMap<String, Order>();
 
@@ -40,6 +41,12 @@ public class InMemoryOrders implements OrderRepository
 	public HashMap<String, Order> getOrders()
 	{
 		return orders;
+	}
+
+	@Override
+	public int getHighestId()
+	{
+		return 0;
 	}
 
 }

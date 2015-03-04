@@ -13,7 +13,7 @@ import org.junit.Test;
 public class MainTest
 {
 
-	ShopService ss = new ShopService(new InMemoryCustomers(), new InMemoryProducts(), new InMemoryOrders());
+	ShopService ss = new ShopService(new InMemoryCustomerRepository(), new InMemoryProductRepository(), new InMemoryOrderRepository());
 
 	@Test
 	public void test()

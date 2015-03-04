@@ -4,7 +4,7 @@ import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.repository.ProductRepository;
 import java.util.HashMap;
 
-public class InMemoryProducts implements ProductRepository
+public class InMemoryProductRepository implements ProductRepository
 {
 
 	private HashMap<String, Product> products = new HashMap<String, Product>();

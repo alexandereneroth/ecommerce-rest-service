@@ -61,12 +61,12 @@ public final class OrderMapper implements MessageBodyReader<Order>, MessageBodyW
 	public void writeTo(Order Order, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
-		try(final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
+		try (final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
 		{
 			gson.toJson(Order, Order.class, writer);
 		}
 	}
-	
+
 	// MessageBodyReader
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
@@ -78,34 +78,36 @@ public final class OrderMapper implements MessageBodyReader<Order>, MessageBodyW
 	public Order readFrom(Class<Order> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
 			InputStream entityStream) throws IOException, WebApplicationException
 	{
-		final Order Order = gson.fromJson(new InputStreamReader(entityStream), Order.class);
-		return Order;
+		final Order order = gson.fromJson(new InputStreamReader(entityStream), Order.class);
+		return order;
 	}
-	
+
 	private static final class OrderAdapter implements JsonDeserializer<Order>, JsonSerializer<Order>
 	{
 
 		@Override
-		public JsonElement serialize(Order Order, Type typeOfSrc, JsonSerializationContext context)
-		{   
+		public JsonElement serialize(Order order, Type typeOfSrc, JsonSerializationContext context)
+		{
 			final JsonObject orderJson = new JsonObject();
-			final JsonArray shoppingCart = new JsonArray();
-			
-			orderJson.add("username", new JsonPrimitive(Order.getUsername()));
-		
-			
+			final JsonArray shoppingCartJsonArray = new JsonArray();
+
+			orderJson.add("username", new JsonPrimitive(order.getUsername()));
+			for (String product : order.getProducts())
+			{
+				shoppingCartJsonArray.add(new JsonPrimitive(product));
+			}
+			orderJson.add("shoppingCart", shoppingCartJsonArray);
+
 			return orderJson;
 		}
 
 		@Override
 		public Order deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-		{		
+		{
 			final JsonObject OrderJson = json.getAsJsonObject();
 			final String userName = OrderJson.get("userName").getAsString();
-
-			
 			return null;
 		}
-		
+
 	}
 }

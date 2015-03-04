@@ -1,16 +1,18 @@
 package se.groupone.ecommerce.service;
 
+import se.groupone.ecommerce.exception.ShopServiceException;
+import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.repository.CustomerRepository;
 import se.groupone.ecommerce.repository.OrderRepository;
 import se.groupone.ecommerce.repository.ProductRepository;
+
 import java.util.HashMap;
 
 public class ShopService
 {
-
 	private CustomerRepository cR;
 	private ProductRepository pR;
 	private OrderRepository oR;
@@ -34,12 +36,19 @@ public class ShopService
 
 	public void addProductToCustomer(String title, String username, int amount)
 	{
-		if (pR.getProduct(title).getQuantity() >= amount)
+		try
 		{
-			for (int i = 0; i < amount; i++)
+			if (pR.getProduct(title).getQuantity() >= amount)
 			{
-				cR.getCustomer(username).addProduct(title);
+				for (int i = 0; i < amount; i++)
+				{
+					cR.getCustomer(username).addProduct(title);
+				}
 			}
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not add product to customer.", e);
 		}
 	}
 
@@ -69,33 +78,70 @@ public class ShopService
 
 	public void addCustomer(Customer customer)
 	{
-		cR.addCustomer(customer);
+		try
+		{
+			cR.addCustomer(customer);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not add customer.", e);
+		}
 	}
 
 	public Customer getCustomer(String username)
 	{
-		return cR.getCustomer(username);
+		try
+		{
+			return cR.getCustomer(username);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not get customer.", e);
+		}
 	}
 
 	public void updateCustomer(Customer customer)
 	{
-		cR.updateCustomer(customer);
+		try
+		{
+			cR.updateCustomer(customer);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not update customer.", e);
+		}
 	}
 
 	public void removeCustomer(String username)
 	{
-		cR.removeCustomer(username);
+		try
+		{
+			cR.removeCustomer(username);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not remove customer.", e);
+		}
 	}
 
 	public void addOrder(String username)
 	{
-		// Will decrease the product quantity by one for each item in the
-		// shoppingCart
-		for (String title : cR.getCustomer(username).getShoppingCart())
+		try
 		{
-			pR.getProduct(title).decreaseQuantity(1);
+			Customer customer = cR.getCustomer(username);
+
+			// Will decrease the product quantity by one for each item in the
+			// shoppingCart
+			for (String title : customer.getShoppingCart())
+			{
+				pR.getProduct(title).decreaseQuantity(1);
+			}
+			oR.addOrder(customer);
 		}
-		oR.addOrder(cR.getCustomer(username));
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not add order.", e);
+		}
 	}
 
 	public Order getOrder(String key)
@@ -107,5 +153,4 @@ public class ShopService
 	{
 		return oR.getOrders();
 	}
-
 }

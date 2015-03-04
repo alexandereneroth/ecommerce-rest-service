@@ -1,23 +1,25 @@
 package se.groupone.ecommerce.repository.memory;
 
+import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.repository.CustomerRepository;
+
 import java.util.HashMap;
 
-public class InMemoryCustomers implements CustomerRepository
+public class InMemoryCustomerRepository implements CustomerRepository
 {
 
 	private HashMap<String, Customer> accounts = new HashMap<String, Customer>();
 
 	@Override
-	public boolean addCustomer(Customer customer)
+	public void addCustomer(Customer customer) throws RepositoryException
 	{
 		if (!accounts.containsKey(customer.getUsername()))
 		{
 			accounts.put(customer.getUsername(), customer);
-			return true;
+			return;
 		}
-		return false;
+		throw new RepositoryException("Could not add customer: customer already exists");
 	}
 
 	@Override
