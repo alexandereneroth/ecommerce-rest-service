@@ -3,13 +3,13 @@ package se.groupone.ecommerce.model;
 public class Product
 {
 	private final int id;
-	private String title, category, baker, description, img;
+	private String title, category, manufacturer, description, img;
 	private int quantity;
 	private double price;
 
 	public Product(String title,
 			String category,
-			String baker,
+			String manufacturer,
 			String description,
 			String img,
 			double price,
@@ -17,7 +17,7 @@ public class Product
 	{	
 		this.title = title;
 		this.category = category;
-		this.baker = baker;
+		this.manufacturer = manufacturer;
 		this.description = description;
 		this.img = img;
 		this.price = price;
@@ -34,9 +34,9 @@ public class Product
 		this.category = category;
 	}
 
-	public void setBaker(String manufacturer)
+	public void setManufacturer(String manufacturer)
 	{
-		this.baker = manufacturer;
+		this.manufacturer = manufacturer;
 	}
 
 	public void setDescription(String description)
@@ -76,7 +76,7 @@ public class Product
 
 	public String getBaker()
 	{
-		return baker;
+		return manufacturer;
 	}
 
 	public String getDescription()
@@ -103,7 +103,7 @@ public class Product
 	public String toString()
 	{
 		return "Item [title=" + title + ", category=" + category +
-				", baker=" + baker + ", description=" + description +
+				", baker=" + manufacturer + ", description=" + description +
 				", img=" + img + ", price=" + price + ", quantity=" + quantity + "]";
 	}
 }
