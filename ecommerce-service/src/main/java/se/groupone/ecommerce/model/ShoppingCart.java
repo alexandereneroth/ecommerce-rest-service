@@ -4,32 +4,41 @@ import java.util.ArrayList;
 
 public class ShoppingCart
 {
-	private ArrayList<String> products = new ArrayList<String>();
+	private ArrayList<Integer> productIds = new ArrayList<>();
 
-	public void addProduct(String product)
+	public void addProduct(int product)
 	{
-		products.add(product);
+		productIds.add(product);
 	}
 
-	public void removeProduct(String product)
+	// The argument needs to be an object,
+	// otherwise remove removes at the index of the int.
+	public void removeProduct(Integer product) throws ModelException
 	{
-		products.remove(product);
+		if (productIds.contains(product))
+		{
+			productIds.remove(product);
+		}
+		else
+		{
+			throw new ModelException("Cannot remove product from cart: product does not exist.");
+		}
 	}
 
-	public ArrayList<String> getProducts()
+	public ArrayList<Integer> getProductIds()
 	{
-		return products;
+		return productIds;
 	}
 
 	public void clear()
 	{
-		products.clear();
+		productIds.clear();
 	}
 
 	@Override
 	public String toString()
 	{
-		return "ShoppingCart [products=" + products + "]";
+		return "ShoppingCart [products=" + productIds + "]";
 	}
 
 }

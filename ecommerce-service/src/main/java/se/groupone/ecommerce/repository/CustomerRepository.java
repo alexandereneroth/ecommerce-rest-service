@@ -11,7 +11,7 @@ public interface CustomerRepository
 
 	public Customer getCustomer(String username) throws RepositoryException;
 
-	public HashMap<Integer, Customer> getCustomers();
+	public HashMap<String, Customer> getCustomers();
 
 	public void updateCustomer(Customer customer) throws RepositoryException;
 

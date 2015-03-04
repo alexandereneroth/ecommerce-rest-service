@@ -3,46 +3,62 @@ package se.groupone.ecommerce.service;
 import se.groupone.ecommerce.exception.ShopServiceException;
 import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
+import se.groupone.ecommerce.model.ModelException;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.model.Product;
+import se.groupone.ecommerce.model.ProductParameters;
 import se.groupone.ecommerce.repository.CustomerRepository;
 import se.groupone.ecommerce.repository.OrderRepository;
 import se.groupone.ecommerce.repository.ProductRepository;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopService
 {
-	private CustomerRepository cR;
-	private ProductRepository pR;
-	private OrderRepository oR;
+	private final CustomerRepository cR;
+	private final ProductRepository pR;
+	private final OrderRepository oR;
+
+	private final AtomicInteger productIDGenerator;
+	private final AtomicInteger orderIDGenerator;
 
 	public ShopService(CustomerRepository cR, ProductRepository pR, OrderRepository oR)
 	{
 		this.cR = cR;
 		this.pR = pR;
 		this.oR = oR;
-	}
 
-	public void addProduct(Product product)
-	{
-		pR.addProduct(product);
+		productIDGenerator = new AtomicInteger(pR.getHighestId());
+		orderIDGenerator = new AtomicInteger(oR.getHighestId());
 	}
-
-	public void addProductToCustomer(String title, String username)
-	{
-		addProductToCustomer(title, username, 1);
-	}
-
-	public void addProductToCustomer(String title, String username, int amount)
+	
+	public void addProduct(ProductParameters product)
 	{
 		try
 		{
-			if (pR.getProduct(title).getQuantity() >= amount)
+			pR.addProduct(new Product(getNextProductId(), product));
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not add product.", e);
+		}
+	}
+
+	public void addProductToCustomer(int productId, String username)
+	{
+		addProductToCustomer(productId, username, 1);
+	}
+
+	public void addProductToCustomer(int productId, String username, int amount)
+	{
+		try
+		{
+			if (pR.getProduct(productId).getQuantity() >= amount)
 			{
 				for (int i = 0; i < amount; i++)
 				{
-					cR.getCustomer(username).addProduct(title);
+					cR.getCustomer(username).addProduct(productId);
 				}
 			}
 		}
@@ -52,28 +68,49 @@ public class ShopService
 		}
 	}
 
-	public Product getProduct(String title)
+	public Product getProductWithId(int productId)
 	{
-		return pR.getProduct(title);
+		try
+		{
+			return pR.getProduct(productId);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not getProduct.", e);
+		}
 	}
 
-	public HashMap<String, Product> getProducts()
+	public HashMap<Integer, Product> getProducts()
 	{
 		return pR.getProducts();
 	}
 
-	public void removeProduct(String title)
+	public void removeProduct(int title)
 	{
-		for (Customer c : cR.getCustomers().values())
+		try
 		{
-			c.removeProduct(title);
+			for (Customer c : cR.getCustomers().values())
+			{
+				c.removeProduct(title);
+			}
+			pR.removeProduct(title);
 		}
-		pR.removeProduct(title);
+		catch (RepositoryException | ModelException e)
+		{
+			throw new ShopServiceException("Could not remove product.", e);
+		}
 	}
 
 	public void updateProduct(Product product)
 	{
-		pR.updateProduct(product);
+		try
+		{
+			pR.updateProduct(product);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not updateProduct", e);
+		}
 	}
 
 	public void addCustomer(Customer customer)
@@ -124,19 +161,23 @@ public class ShopService
 		}
 	}
 
-	public void addOrder(String username)
+	public void addOrder(OrderParameters order)
 	{
 		try
 		{
-			Customer customer = cR.getCustomer(username);
-
-			// Will decrease the product quantity by one for each item in the
-			// shoppingCart
-			for (String title : customer.getShoppingCart())
+			/*
+			// Decreases the product quantity for each ordered item
+			for (Integer productId : order.getProductIds())
 			{
-				pR.getProduct(title).decreaseQuantity(1);
+				Product productToBeUpdated = pR.getProduct(productId);
+				productToBeUpdated.decreaseQuantity(1);
+				pR.updateProduct(productToBeUpdated);
 			}
-			oR.addOrder(customer);
+			*/
+			
+			// TODO Decrease of quantity of product in product repository needs to
+			// happen in a transaction
+			oR.addOrder(order);
 		}
 		catch (RepositoryException e)
 		{
@@ -144,13 +185,30 @@ public class ShopService
 		}
 	}
 
-	public Order getOrder(String key)
+	public Order getOrder(int orderId)
 	{
-		return oR.getOrder(key);
+		try
+		{
+			return oR.getOrder(orderId);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not get order.", e);
+		}
 	}
 
-	public HashMap<String, Order> getOrders()
+	public HashMap<Integer, Order> getOrders()
 	{
-		return oR.getOrders();
+			return oR.getOrders();
+	}
+
+	private int getNextProductId()
+	{
+		return productIDGenerator.incrementAndGet();
+	}
+
+	private int getNextOrderId()
+	{
+		return orderIDGenerator.incrementAndGet();
 	}
 }
