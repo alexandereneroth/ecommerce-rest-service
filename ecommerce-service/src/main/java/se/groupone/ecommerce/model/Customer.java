@@ -2,71 +2,72 @@ package se.groupone.ecommerce.model;
 
 import java.util.ArrayList;
 
-import org.hamcrest.core.IsInstanceOf;
 
 public final class Customer
 {
-	private String username,
-			password,
-			email,
-			firstName,
-			lastName,
-			address,
-			mobileNumber;
-	private ArrayList<String> orders = new ArrayList<String>();
-	private ShoppingCart shoppingCart = new ShoppingCart();
 
-	public Customer(
-			String username,
-			String password,
-			String email,
-			String firstName,
-			String lastName,
-			String address,
-			String mobileNumber)
-	{
-		this.username = username;
-		this.password = password;
-		this.email = email;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.address = address;
-		this.mobileNumber = mobileNumber;
-	}
-
-	public void addProduct(String product)
-	{
-		if (product != null)
-		{
-			shoppingCart.addProduct(product);
-		}
-	}
-
-	public void removeProduct(String product)
-	{
-		shoppingCart.removeProduct(product);
-	}
-
-	public ArrayList<String> getShoppingCart()
-	{
-		return shoppingCart.getProducts();
-	}
-
-	public ArrayList<String> getOrders()
-	{
-		return orders;
-	}
-
-	public void addOrder()
-	{
-		if (!shoppingCart.getProducts().isEmpty())
-		{
-			orders.add(username.concat(new Integer(orders.size() + 1).toString()));
-		}
-	}
-
-	public String getFirstName()
-	{
+	private final String username;
+    private String 		 password,
+    			   		 email,
+    			   		 firstName,
+    			   		 lastName,
+    			   		 address,
+    			   		 mobileNumber;
+    private ArrayList<String> orders = new ArrayList<String>();
+    private ShoppingCart shoppingCart = new ShoppingCart();
+    
+    public Customer(
+                    String username,
+                    String password,
+                    String email,
+                    String firstName,
+                    String lastName,
+                    String address,
+                    String mobileNumber
+                    )
+    {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.address = address;
+        this.mobileNumber = mobileNumber;
+    }
+    
+    public void addProduct(String product)
+    {
+    	if(product != null)
+    	{
+    		shoppingCart.addProduct(product);
+    	}
+    }
+    
+    public void removeProduct(String product)
+    {
+    	shoppingCart.removeProduct(product);
+    }
+    
+    public ArrayList<String> getShoppingCart()
+    {
+        return shoppingCart.getProducts();
+    }
+    
+    public ArrayList<String> getOrders()
+    {
+        return orders;
+    }
+    
+    public void addOrder()
+    {
+    	if(!shoppingCart.getProducts().isEmpty())
+    	{
+    		orders.add(username.concat(new Integer(orders.size()+1).toString()));
+    	}
+    }
+    
+    public String getFirstName() 
+    {
 		return firstName;
 	}
 
