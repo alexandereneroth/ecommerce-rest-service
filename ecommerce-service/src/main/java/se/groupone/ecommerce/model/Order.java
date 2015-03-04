@@ -5,10 +5,11 @@ import java.util.ArrayList;
 
 public final class Order
 {
-	private final String username;
+	private final int id;
+	private final String customerUsername;
 
 	private Date dateCreated, dateShipped = null;
-	private ArrayList<String> products = new ArrayList<String>();
+	private ArrayList<Integer> products = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
 	// För att kunna göra en kloning av shoppingcart
