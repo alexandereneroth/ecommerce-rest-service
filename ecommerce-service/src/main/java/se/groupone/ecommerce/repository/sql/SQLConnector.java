@@ -11,65 +11,66 @@ public final class SQLConnector
 {
 	private final String sqlDriver = "com.mysql.jdbc.Driver";
 	private final String host,
-						 port,
-						 username,
-						 password,
-						 database;
-	
+			port,
+			username,
+			password,
+			database;
+
 	private Connection con;
 	private Statement statement;
 	private ResultSet rs;
-	
+
 	public SQLConnector(final String host,
-					    final String port,
-					    final String username,
-					    final String password,
-					    final String database)
+			final String port,
+			final String username,
+			final String password,
+			final String database)
 	{
 		this.host = host;
 		this.port = port;
 		this.username = username;
 		this.password = password;
 		this.database = database;
-		
-		try 
+
+		try
 		{
 			Class.forName(sqlDriver);
 		}
 		catch (ClassNotFoundException e)
 		{
-			System.err.println("Could not load database driver: "+e.getMessage()); 
+			System.err.println("Could not load database driver: " + e.getMessage());
 		}
 	}
-	
+
 	public boolean connect()
 	{
 		try
 		{
-			con = DriverManager.getConnection("jdbc:mysql://"+host+":"+port+"/"+database, username, password);
+			con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
 			statement = con.createStatement();
 			return true;
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Could not connect to database: "+e.getMessage());
+			System.err.println("Could not connect to database: " + e.getMessage());
 			return false;
 		}
 	}
 
 	public boolean disconnect()
 	{
-		try 
+		try
 		{
 			con.close();
-			return true; 
+			return true;
 		}
-		catch (SQLException e) 
+		catch (SQLException e)
 		{
-			System.err.println(e.getMessage()); return false;
+			System.err.println(e.getMessage());
+			return false;
 		}
 	}
-	
+
 	public ResultSet queryResult(final String query)
 	{
 		try
@@ -78,10 +79,11 @@ public final class SQLConnector
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Error performing query: "+e.getMessage()); return null;
+			System.err.println("Error performing query: " + e.getMessage());
+			return null;
 		}
 	}
-	
+
 	public boolean query(final String query)
 	{
 		try
@@ -91,7 +93,7 @@ public final class SQLConnector
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Error performing query: "+e.getMessage());
+			System.err.println("Error performing query: " + e.getMessage());
 			return false;
 		}
 	}

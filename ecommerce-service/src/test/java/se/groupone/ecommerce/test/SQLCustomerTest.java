@@ -1,8 +1,10 @@
 package se.groupone.ecommerce.test;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.repository.sql.SQLCustomer;
+
 public class SQLCustomerTest
 {
 	@Test
@@ -17,7 +19,7 @@ public class SQLCustomerTest
 		final String mobile = "073";
 		Customer cu = new Customer(username, password, email, firstName, lastName, address, mobile);
 		SQLCustomer sqlcu = new SQLCustomer();
-		
+
 		assertTrue(sqlcu.addCustomer(cu));
 		assertEquals(cu, sqlcu.getCustomer(username));
 		assertTrue(sqlcu.removeCustomer(username));

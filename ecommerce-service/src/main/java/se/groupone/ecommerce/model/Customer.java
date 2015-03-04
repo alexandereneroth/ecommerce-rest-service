@@ -1,122 +1,123 @@
 package se.groupone.ecommerce.model;
+
 import java.util.ArrayList;
 
 import org.hamcrest.core.IsInstanceOf;
 
 public final class Customer
 {
-    private String username,
-    			   		 password,
-    			   		 email,
-    			   		 firstName,
-    			   		 lastName,
-    			   		 address,
-    			   		 mobileNumber;
-    private ArrayList<String> orders = new ArrayList<String>();
-    private ShoppingCart shoppingCart = new ShoppingCart();
-    
-    public Customer(
-                    String username,
-                    String password,
-                    String email,
-                    String firstName,
-                    String lastName,
-                    String address,
-                    String mobileNumber
-                    )
-    {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.address = address;
-        this.mobileNumber = mobileNumber;
-    }
-    
-    public void addProduct(String product)
-    {
-    	if(product != null)
-    	{
-    		shoppingCart.addProduct(product);
-    	}
-    }
-    
-    public void removeProduct(String product)
-    {
-    	shoppingCart.removeProduct(product);
-    }
-    
-    public ArrayList<String> getShoppingCart()
-    {
-        return shoppingCart.getProducts();
-    }
-    
-    public ArrayList<String> getOrders()
-    {
-        return orders;
-    }
-    
-    public void addOrder()
-    {
-    	if(!shoppingCart.getProducts().isEmpty())
-    	{
-    		orders.add(username.concat(new Integer(orders.size()+1).toString()));
-    	}
-    }
-    
-    public String getFirstName() 
-    {
+	private String username,
+			password,
+			email,
+			firstName,
+			lastName,
+			address,
+			mobileNumber;
+	private ArrayList<String> orders = new ArrayList<String>();
+	private ShoppingCart shoppingCart = new ShoppingCart();
+
+	public Customer(
+			String username,
+			String password,
+			String email,
+			String firstName,
+			String lastName,
+			String address,
+			String mobileNumber)
+	{
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.mobileNumber = mobileNumber;
+	}
+
+	public void addProduct(String product)
+	{
+		if (product != null)
+		{
+			shoppingCart.addProduct(product);
+		}
+	}
+
+	public void removeProduct(String product)
+	{
+		shoppingCart.removeProduct(product);
+	}
+
+	public ArrayList<String> getShoppingCart()
+	{
+		return shoppingCart.getProducts();
+	}
+
+	public ArrayList<String> getOrders()
+	{
+		return orders;
+	}
+
+	public void addOrder()
+	{
+		if (!shoppingCart.getProducts().isEmpty())
+		{
+			orders.add(username.concat(new Integer(orders.size() + 1).toString()));
+		}
+	}
+
+	public String getFirstName()
+	{
 		return firstName;
 	}
 
-	public void setFirstName(String firstName) 
+	public void setFirstName(String firstName)
 	{
 		this.firstName = firstName;
 	}
 
-	public String getLastName() 
+	public String getLastName()
 	{
 		return lastName;
 	}
 
-	public void setLastName(String lastName) 
+	public void setLastName(String lastName)
 	{
 		this.lastName = lastName;
 	}
 
-	public String getAddress() 
+	public String getAddress()
 	{
 		return address;
 	}
 
-	public void setAddress(String address) 
+	public void setAddress(String address)
 	{
 		this.address = address;
 	}
 
-	public String getMobileNumber() 
+	public String getMobileNumber()
 	{
 		return mobileNumber;
 	}
 
-	public void setMobileNumber(String mobileNumber) 
+	public void setMobileNumber(String mobileNumber)
 	{
 		this.mobileNumber = mobileNumber;
 	}
 
 	public String getOrder(int index)
-    {
-		if(index >= 0 && index < orders.size()){
+	{
+		if (index >= 0 && index < orders.size())
+		{
 			return orders.get(index);
 		}
 		return null;
-    }
-	
+	}
+
 	@Override
 	public String toString()
 	{
-		return firstName+" "+lastName;
+		return firstName + " " + lastName;
 	}
 
 	public String getPassword()
@@ -143,24 +144,24 @@ public final class Customer
 	{
 		return username;
 	}
-	
+
 	@Override
 	public boolean equals(Object other)
 	{
-		if(other == this)
+		if (other == this)
 		{
 			return true;
 		}
-		if(other instanceof Customer)
+		if (other instanceof Customer)
 		{
-			Customer cu = (Customer)other;
-			if(this.getUsername().equals(cu.getUsername())
-			&& this.getPassword().equals(cu.getPassword())
-			&& this.getEmail().equals(cu.getEmail())
-			&& this.getFirstName().equals(cu.getFirstName())
-			&& this.getLastName().equals(cu.getLastName())
-			&& this.getAddress().equals(cu.getAddress())
-			&& this.getMobileNumber().equals(cu.getMobileNumber()))
+			Customer cu = (Customer) other;
+			if (this.getUsername().equals(cu.getUsername())
+					&& this.getPassword().equals(cu.getPassword())
+					&& this.getEmail().equals(cu.getEmail())
+					&& this.getFirstName().equals(cu.getFirstName())
+					&& this.getLastName().equals(cu.getLastName())
+					&& this.getAddress().equals(cu.getAddress())
+					&& this.getMobileNumber().equals(cu.getMobileNumber()))
 			{
 				return true;
 			}
