@@ -31,35 +31,27 @@ public final class Customer
 		this.mobileNumber = mobileNumber;
 	}
 
-	public void addProduct(String product)
+	public void addProduct(int productId)
 	{
-		if (product != null)
-		{
-			shoppingCart.addProduct(product);
-		}
+		shoppingCart.addProduct(productId);
 	}
 
-	public void removeProduct(String product)
+	public void removeProduct(int productId) throws ModelException
 	{
-		shoppingCart.removeProduct(product);
+		shoppingCart.removeProduct(productId);
 	}
 
-	public ArrayList<String> getShoppingCart()
+	public ArrayList<Integer> getShoppingCart()
 	{
-		return shoppingCart.getProducts();
+		return shoppingCart.getProductIds();
 	}
 
-	public ArrayList<String> getOrders()
+	public ArrayList<Integer> getAndEmptyShoppingCart()
 	{
-		return orders;
-	}
+		ArrayList<Integer> cartArray = shoppingCart.getProductIds();
+		shoppingCart.clear();
 
-	public void addOrder()
-	{
-		if (!shoppingCart.getProducts().isEmpty())
-		{
-			orders.add(username.concat(new Integer(orders.size() + 1).toString()));
-		}
+		return cartArray;
 	}
 
 	public String getFirstName()
@@ -100,15 +92,6 @@ public final class Customer
 	public void setMobileNumber(String mobileNumber)
 	{
 		this.mobileNumber = mobileNumber;
-	}
-
-	public String getOrder(int index)
-	{
-		if (index >= 0 && index < orders.size())
-		{
-			return orders.get(index);
-		}
-		return null;
 	}
 
 	@Override

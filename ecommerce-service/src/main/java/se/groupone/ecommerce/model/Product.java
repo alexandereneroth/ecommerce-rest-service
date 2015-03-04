@@ -7,21 +7,16 @@ public class Product
 	private int quantity;
 	private double price;
 
-	public Product(String title,
-			String category,
-			String manufacturer,
-			String description,
-			String img,
-			double price,
-			int quantity)
+	public Product(int id, ProductParameters params)
 	{	
-		this.title = title;
-		this.category = category;
-		this.manufacturer = manufacturer;
-		this.description = description;
-		this.img = img;
-		this.price = price;
-		this.quantity = quantity;
+		this.id = id;
+		this.title = params.getTitle();
+		this.category = params.getCategory();
+		this.manufacturer = params.getManufacturer();
+		this.description = params.getDescription();
+		this.img = params.getImg();
+		this.price = params.getPrice();
+		this.quantity = params.getQuantity();
 	}
 
 	public void setTitle(String title)
@@ -62,6 +57,11 @@ public class Product
 	public void decreaseQuantity(int decrease)
 	{
 		quantity -= decrease;
+	}
+	
+	public int getId()
+	{
+		return id;
 	}
 
 	public String getTitle()

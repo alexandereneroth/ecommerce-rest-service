@@ -22,8 +22,6 @@ public class CustomerTest
 		assertEquals(cu.getAddress(), "Tersv");
 		assertEquals(cu.getMobileNumber(), "073");
 		assertEquals(cu.toString(), "Erik Welander");
-		assertNull(cu.getOrder(0));
-		assertEquals(cu.getOrders(), new ArrayList<Order>());
 	}
 
 	@Test
@@ -45,32 +43,25 @@ public class CustomerTest
 	}
 
 	@Test
-	public void shopping()
+	public void assertAddRemoveFromShoppingCartWorks() throws ModelException
 	{
-		cu.addOrder();
-		assertNull(cu.getOrder(0));
-		assertEquals(cu.getOrders(), new ArrayList<String>());
+		final int dummyProductId1 = 0;
+		final int dummyProductId2 = 1;
+		Product product1 = new Product(dummyProductId1, "Klassisk pannkaka", "Pannkakor", "Stefan", "Vår klassiska och mycket utsökta pannkaka", "klassiskPannkaka.png", 10.90, 10);
+		cu.addProduct(product1.getId());
 
-		Product p1 = new Product("Klassisk pannkaka", "Pannkakor", "Stefan", "Vår klassiska och mycket utsökta pannkaka", "klassiskPannkaka.png", 10.90, 10);
-		cu.addProduct(p1.getTitle());
+		ArrayList<Integer> customerCart = cu.getShoppingCart();
+		assertEquals((int)customerCart.get(0), product1.getId());
+		assertEquals(customerCart.size(), 1);
 
-		ArrayList<String> pa = cu.getShoppingCart();
-		assertEquals(pa.get(0), p1.getTitle());
-		assertEquals(pa.size(), 1);
-
-		Product p2 = new Product("Amerikansk pannkaka", "Pannkakor", "Erik", "En lite tjockare men mycket god pannkaka som passar till sirap", "amerikanskPannkaka.png",
+		Product product2 = new Product(dummyProductId2, "Amerikansk pannkaka", "Pannkakor", "Erik", "En lite tjockare men mycket god pannkaka som passar till sirap", "amerikanskPannkaka.png",
 				13.90, 10);
-		cu.addProduct(p2.getTitle());
+		cu.addProduct(product2.getId());
 
-		assertEquals(pa.get(1), p2.getTitle());
-		assertEquals(pa.size(), 2);
+		assertEquals((int)customerCart.get(1), product2.getId());
+		assertEquals(customerCart.size(), 2);
 
-		cu.removeProduct(p2.getTitle());
-		assertEquals(pa.size(), 1);
-
-		cu.addOrder();
-
-		assertNotNull(cu.getOrder(0));
-
+		cu.removeProduct(product2.getId());
+		assertEquals(customerCart.size(), 1);
 	}
 }

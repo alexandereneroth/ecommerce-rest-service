@@ -12,21 +12,18 @@ public final class Order
 	private ArrayList<Integer> productIds = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
-	// För att kunna göra en kloning av shoppingcart
-	public Order(String username, ArrayList<String> shoppingCart)
+	public Order(int id, String customerUsername, ArrayList<Integer> shoppingCartProductIds)
 	{
+		this.id = id;
 		// Klonar shoppingcart, ej referens då shoppingcarten kommer tömmas.
-		productIds = (ArrayList<String>) shoppingCart.clone();
-		this.username = username;
-		dateCreated = new Date(System.currentTimeMillis());
+		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
+		this.customerUsername = customerUsername;
+		this.dateCreated = new Date(System.currentTimeMillis());
 	}
 
-	public Order(String username, Date dateCreated, Date dateShipped, ArrayList<String> products)
+	public int getId()
 	{
-		this.username = username;
-		this.dateCreated = dateCreated;
-		this.dateShipped = dateShipped;
-		this.productIds = products;
+		return id;
 	}
 
 	public void shipIt()
@@ -50,7 +47,7 @@ public final class Order
 
 	public String getUsername()
 	{
-		return username;
+		return customerUsername;
 	}
 
 	public Date getDateCreated()
@@ -58,7 +55,7 @@ public final class Order
 		return dateCreated;
 	}
 
-	public ArrayList<String> getProducts()
+	public ArrayList<Integer> getProductIds()
 	{
 		return productIds;
 	}
@@ -66,7 +63,7 @@ public final class Order
 	@Override
 	public String toString()
 	{
-		return "Order [userName=" + username
+		return "Order [userName=" + customerUsername
 				+ ", dateCreated=" + dateCreated + ", dateShipped="
 				+ dateShipped + ", products=" + productIds + "]";
 	}

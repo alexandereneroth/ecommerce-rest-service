@@ -1,5 +1,6 @@
 package se.groupone.ecommerce.repository.memory;
 
+import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.repository.OrderRepository;
@@ -9,36 +10,33 @@ import java.util.HashMap;
 
 public class InMemoryOrderRepository implements OrderRepository
 {
-	private HashMap<String, Order> orders = new HashMap<String, Order>();
+	private HashMap<Integer, Order> orders = new HashMap<Integer, Order>();
 
 	@Override
-	public void addOrder(Customer customer)
+	public void addOrder(Order order)
 	{
-		if (!customer.getShoppingCart().isEmpty())
-		{
-			orders.put(customer.getUsername().concat(new Integer(customer.getOrders().size() + 1).toString()),
-					new Order(customer.getUsername(), customer.getShoppingCart()));
-			// Will also add the order to the customer
-			customer.addOrder();
+//		if (!customer.getShoppingCart().isEmpty())
+//		{
+//			int orderId;//generated based on getHighestId()
+//			Order order = new Order(customer.getUsername(), customer.getShoppingCart());
+			orders.put(orderId, order);
 			// And clear the shoppingCart
-			customer.getShoppingCart().clear();
-		}
+//			customer.getShoppingCart().clear();
+//		}
 	}
 
 	@Override
-	public Order getOrder(String key)
+	public Order getOrder(int orderId) throws RepositoryException
 	{
-		if (orders.containsKey(key))
+		if (orders.containsKey(orderId))
 		{
-			return orders.get(key);
+			return orders.get(orderId);
 		}
-		return new Order("", new ArrayList<String>()); // Will return an empty
-														// order if key doesnt
-														// exist
+		throw new RepositoryException("Cannot get order: order does not exist in repository.");
 	}
 
 	@Override
-	public HashMap<String, Order> getOrders()
+	public HashMap<Integer, Order> getOrders()
 	{
 		return orders;
 	}

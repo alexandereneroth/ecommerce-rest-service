@@ -23,17 +23,13 @@ public class InMemoryCustomerRepository implements CustomerRepository
 	}
 
 	@Override
-	public Customer getCustomer(String username)
+	public Customer getCustomer(String username) throws RepositoryException
 	{
 		if (accounts.containsKey(username))
 		{
 			return accounts.get(username);
 		}
-		return new Customer("", "", "", "", "", "", ""); // Will return an empty
-															// TODO
-															// customer to
-															// counter
-															// nullPointer
+		throw new RepositoryException("Could not get customer: customer goes not exist");
 	}
 
 	@Override
@@ -49,14 +45,14 @@ public class InMemoryCustomerRepository implements CustomerRepository
 	}
 
 	@Override
-	public boolean removeCustomer(String username)
+	public void removeCustomer(String username) throws RepositoryException
 	{
 		if (accounts.containsKey(username))
 		{
 			accounts.remove(username);
-			return true;
+			return;
 		}
-		return false;
+		throw new RepositoryException("Could not remove customer: customer does not exist.");
 	}
 
 }
