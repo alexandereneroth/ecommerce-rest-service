@@ -1,15 +1,92 @@
 package se.groupone.ecommerce.test;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.*;
 
+import java.util.HashMap;
+
+import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
+import se.groupone.ecommerce.exception.RepositoryException;
+import se.groupone.ecommerce.model.Customer;
+import se.groupone.ecommerce.model.Order;
+import se.groupone.ecommerce.repository.CustomerRepository;
+import se.groupone.ecommerce.repository.OrderRepository;
+import se.groupone.ecommerce.repository.ProductRepository;
+import se.groupone.ecommerce.service.ShopService;
+
+@RunWith(MockitoJUnitRunner.class)
 public class ShopServiceTest
 {
+	private static ShopService shopService;
+
+	@Mock
+	private CustomerRepository cR;
+
+	@Mock
+	private ProductRepository pR;
+
+	@Mock
+	private OrderRepository oR;
+
+	private static final Customer TEST_CUSTOMER_1 = new Customer("kero", "dreamhack",
+			"dsv@su.se", "Kiran", "Arvidsson",
+			"Östgötagatan 5 Stockholm", "0706566556");
+	private static final Customer TEST_CUSTOMER_2 = new Customer("santaclaus", "rudolph",
+			"santa@northpole.com", "Santa", "Claus",
+			"North Pole", "000000000");
+	private static final Customer TEST_CUSTOMER_3 = new Customer("martetheboy", "silkmuj44",
+			"marte_carl@spray.se", "Martin", "Carlsson",
+			"Jumkils-dalkarlsbo Dalsäter 230", "0708663760");
+
+	private static final HashMap<String, Customer> CUSTOMERS = new HashMap<>();
+
+	static
+	{
+		CUSTOMERS.put(TEST_CUSTOMER_1.getUsername(), TEST_CUSTOMER_1);
+		CUSTOMERS.put(TEST_CUSTOMER_2.getUsername(), TEST_CUSTOMER_2);
+		CUSTOMERS.put(TEST_CUSTOMER_3.getUsername(), TEST_CUSTOMER_3);
+	}
+
+	@Before
+	public void init() throws RepositoryException
+	{
+		
+		// Customer method stubbing ////
+		
+		when(cR.getCustomer(TEST_CUSTOMER_1.getUsername())).thenReturn(TEST_CUSTOMER_1);
+		when(cR.getCustomer(TEST_CUSTOMER_2.getUsername())).thenReturn(TEST_CUSTOMER_2);
+		when(cR.getCustomer(TEST_CUSTOMER_3.getUsername())).thenReturn(TEST_CUSTOMER_3);
+
+		when(cR.getCustomers()).thenReturn(CUSTOMERS);
+		
+		// Order method stubbing //// TODO
+		
+//		public void addOrder(Order order) throws RepositoryException;
+//
+//		public Order getOrder(int id) throws RepositoryException;
+//
+//		public HashMap<Integer, Order> getOrders();
+//
+//		public int getHighestId();
+		
+		shopService = new ShopService(cR, pR, oR);
+	}
+
 	//  Skapa en ny användare
 	@Test
-	public void canCreateCustomer()
+	public void canAddCustomer()
 	{
+		Customer testCustomer = new Customer("kero", "dreamhack",
+				"dsv@su.se", "Kiran", "Arvidsson",
+				"Östgötagatan 5 Stockholm", "0706566556");
+
 		fail("unimplemented"); // TODO
 	}
 
