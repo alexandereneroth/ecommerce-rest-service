@@ -19,7 +19,7 @@ public class InMemoryOrderRepository implements OrderRepository
 //		{
 //			int orderId;//generated based on getHighestId()
 //			Order order = new Order(customer.getUsername(), customer.getShoppingCart());
-			orders.put(orderId, order);
+			orders.put(order.getId(), order);
 			// And clear the shoppingCart
 //			customer.getShoppingCart().clear();
 //		}
