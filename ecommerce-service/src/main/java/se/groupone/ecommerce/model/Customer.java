@@ -6,21 +6,22 @@ public final class Customer
 {
 	private final String username;
 	private String password,
-			email,
-			firstName,
-			lastName,
-			address,
-			mobileNumber;
+				   email,
+				   firstName,
+				   lastName,
+				   address,
+				   phoneNumber;
 	private ShoppingCart shoppingCart = new ShoppingCart();
 
 	public Customer(
-			String username,
-			String password,
-			String email,
-			String firstName,
-			String lastName,
-			String address,
-			String mobileNumber)
+					String username,
+					String password,
+					String email,
+					String firstName,
+					String lastName,
+					String address,
+					String phoneNumber
+					)
 	{
 		this.username = username;
 		this.password = password;
@@ -28,7 +29,7 @@ public final class Customer
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
-		this.mobileNumber = mobileNumber;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public void addProduct(int productId)
@@ -84,14 +85,14 @@ public final class Customer
 		this.address = address;
 	}
 
-	public String getMobileNumber()
+	public String getPhoneNumber()
 	{
-		return mobileNumber;
+		return phoneNumber;
 	}
 
-	public void setMobileNumber(String mobileNumber)
+	public void setMobileNumber(String phoneNumber)
 	{
-		this.mobileNumber = mobileNumber;
+		this.phoneNumber = phoneNumber;
 	}
 
 	@Override
@@ -141,7 +142,7 @@ public final class Customer
 					&& this.getFirstName().equals(cu.getFirstName())
 					&& this.getLastName().equals(cu.getLastName())
 					&& this.getAddress().equals(cu.getAddress())
-					&& this.getMobileNumber().equals(cu.getMobileNumber()))
+					&& this.getPhoneNumber().equals(cu.getPhoneNumber()))
 			{
 				return true;
 			}

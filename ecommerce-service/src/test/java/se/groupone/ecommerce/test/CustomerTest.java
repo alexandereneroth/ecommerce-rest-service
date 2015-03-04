@@ -20,7 +20,7 @@ public class CustomerTest
 		assertEquals(cu.getFirstName(), "Erik");
 		assertEquals(cu.getLastName(), "Welander");
 		assertEquals(cu.getAddress(), "Tersv");
-		assertEquals(cu.getMobileNumber(), "073");
+		assertEquals(cu.getPhoneNumber(), "073");
 		assertEquals(cu.toString(), "Erik Welander");
 	}
 
@@ -39,7 +39,7 @@ public class CustomerTest
 		assertEquals(cu.getFirstName(), "Stefan");
 		assertEquals(cu.getLastName(), "De Geer");
 		assertEquals(cu.getAddress(), "SommarBo 228");
-		assertEquals(cu.getMobileNumber(), "0768646474");
+		assertEquals(cu.getPhoneNumber(), "0768646474");
 	}
 
 	@Test

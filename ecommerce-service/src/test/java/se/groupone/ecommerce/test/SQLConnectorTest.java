@@ -9,7 +9,7 @@
 //
 //public class SQLConnectorTest
 //{
-//	private final String host = "10.0.0.1";
+//	private final String host = "home.erikwelander.se";
 //	private final String port = "3939";
 //	private final String username = "ecom";
 //	private final String password = "wearetheone";
