@@ -5,8 +5,8 @@ import org.hamcrest.core.IsInstanceOf;
 
 public final class Customer
 {
-    private String username,
-    			   		 password,
+	private final String username;
+    private String 		 password,
     			   		 email,
     			   		 firstName,
     			   		 lastName,
