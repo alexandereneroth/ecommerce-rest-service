@@ -2,7 +2,8 @@ package se.groupone.ecommerce.model;
 
 public class Product
 {
-	private String title, category, baker, description, img;
+	private final String title;
+	private String category, baker, description, img;
 	private int quantity;
 	private double price;
 
@@ -21,11 +22,6 @@ public class Product
 		this.img = img;
 		this.price = price;
 		this.quantity = quantity;
-	}
-
-	public void setTitle(String title)
-	{
-		this.title = title;
 	}
 
 	public void setCategory(String category)
