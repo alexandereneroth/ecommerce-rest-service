@@ -1,19 +1,24 @@
 package se.groupone.ecommerce.webservice;
 
-import se.groupone.ecommerce.repository.memory.InMemoryCustomerRepository;
-import se.groupone.ecommerce.repository.memory.InMemoryOrderRepository;
-import se.groupone.ecommerce.repository.memory.InMemoryProductRepository;
+import se.groupone.ecommerce.model.Customer;
+
 import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import java.net.URI;
 
 // Hämta en användare med ett visst id
 //
@@ -36,40 +41,35 @@ import javax.ws.rs.core.Response;
 // Ta bort en order för en användare
 
 @Path("customer")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class CustomerService
 {
-	
+
 	@Context
 	private ServletContext context;
-	private static ShopService shopService;
+	@Context
+	private UriInfo uriInfo;
 	
-	static
-	{
-//		shopService = (ShopService) context.getAttribute("shopservice");
-		ShopService shopService = new ShopService(new InMemoryCustomerRepository(), 
-				new InMemoryProductRepository(), new InMemoryOrderRepository());
-		System.out.println("in static constructor");
-	}
-	
-	@GET
-	public Response getCustomer()
-	{
-		System.out.println(shopService);
-		return Response.ok("hello").build();
-	}
+	private ShopService ss;
 
 	@GET
 	@Path("{username}")
 	public Response getCustomer(@PathParam("username") final String username)
 	{
-		
-		throw new RuntimeException("unimplemented");// TODO
+		ss = (ShopService) context.getAttribute("ss");
+		Customer customer = ss.getCustomer(username);
+		return Response.ok(customer).build();
 	}
 
 	@POST
-	public Response postCustomer()
+	public Response createCustomer(Customer customer)
 	{
-		throw new RuntimeException("unimplemented");// TODO
+		ss = (ShopService) context.getAttribute("ss");
+		ss.addCustomer(customer);
+		
+		final URI location = uriInfo.getAbsolutePathBuilder().path(customer.getUsername()).build();
+		return Response.created(location).build();
 	}
 
 	@PUT

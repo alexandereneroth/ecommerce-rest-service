@@ -12,7 +12,7 @@ public interface ProductRepository
 
 	public Product getProduct(int id) throws RepositoryException;
 
-	public HashMap<Integer, Product> getProducts();
+	public HashMap<Integer, Product> getProducts() throws RepositoryException;
 
 	public void removeProduct(int id) throws RepositoryException;
 
@@ -22,6 +22,6 @@ public interface ProductRepository
 	
 	public void increaseQuantityOfProductsByOne(List<Integer> ids) throws RepositoryException;;
 	
-	public int getHighestId();
+	public int getHighestId() throws RepositoryException;
 
 }

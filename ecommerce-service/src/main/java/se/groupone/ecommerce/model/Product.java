@@ -106,4 +106,29 @@ public class Product
 				", baker=" + manufacturer + ", description=" + description +
 				", img=" + img + ", price=" + price + ", quantity=" + quantity + "]";
 	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other == this)
+		{
+			return true;
+		}
+		if (other instanceof Product)
+		{
+			Product p = (Product) other;
+			if (this.getId() == p.getId()
+				&& this.getTitle().equals(p.getTitle())
+				&& this.getCategory().equals(p.getCategory())
+				&& this.getManufacturer().equals(p.getManufacturer())
+				&& this.getDescription().equals(p.getDescription())
+				&& this.getImg().equals(p.getImg())
+				&& this.getPrice() == p.getPrice()
+				&& this.getQuantity() == p.getQuantity())
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

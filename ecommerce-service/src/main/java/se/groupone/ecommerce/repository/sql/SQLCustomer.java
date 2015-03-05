@@ -12,40 +12,20 @@ import java.util.HashMap;
 public final class SQLCustomer implements CustomerRepository
 {
 	private final SQLConnector sql;
-	private final String dbName;
-	private final String dbTable;
+	private final String dbName = "ecomm";
+	private final String dbTable = "customer";
 
 	public SQLCustomer() throws RepositoryException
 	{
-		final String host = "home.erikwelander.se";
-		final String port = "3939";
-		final String username = "ecom";
-		final String password = "wearetheone";
-		dbName = "ecomm";
-		dbTable = "customer";
-		
 		try
 		{
-			sql = new SQLConnector(host, port, username, password, dbName);
-			sql.connect();
+			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, dbName);
 		}
 		catch(SQLException e)
 		{
-			throw new RepositoryException("Could not construct SQLCustomer", e);
+			throw new RepositoryException("Could not construct SQLCustomer: Could not construct database object", e);
 		}
 
-	}
-
-	protected void finalize() throws RepositoryException
-	{
-		try
-		{
-			sql.disconnect();
-		}
-		catch(SQLException e)
-		{
-			throw new RepositoryException("FINALIZE: Could not disconnect from database during object destruction!", e);
-		}
 	}
 	
 	@Override
@@ -61,10 +41,9 @@ public final class SQLCustomer implements CustomerRepository
 		builder.append("'" + customer.getLastName() + "', ");
 		builder.append("'" + customer.getAddress() + "', ");
 		builder.append("'" + customer.getPhoneNumber() + "');");
-		
 		try
 		{
-			sql.query(builder.toString());			
+			sql.query(builder.toString());
 		}
 		catch(SQLException e)
 		{
@@ -95,13 +74,15 @@ public final class SQLCustomer implements CustomerRepository
 		
 		try
 		{
-			return new Customer(rs.getString("user_name"),
-								rs.getString("password"),
-								rs.getString("email"),
-								rs.getString("first_name"),
-								rs.getString("last_name"),
-								rs.getString("address"),
-								rs.getString("phone"));
+			Customer customer = new Customer(rs.getString("user_name"),
+											 rs.getString("password"),
+											 rs.getString("email"),
+											 rs.getString("first_name"),
+											 rs.getString("last_name"),
+											 rs.getString("address"),
+											 rs.getString("phone"));
+			rs.close();
+			return customer;
 		}
 		catch(SQLException e)
 		{
@@ -129,12 +110,12 @@ public final class SQLCustomer implements CustomerRepository
 		
 		try
 		{
-			final String fetchAllUsersQuery = "SELECT * FROM "+dbName+"."+dbTable+";";
-			rs = sql.queryResult(fetchAllUsersQuery);
+			final String fetchAllQuery = "SELECT * FROM "+dbName+"."+dbTable+";";
+			rs = sql.queryResult(fetchAllQuery);
 		}
 		catch(SQLException e)
 		{
-			throw new RepositoryException("Could not fetch all users from database!", e);
+			throw new RepositoryException("Could not fetch all Customers from database!", e);
 		}
 		
 		try
@@ -152,6 +133,7 @@ public final class SQLCustomer implements CustomerRepository
 										   rs.getString("phone"));
 				customerList.put(cu.getUsername(), cu);
 			}
+			rs.close();
 			return customerList;
 		}
 		catch(SQLException e)
@@ -187,22 +169,14 @@ public final class SQLCustomer implements CustomerRepository
 	@Override
 	public void removeCustomer(final String username) throws RepositoryException
 	{
-		if (getCustomer(username) != null)
+		final String removeQuery = "DELETE FROM " + dbName + "." + dbTable + " WHERE user_name = '" + username + "';";
+		try
 		{
-			final String removeQuery = "DELETE FROM " + dbName + "." + dbTable + " WHERE user_name = '" + username + "';";
-			try
-			{
-				sql.query(removeQuery);
-			}
-			catch(SQLException e)
-			{
-				throw new RepositoryException("Could not query removal of Customer!", e);
-			}
-			
-			if (getCustomer(username) != null)
-			{
-				throw new RepositoryException("Queried removal of Customer, but Customer still exists??");
-			}
+			sql.query(removeQuery);
+		}
+		catch(SQLException e)
+		{
+			throw new RepositoryException("Could not query removal of Customer!", e);
 		}
 	}
 }
