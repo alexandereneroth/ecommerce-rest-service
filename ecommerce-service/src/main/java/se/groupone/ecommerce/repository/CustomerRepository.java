@@ -16,6 +16,4 @@ public interface CustomerRepository
 	public void updateCustomer(Customer customer) throws RepositoryException;
 
 	public void removeCustomer(String username) throws RepositoryException;
-
-	public int getHighestId();
 }
