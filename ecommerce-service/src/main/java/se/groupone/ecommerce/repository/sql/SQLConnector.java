@@ -17,7 +17,6 @@ public final class SQLConnector
 
 	private Connection con;
 	private Statement statement;
-	private ResultSet rs;
 
 	public SQLConnector(final String host,
 						final String port,
@@ -30,7 +29,7 @@ public final class SQLConnector
 		this.username = username;
 		this.password = password;
 		this.database = database;
-
+		
 		try
 		{
 			Class.forName(sqlDriver);
@@ -39,9 +38,15 @@ public final class SQLConnector
 		{
 			throw new SQLException("Could not load database driver: " + e.getMessage());
 		}
+		connect();
 	}
 
-	public void connect() throws SQLException
+	protected void finalize() throws SQLException
+	{
+		disconnect();
+	}
+	
+	private void connect() throws SQLException
 	{
 		try
 		{
@@ -54,10 +59,11 @@ public final class SQLConnector
 		}
 	}
 
-	public void disconnect() throws SQLException
+	private void disconnect() throws SQLException
 	{
 		try
 		{
+			statement.close();
 			con.close();
 		}
 		catch (SQLException e)
@@ -70,7 +76,8 @@ public final class SQLConnector
 	{
 		try
 		{
-			return statement.executeQuery(query);
+			ResultSet rs = statement.executeQuery(query);
+			return rs;
 		}
 		catch (SQLException e)
 		{

@@ -1,3 +1,4 @@
+
 package se.groupone.ecommerce.service;
 
 import se.groupone.ecommerce.exception.ShopServiceException;
@@ -24,7 +25,7 @@ public class ShopService
 	private final AtomicInteger productIDGenerator;
 	private final AtomicInteger orderIDGenerator;
 
-	public ShopService(CustomerRepository cR, ProductRepository pR, OrderRepository oR)
+	public ShopService(CustomerRepository cR, ProductRepository pR, OrderRepository oR) throws RepositoryException
 	{
 		this.cR = cR;
 		this.pR = pR;
@@ -86,7 +87,7 @@ public class ShopService
 		}
 	}
 
-	public HashMap<Integer, Product> getProducts()
+	public HashMap<Integer, Product> getProducts() throws RepositoryException
 	{
 		return pR.getProducts();
 	}
