@@ -20,7 +20,7 @@ public class CustomerTest
 		assertEquals(cu.getFirstName(), "Erik");
 		assertEquals(cu.getLastName(), "Welander");
 		assertEquals(cu.getAddress(), "Tersv");
-		assertEquals(cu.getMobileNumber(), "073");
+		assertEquals(cu.getPhoneNumber(), "073");
 		assertEquals(cu.toString(), "Erik Welander");
 	}
 
@@ -39,7 +39,7 @@ public class CustomerTest
 		assertEquals(cu.getFirstName(), "Stefan");
 		assertEquals(cu.getLastName(), "De Geer");
 		assertEquals(cu.getAddress(), "SommarBo 228");
-		assertEquals(cu.getMobileNumber(), "0768646474");
+		assertEquals(cu.getPhoneNumber(), "0768646474");
 	}
 
 	@Test
@@ -47,15 +47,18 @@ public class CustomerTest
 	{
 		final int dummyProductId1 = 0;
 		final int dummyProductId2 = 1;
-		Product product1 = new Product(dummyProductId1, "Klassisk pannkaka", "Pannkakor", "Stefan", "Vår klassiska och mycket utsökta pannkaka", "klassiskPannkaka.png", 10.90, 10);
+		
+		Product product1 = new Product(dummyProductId1, new ProductParameters("Klassisk pannkaka", "Pannkakor", "Stefan", "Vår klassiska och mycket utsökta pannkaka", "klassiskPannkaka.png", 10.90, 10));
 		cu.addProduct(product1.getId());
 
 		ArrayList<Integer> customerCart = cu.getShoppingCart();
 		assertEquals((int)customerCart.get(0), product1.getId());
 		assertEquals(customerCart.size(), 1);
 
-		Product product2 = new Product(dummyProductId2, "Amerikansk pannkaka", "Pannkakor", "Erik", "En lite tjockare men mycket god pannkaka som passar till sirap", "amerikanskPannkaka.png",
-				13.90, 10);
+		Product product2 = new Product(dummyProductId2, new ProductParameters("Amerikansk pannkaka", "Pannkakor", "Erik", "En lite tjockare men mycket god pannkaka som passar till sirap", "amerikanskPannkaka.png",
+				13.90, 10));
+		
+		cu.addProduct(product1.getId());
 		cu.addProduct(product2.getId());
 
 		assertEquals((int)customerCart.get(1), product2.getId());

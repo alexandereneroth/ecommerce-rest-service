@@ -11,6 +11,7 @@ import se.groupone.ecommerce.repository.CustomerRepository;
 import se.groupone.ecommerce.repository.OrderRepository;
 import se.groupone.ecommerce.repository.ProductRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -161,7 +162,7 @@ public class ShopService
 		}
 	}
 
-	public void addOrder(OrderParameters order)
+	public void createOrder(String customerUsername, ArrayList<Integer> orderedProductIds)
 	{
 		try
 		{
@@ -177,7 +178,7 @@ public class ShopService
 			
 			// TODO Decrease of quantity of product in product repository needs to
 			// happen in a transaction
-			oR.addOrder(order);
+			oR.addOrder(new Order(getNextOrderId(), customerUsername, orderedProductIds));
 		}
 		catch (RepositoryException e)
 		{
