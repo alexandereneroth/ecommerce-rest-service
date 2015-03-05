@@ -32,14 +32,19 @@ public final class Customer
 		this.phoneNumber = phoneNumber;
 	}
 
-	public void addProduct(int productId)
+	public void addProductToShoppingCart(int productId)
 	{
 		shoppingCart.addProduct(productId);
 	}
 
-	public void removeProduct(int productId) throws ModelException
+	public void removeProductFromShoppingCart(int productId) throws ModelException
 	{
 		shoppingCart.removeProduct(productId);
+	}
+	
+	public void removeProductsWithIdFromShoppingCart(int productId) throws ModelException
+	{
+		shoppingCart.removeAllProductsWithId(productId);
 	}
 
 	public ArrayList<Integer> getShoppingCart()

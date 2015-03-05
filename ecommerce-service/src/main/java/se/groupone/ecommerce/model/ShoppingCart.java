@@ -1,6 +1,7 @@
 package se.groupone.ecommerce.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ShoppingCart
 {
@@ -11,13 +12,23 @@ public class ShoppingCart
 		productIds.add(product);
 	}
 
-	// The argument needs to be an object,
-	// otherwise remove removes at the index of the int.
-	public void removeProduct(Integer product) throws ModelException
+	public void removeProduct(Integer productId) throws ModelException
 	{
-		if (productIds.contains(product))
+		if (productIds.contains(productId))
 		{
-			productIds.remove(product);
+			productIds.remove(productId);
+		}
+		else
+		{
+			throw new ModelException("Cannot remove product from cart: product does not exist.");
+		}
+	}
+
+	public void removeAllProductsWithId(Integer productId) throws ModelException
+	{
+		if (productIds.contains(productId))
+		{
+			productIds.removeAll(Collections.singleton(productId));
 		}
 		else
 		{
