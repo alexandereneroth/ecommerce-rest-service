@@ -69,7 +69,7 @@ public class Product
 		return category;
 	}
 
-	public String getBaker()
+	public String getManufacturer()
 	{
 		return manufacturer;
 	}

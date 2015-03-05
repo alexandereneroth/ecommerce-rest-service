@@ -5,6 +5,7 @@ import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.repository.ProductRepository;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryProductRepository implements ProductRepository
 {
@@ -54,5 +55,19 @@ public class InMemoryProductRepository implements ProductRepository
 	public int getHighestId()
 	{
 		return 0;
+	}
+
+	@Override
+	public void decreaseQuantityOfProductsByOne(List<Integer> ids)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void increaseQuantityOfProductsByOne(List<Integer> ids)
+			throws RepositoryException {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,3 +1,4 @@
+/*
 package se.groupone.ecommerce.test;
 import static org.junit.Assert.*;
 
@@ -95,12 +96,13 @@ public class SQLCustomerTest
 		sqlcu.getCustomer(cu2.getUsername());
 	}
 	
-	/*
-	@Test
-	public void removeAllCustomers() throws RepositoryException
-	{
-		SQLCustomer sqlcu = new SQLCustomer();
-		sqlcu.removeCustomer("*");
-	}
-	*/
+	
+	//@Test
+	//public void removeAllCustomers() throws RepositoryException
+	//{
+	//	SQLCustomer sqlcu = new SQLCustomer();
+	//	sqlcu.removeCustomer("*");
+	//}
+	
 }
+*/
