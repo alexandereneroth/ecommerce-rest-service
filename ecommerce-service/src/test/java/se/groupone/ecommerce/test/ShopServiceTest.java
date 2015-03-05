@@ -134,7 +134,7 @@ public class ShopServiceTest
 	}
 
 	@Test
-	public void shopServiceTest()
+	public void shopServiceTest() throws RepositoryException
 	{
 		verify(pR, times(1)).getHighestId();
 		verify(oR, times(1)).getHighestId();
@@ -172,7 +172,7 @@ public class ShopServiceTest
 	}
 
 	@Test
-	public void testGetProducts()
+	public void testGetProducts() throws RepositoryException
 	{
 		HashMap<Integer, Product> products = shopService.getProducts();
 

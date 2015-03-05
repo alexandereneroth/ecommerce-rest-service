@@ -1,4 +1,3 @@
-
 package se.groupone.ecommerce.service;
 
 import se.groupone.ecommerce.exception.ShopServiceException;
@@ -25,14 +24,20 @@ public class ShopService
 	private final AtomicInteger productIDGenerator;
 	private final AtomicInteger orderIDGenerator;
 
-	public ShopService(CustomerRepository cR, ProductRepository pR, OrderRepository oR) throws RepositoryException
+	public ShopService(CustomerRepository cR, ProductRepository pR, OrderRepository oR)
 	{
 		this.cR = cR;
 		this.pR = pR;
 		this.oR = oR;
-
-		productIDGenerator = new AtomicInteger(pR.getHighestId());
-		orderIDGenerator = new AtomicInteger(oR.getHighestId());
+		try
+		{
+			productIDGenerator = new AtomicInteger(pR.getHighestId());
+			orderIDGenerator = new AtomicInteger(oR.getHighestId());
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not instantiate ShopService.", e);
+		}
 	}
 
 	public void addProduct(ProductParameters product)
@@ -86,9 +91,16 @@ public class ShopService
 		}
 	}
 
-	public HashMap<Integer, Product> getProducts() throws RepositoryException
+	public HashMap<Integer, Product> getProducts()
 	{
-		return pR.getProducts();
+		try
+		{
+			return pR.getProducts();
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not get products.", e);
+		}
 	}
 
 	public void removeProduct(int productId)
