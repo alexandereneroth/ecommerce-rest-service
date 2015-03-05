@@ -24,11 +24,18 @@ public class ShoppingCart
 		}
 	}
 
-	public void removeAllProductsWithId(Integer productId) throws ModelException
+	/**
+	 * Removes all products with the specified id from this shopping cart.
+	 * 
+	 * @param productId
+	 * @return true if a product was removed
+	 * @throws ModelException
+	 */
+	public boolean removeAllProductsWithId(Integer productId) throws ModelException
 	{
 		if (productIds.contains(productId))
 		{
-			productIds.removeAll(Collections.singleton(productId));
+			return productIds.removeAll(Collections.singleton(productId));
 		}
 		else
 		{

@@ -6,22 +6,21 @@ public final class Customer
 {
 	private final String username;
 	private String password,
-				   email,
-				   firstName,
-				   lastName,
-				   address,
-				   phoneNumber;
+			email,
+			firstName,
+			lastName,
+			address,
+			phoneNumber;
 	private ShoppingCart shoppingCart = new ShoppingCart();
 
 	public Customer(
-					String username,
-					String password,
-					String email,
-					String firstName,
-					String lastName,
-					String address,
-					String phoneNumber
-					)
+			String username,
+			String password,
+			String email,
+			String firstName,
+			String lastName,
+			String address,
+			String phoneNumber)
 	{
 		this.username = username;
 		this.password = password;
@@ -41,10 +40,18 @@ public final class Customer
 	{
 		shoppingCart.removeProduct(productId);
 	}
-	
-	public void removeProductsWithIdFromShoppingCart(int productId) throws ModelException
+
+	/**
+	 * Removes all products of the specified id from this customers shopping
+	 * cart.
+	 * 
+	 * @param productId
+	 * @return true if a product was removed from this customer.
+	 * @throws ModelException
+	 */
+	public boolean removeProductsWithIdFromShoppingCart(int productId) throws ModelException
 	{
-		shoppingCart.removeAllProductsWithId(productId);
+		return shoppingCart.removeAllProductsWithId(productId);
 	}
 
 	public ArrayList<Integer> getShoppingCart()

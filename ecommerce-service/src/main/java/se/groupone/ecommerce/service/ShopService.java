@@ -96,9 +96,12 @@ public class ShopService
 		{
 			for (Customer c : cR.getCustomers().values())
 			{
-				c.removeProductsWithIdFromShoppingCart(productId);
+				boolean aProductWasRemoved = c.removeProductsWithIdFromShoppingCart(productId);
+				if (aProductWasRemoved)
+				{
+					updateCustomer(c);
+				}
 			}
-			
 			pR.removeProduct(productId);
 		}
 		catch (RepositoryException | ModelException e)
@@ -107,11 +110,11 @@ public class ShopService
 		}
 	}
 
-	public void updateProduct(int productId, Product product)
+	public void updateProduct(int productId, ProductParameters productParams)
 	{
 		try
 		{
-			pR.updateProduct(product);
+			pR.updateProduct(new Product(productId, productParams));
 		}
 		catch (RepositoryException e)
 		{
