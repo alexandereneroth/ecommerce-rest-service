@@ -1,25 +1,19 @@
 package se.groupone.ecommerce.webservice;
 
-import static org.junit.Assert.assertTrue;
+import se.groupone.ecommerce.repository.memory.InMemoryCustomerRepository;
+import se.groupone.ecommerce.repository.memory.InMemoryOrderRepository;
+import se.groupone.ecommerce.repository.memory.InMemoryProductRepository;
+import se.groupone.ecommerce.service.ShopService;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import javax.servlet.ServletContext;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-
-import org.junit.Test;
 
 // Hämta en användare med ett visst id
 //
@@ -45,6 +39,25 @@ import org.junit.Test;
 public class CustomerService
 {
 	
+	@Context
+	private ServletContext context;
+	private static ShopService shopService;
+	
+	static
+	{
+//		shopService = (ShopService) context.getAttribute("shopservice");
+		ShopService shopService = new ShopService(new InMemoryCustomerRepository(), 
+				new InMemoryProductRepository(), new InMemoryOrderRepository());
+		System.out.println("in static constructor");
+	}
+	
+	@GET
+	public Response getCustomer()
+	{
+		System.out.println(shopService);
+		return Response.ok("hello").build();
+	}
+
 	@GET
 	@Path("{username}")
 	public Response getCustomer(@PathParam("username") final String username)
