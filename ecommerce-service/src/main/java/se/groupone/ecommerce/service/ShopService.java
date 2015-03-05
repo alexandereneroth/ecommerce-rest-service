@@ -33,7 +33,7 @@ public class ShopService
 		productIDGenerator = new AtomicInteger(pR.getHighestId());
 		orderIDGenerator = new AtomicInteger(oR.getHighestId());
 	}
-	
+
 	public void addProduct(ProductParameters product)
 	{
 		try
@@ -46,21 +46,26 @@ public class ShopService
 		}
 	}
 
-	public void addProductToCustomer(int productId, String username)
+	public void addProductToCustomer(int productId, String customerUsername)
 	{
-		addProductToCustomer(productId, username, 1);
+		addProductToCustomer(productId, customerUsername, 1);
 	}
 
-	public void addProductToCustomer(int productId, String username, int amount)
+	public void addProductToCustomer(int productId, String customerUsername, int amount)
 	{
 		try
 		{
 			if (pR.getProduct(productId).getQuantity() >= amount)
 			{
+				Customer customer = cR.getCustomer(customerUsername);
+
 				for (int i = 0; i < amount; i++)
 				{
-					cR.getCustomer(username).addProduct(productId);
+					customer.addProduct(productId);
 				}
+
+				// Make the repository record the changes to customer
+				cR.updateCustomer(customer);
 			}
 		}
 		catch (RepositoryException e)
@@ -93,7 +98,7 @@ public class ShopService
 			for (Customer c : cR.getCustomers().values())
 			{
 				c.removeProduct(title);
-			}
+			}// TODO
 			pR.removeProduct(title);
 		}
 		catch (RepositoryException | ModelException e)
@@ -102,7 +107,7 @@ public class ShopService
 		}
 	}
 
-	public void updateProduct(Product product)
+	public void updateProduct(int productId, Product product)
 	{
 		try
 		{
@@ -126,11 +131,11 @@ public class ShopService
 		}
 	}
 
-	public Customer getCustomer(String username)
+	public Customer getCustomer(String customerUsername)
 	{
 		try
 		{
-			return cR.getCustomer(username);
+			return cR.getCustomer(customerUsername);
 		}
 		catch (RepositoryException e)
 		{
@@ -150,11 +155,11 @@ public class ShopService
 		}
 	}
 
-	public void removeCustomer(String username)
+	public void removeCustomer(String customerUsername)
 	{
 		try
 		{
-			cR.removeCustomer(username);
+			cR.removeCustomer(customerUsername);
 		}
 		catch (RepositoryException e)
 		{
@@ -162,27 +167,43 @@ public class ShopService
 		}
 	}
 
-	public void createOrder(String customerUsername, ArrayList<Integer> orderedProductIds)
+	public void createOrder(String customerUsername)
 	{
 		try
 		{
-			/*
-			// Decreases the product quantity for each ordered item
-			for (Integer productId : order.getProductIds())
+			Customer customer = cR.getCustomer(customerUsername);
+			ArrayList<Integer> orderedProductIds = customer.getShoppingCart();
+
+			// decrease stock quantity of products in product repository
+			pR.decreaseQuantityOfProductsByOne(orderedProductIds);
+			try
 			{
-				Product productToBeUpdated = pR.getProduct(productId);
-				productToBeUpdated.decreaseQuantity(1);
-				pR.updateProduct(productToBeUpdated);
+				// place a order containing the products removed from stock
+				int orderId = getNextOrderId();
+				oR.addOrder(new Order(orderId, customerUsername, orderedProductIds));
+				try
+				{
+					// clear the customers shopping cart
+					customer.getShoppingCart().clear();
+					cR.updateCustomer(customer);
+				}
+				catch (RepositoryException e)
+				{
+					// FIXME Problem: om det går fel med återställningen i catch
+					// satserna, blir det fel i repot
+					oR.removeOrder(orderId);
+					throw e;
+				}
 			}
-			*/
-			
-			// TODO Decrease of quantity of product in product repository needs to
-			// happen in a transaction
-			oR.addOrder(new Order(getNextOrderId(), customerUsername, orderedProductIds));
+			catch (RepositoryException e)
+			{
+				pR.increaseQuantityOfProductsByOne(orderedProductIds);
+				throw e;
+			}
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not add order.", e);
+			throw new ShopServiceException("Could not create order.", e);
 		}
 	}
 
@@ -200,7 +221,7 @@ public class ShopService
 
 	public HashMap<Integer, Order> getOrders()
 	{
-			return oR.getOrders();
+		return oR.getOrders();
 	}
 
 	private int getNextProductId()

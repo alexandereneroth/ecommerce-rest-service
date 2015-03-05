@@ -10,6 +10,8 @@ public interface OrderRepository
 	public void addOrder(Order order) throws RepositoryException;
 
 	public Order getOrder(int id) throws RepositoryException;
+	
+	public void removeOrder(int id) throws RepositoryException;
 
 	public HashMap<Integer, Order> getOrders();
 

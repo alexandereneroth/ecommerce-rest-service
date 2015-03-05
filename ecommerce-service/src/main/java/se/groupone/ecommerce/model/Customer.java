@@ -13,8 +13,7 @@ public final class Customer
 			mobileNumber;
 	private ShoppingCart shoppingCart = new ShoppingCart();
 
-	public Customer(
-			String username,
+	public Customer(int	id, String username,
 			String password,
 			String email,
 			String firstName,
