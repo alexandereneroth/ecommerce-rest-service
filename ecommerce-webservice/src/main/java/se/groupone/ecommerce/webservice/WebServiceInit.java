@@ -1,5 +1,7 @@
 package se.groupone.ecommerce.webservice;
 
+import se.groupone.ecommerce.model.Customer;
+
 import se.groupone.ecommerce.repository.memory.InMemoryCustomerRepository;
 import se.groupone.ecommerce.repository.memory.InMemoryOrderRepository;
 import se.groupone.ecommerce.repository.memory.InMemoryProductRepository;
@@ -15,9 +17,12 @@ public class WebServiceInit implements ServletContextListener
 	@Override
 	public void contextInitialized(ServletContextEvent sce)
 	{
-		ShopService shopService = new ShopService(new InMemoryCustomerRepository(), 
+		ShopService ss = new ShopService(new InMemoryCustomerRepository(), 
 				new InMemoryProductRepository(), new InMemoryOrderRepository());
-		sce.getServletContext().setAttribute("ss", shopService);
+		sce.getServletContext().setAttribute("ss", ss);
+		
+		// add some dummy data for InMemoryRepo
+		ss.addCustomer(new Customer("tom", "password", "email@email.com", "Tomcat", "Blackmore", "C3LStreet", "123456"));
 	}
 
 	@Override
