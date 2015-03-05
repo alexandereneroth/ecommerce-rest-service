@@ -10,20 +10,20 @@ public final class SQLConnector
 {
 	private final String sqlDriver = "com.mysql.jdbc.Driver";
 	private final String host,
-			port,
-			username,
-			password,
-			database;
+						 port,
+						 username,
+						 password,
+						 database;
 
 	private Connection con;
 	private Statement statement;
 	private ResultSet rs;
 
 	public SQLConnector(final String host,
-			final String port,
-			final String username,
-			final String password,
-			final String database)
+						final String port,
+						final String username,
+						final String password,
+						final String database) throws SQLException
 	{
 		this.host = host;
 		this.port = port;
@@ -37,40 +37,36 @@ public final class SQLConnector
 		}
 		catch (ClassNotFoundException e)
 		{
-			System.err.println("Could not load database driver: " + e.getMessage());
+			throw new SQLException("Could not load database driver: " + e.getMessage());
 		}
 	}
 
-	public boolean connect()
+	public void connect() throws SQLException
 	{
 		try
 		{
 			con = DriverManager.getConnection("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
 			statement = con.createStatement();
-			return true;
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Could not connect to database: " + e.getMessage());
-			return false;
+			throw new SQLException("Could not connect to database: " + e.getMessage());
 		}
 	}
 
-	public boolean disconnect()
+	public void disconnect() throws SQLException
 	{
 		try
 		{
 			con.close();
-			return true;
 		}
 		catch (SQLException e)
 		{
-			System.err.println(e.getMessage());
-			return false;
+			throw new SQLException("Could not disconnect from database: " + e.getMessage());
 		}
 	}
 
-	public ResultSet queryResult(final String query)
+	public ResultSet queryResult(final String query) throws SQLException
 	{
 		try
 		{
@@ -78,22 +74,19 @@ public final class SQLConnector
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Error performing query: " + e.getMessage());
-			return null;
+			throw new SQLException("Error performing query: " + e.getMessage());
 		}
 	}
 
-	public boolean query(final String query)
+	public void query(final String query) throws SQLException
 	{
 		try
 		{
 			statement.execute(query);
-			return true;
 		}
 		catch (SQLException e)
 		{
-			System.err.println("Error performing query: " + e.getMessage());
-			return false;
+			throw new SQLException("Error performing query: " + e.getMessage());
 		}
 	}
 }

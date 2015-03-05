@@ -94,7 +94,7 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 			customerJson.add("firstName", new JsonPrimitive(customer.getFirstName()));
 			customerJson.add("lastName", new JsonPrimitive(customer.getLastName()));
 			customerJson.add("address", new JsonPrimitive(customer.getAddress()));
-			customerJson.add("mobileNumber", new JsonPrimitive(customer.getMobileNumber()));
+			customerJson.add("phoneNumber", new JsonPrimitive(customer.getPhoneNumber()));
 			
 			return customerJson;
 		}
@@ -103,15 +103,15 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 		public Customer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
 		{		
 			final JsonObject customerJson = json.getAsJsonObject();
-			final String userName = customerJson.get("username").getAsString();
+			final String username = customerJson.get("username").getAsString();
 			final String password = customerJson.get("password").getAsString();
 			final String email = customerJson.get("email").getAsString();
 			final String firstName = customerJson.get("firstName").getAsString();
 			final String lastName = customerJson.get("lastName").getAsString();
 			final String address = customerJson.get("address").getAsString();
-			final String mobileNumber = customerJson.get("mobileNumber").getAsString();
+			final String mobileNumber = customerJson.get("phoneNumber").getAsString();
 			
-			return new Customer(userName, password, email, firstName, lastName, address, mobileNumber );
+			return new Customer(username, password, email, firstName, lastName, address, mobileNumber );
 		}
 		
 	}

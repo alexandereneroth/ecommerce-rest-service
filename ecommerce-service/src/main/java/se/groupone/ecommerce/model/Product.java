@@ -19,11 +19,6 @@ public class Product
 		this.quantity = params.getQuantity();
 	}
 
-	public void setTitle(String title)
-	{
-		this.title = title;
-	}
-
 	public void setCategory(String category)
 	{
 		this.category = category;
