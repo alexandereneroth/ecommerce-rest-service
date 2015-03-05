@@ -52,7 +52,7 @@ public final class SQLCustomer implements CustomerRepository
 	public void addCustomer(final Customer customer) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("INSERT INTO " + dbTable + " ");
+		builder.append("INSERT INTO " + dbName + "." + dbTable + " ");
 		builder.append("(user_name, password, email, first_name, last_name, address, phone) ");
 		builder.append("VALUES('" + customer.getUsername() + "', ");
 		builder.append("'" + customer.getPassword() + "', ");
@@ -76,7 +76,7 @@ public final class SQLCustomer implements CustomerRepository
 	public Customer getCustomer(final String username) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT * FROM " + dbTable + " ");
+		builder.append("SELECT * FROM " + dbName+"."+dbTable + " ");
 		builder.append("WHERE user_name = '" + username + "';");
 		ResultSet rs;
 		try
@@ -120,7 +120,7 @@ public final class SQLCustomer implements CustomerRepository
 			final String numRowsQuery = "SELECT count(user_name) FROM "+dbName+"."+dbTable+";";
 			rs = sql.queryResult(numRowsQuery);
 			rs.next();
-			numRows = rs.getInt(0);
+			numRows = rs.getInt(1);
 		}
 		catch(SQLException e)
 		{
