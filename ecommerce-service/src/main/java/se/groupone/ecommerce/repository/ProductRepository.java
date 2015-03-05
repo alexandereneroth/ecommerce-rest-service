@@ -3,7 +3,6 @@ package se.groupone.ecommerce.repository;
 import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Product;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

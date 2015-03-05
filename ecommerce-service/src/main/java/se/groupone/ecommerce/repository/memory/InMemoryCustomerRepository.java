@@ -14,12 +14,11 @@ public class InMemoryCustomerRepository implements CustomerRepository
 	@Override
 	public void addCustomer(Customer customer) throws RepositoryException
 	{
-		if (!accounts.containsKey(customer.getUsername()))
+		if (accounts.containsKey(customer.getUsername()))
 		{
-			accounts.put(customer.getUsername(), customer);
-			return;
+			throw new RepositoryException("Could not add customer: customer already exists");
 		}
-		throw new RepositoryException("Could not add customer: customer already exists");
+		accounts.put(customer.getUsername(), customer);
 	}
 
 	@Override
@@ -32,10 +31,11 @@ public class InMemoryCustomerRepository implements CustomerRepository
 		throw new RepositoryException("Could not get customer: customer goes not exist");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public HashMap<String, Customer> getCustomers()
 	{
-		return accounts;
+		return (HashMap<String, Customer>) accounts.clone();
 	}
 
 	@Override
