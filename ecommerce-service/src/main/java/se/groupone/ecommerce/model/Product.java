@@ -54,6 +54,11 @@ public class Product
 		quantity -= decrease;
 	}
 	
+	public void increaseQuantity(int increase)
+	{
+		quantity += increase;
+	}
+	
 	public int getId()
 	{
 		return id;

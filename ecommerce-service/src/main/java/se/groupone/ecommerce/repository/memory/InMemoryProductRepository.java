@@ -15,12 +15,11 @@ public class InMemoryProductRepository implements ProductRepository
 	@Override
 	public void addProduct(Product product) throws RepositoryException
 	{
-		if (!products.containsKey(product.getId()))
+		if (products.containsKey(product.getId()))
 		{
-			products.put(product.getId(), product);
-			return;
+			throw new RepositoryException("Cannot get add: product with this id already exist in repository");
 		}
-		throw new RepositoryException("Cannot get add: product with this id already exist in repository");
+		products.put(product.getId(), product);
 	}
 
 	@Override
@@ -33,10 +32,11 @@ public class InMemoryProductRepository implements ProductRepository
 		throw new RepositoryException("Cannot get product: product with this id does not exist in repository");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public HashMap<Integer, Product> getProducts()
 	{
-		return products;
+		return (HashMap<Integer, Product>) products.clone();
 	}
 
 	@Override
@@ -60,14 +60,19 @@ public class InMemoryProductRepository implements ProductRepository
 	@Override
 	public void decreaseQuantityOfProductsByOne(List<Integer> ids)
 			throws RepositoryException {
-		// TODO Auto-generated method stub
-		
+		for(int productId : ids)
+		{
+			products.get(productId).decreaseQuantity(1);
+		}
 	}
 
 	@Override
 	public void increaseQuantityOfProductsByOne(List<Integer> ids)
 			throws RepositoryException {
-		// TODO Auto-generated method stub
+		for(int productId : ids)
+		{
+			products.get(productId).increaseQuantity(1);
+		}
 		
 	}
 }

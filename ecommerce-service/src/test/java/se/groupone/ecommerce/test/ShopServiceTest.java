@@ -1,5 +1,3 @@
-// Disabled because mvn install failure
-
 //package se.groupone.ecommerce.test;
 //
 //import static org.junit.Assert.*;

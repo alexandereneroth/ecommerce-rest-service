@@ -62,9 +62,8 @@ public class ShopService
 
 				for (int i = 0; i < amount; i++)
 				{
-					customer.addProduct(productId);
+					customer.addProductToShoppingCart(productId);
 				}
-
 				// Make the repository record the changes to customer
 				cR.updateCustomer(customer);
 			}
@@ -92,15 +91,16 @@ public class ShopService
 		return pR.getProducts();
 	}
 
-	public void removeProduct(int title)
+	public void removeProduct(int productId)
 	{
 		try
 		{
 			for (Customer c : cR.getCustomers().values())
 			{
-				c.removeProduct(title);
-			}// TODO
-			pR.removeProduct(title);
+				c.removeProductsWithIdFromShoppingCart(productId);
+			}
+			
+			pR.removeProduct(productId);
 		}
 		catch (RepositoryException | ModelException e)
 		{
