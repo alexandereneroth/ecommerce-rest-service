@@ -4,18 +4,22 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
 	id="WebApp_ID" version="3.1">
 
-    <servlet>
-        <servlet-name>ecom-webservice</servlet-name>
-        <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-        <init-param>
-            <param-name>jersey.config.server.provider.packages</param-name>
-            <param-value>se.groupone.ecommerce.webservice</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>ecom-webservice</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
+	<servlet>
+		<servlet-name>ecom-webservice</servlet-name>
+		<servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+		<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>se.groupone.ecommerce.webservice</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ecom-webservice</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	<listener>
+		<listener-class>se.groupone.ecommerce.webservice.WebServiceInit</listener-class>
+	</listener>
+
 
 </web-app>
