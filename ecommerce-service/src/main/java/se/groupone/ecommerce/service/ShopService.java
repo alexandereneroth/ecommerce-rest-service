@@ -96,7 +96,7 @@ public class ShopService
 		{
 			for (Customer c : cR.getCustomers().values())
 			{
-				c.removeAllProductsWithIdFromShoppingCart(productId);
+				c.removeProductsWithIdFromShoppingCart(productId);
 			}
 			
 			pR.removeProduct(productId);
