@@ -29,18 +29,10 @@ public class ShoppingCart
 	 * 
 	 * @param productId
 	 * @return true if a product was removed
-	 * @throws ModelException
 	 */
 	public boolean removeAllProductsWithId(Integer productId) throws ModelException
 	{
-		if (productIds.contains(productId))
-		{
-			return productIds.removeAll(Collections.singleton(productId));
-		}
-		else
-		{
-			throw new ModelException("Cannot remove product from cart: product does not exist.");
-		}
+		return productIds.removeAll(Collections.singleton(productId));
 	}
 
 	public ArrayList<Integer> getProductIds()
