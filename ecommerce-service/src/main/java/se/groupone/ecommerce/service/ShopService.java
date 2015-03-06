@@ -233,7 +233,6 @@ public class ShopService
 
 	public synchronized Order getOrder(int orderId)
 	{
-		System.out.println("In shopservice getOrder with ID: " + orderId);
 		try
 		{
 			Order order = oR.getOrder(orderId);
