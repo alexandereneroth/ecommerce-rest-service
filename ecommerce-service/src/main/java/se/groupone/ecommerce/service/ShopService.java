@@ -235,9 +235,11 @@ public class ShopService
 
 	public synchronized Order getOrder(int orderId)
 	{
+		System.out.println("In shopservice getOrder with ID: " + orderId);
 		try
 		{
-			return oR.getOrder(orderId);
+			Order order = oR.getOrder(orderId);
+			return order;
 		}
 		catch (RepositoryException e)
 		{
