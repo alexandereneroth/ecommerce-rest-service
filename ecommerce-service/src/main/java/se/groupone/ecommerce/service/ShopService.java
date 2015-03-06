@@ -244,9 +244,9 @@ public class ShopService
 		}
 	}
 
-	public synchronized List<Order> getOrders()
+	public synchronized List<Order> getOrders(String customerUsername)
 	{
-		return oR.getOrders();
+		return oR.getOrders(customerUsername);
 	}
 
 	private int getNextProductId()

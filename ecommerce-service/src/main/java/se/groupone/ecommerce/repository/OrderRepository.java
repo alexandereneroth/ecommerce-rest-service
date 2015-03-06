@@ -13,7 +13,7 @@ public interface OrderRepository
 	
 	public void removeOrder(int id) throws RepositoryException;
 
-	public List<Order> getOrders();
+	public List<Order> getOrders(String customerUsername);
 
 	public int getHighestId();
 }

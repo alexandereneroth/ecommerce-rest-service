@@ -42,10 +42,19 @@ public class InMemoryOrderRepository implements OrderRepository
 		throw new RepositoryException("Cannot get order: order does not exist in repository.");
 	}
 
+	// Get orders for a specific user
 	@Override
-	public List<Order> getOrders()
+	public List<Order> getOrders(String customerUsername)
 	{
-		return new ArrayList<Order>(orders.values());
+		ArrayList<Order> orderList = new ArrayList<Order>();
+		for (Order order : orders.values())
+		{
+			if (order.getUsername() == customerUsername)
+			{
+				orderList.add(order);
+			}
+		}
+		return orderList;
 	}
 
 	@Override
