@@ -26,44 +26,45 @@ public final class OrderService
 {
 	@Context
 	private ServletContext context;
-	private static ShopService ss;
-	
-//	@GET
-//	@Path("{username}")
-//	public Response getOrders(@PathParam("username") final String username )
-//	{
-//		ShopService ss = (ShopService) context.getAttribute("ss");
-//		ArrayList<Order> orderList;
-//		try
-//		{
-//			orderList = new ArrayList<Order>(ss.getOrders(username));
-//			System.out.println("Order list is empty: " + orderList.isEmpty());
-//			StringBuilder builder = new StringBuilder();
-//			for (Order order : orderList) {
-//				builder.append(order);
-//			}
-//			System.out.println(builder.toString());
-//			return Response.ok(builder.toString()).build();
-//		}
-//		catch (ShopServiceException e)
-//		{
-//			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-//		}
-//	}
+	private ShopService ss;
 	
 	@GET
-	@Path("{orderId}")
-	public Response getOrder(@PathParam("orderId") final int orderId )
+	@Path("{username}")
+	public Response getOrders(@PathParam("username") final String username )
 	{
+		ShopService ss = (ShopService) context.getAttribute("ss");
+		ArrayList<Order> orderList;
 		try
 		{
-			System.out.println("In OrderService getting order with ID: " + orderId);
-			Order order = ss.getOrder(orderId);
-			return Response.ok(order).build();
+			orderList = new ArrayList<Order>(ss.getOrders(username));
+			System.out.println("Order list is empty: " + orderList.isEmpty());
+			StringBuilder builder = new StringBuilder();
+			for (Order order : orderList) {
+				builder.append(order);
+			}
+			System.out.println(builder.toString());
+			return Response.ok(builder.toString()).build();
 		}
 		catch (ShopServiceException e)
 		{
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
+	
+//	@GET
+//	@Path("{orderId}")
+//	public Response getOrder(@PathParam("orderId") final int orderId )
+//	{
+//		ss = (ShopService) context.getAttribute("ss");
+//		try
+//		{
+//			System.out.println("In OrderService getting order with ID: " + orderId);
+//			Order order = ss.getOrder(orderId);
+//			return Response.ok(order).build();
+//		}
+//		catch (ShopServiceException e)
+//		{
+//			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+//		}
+//	}
 }

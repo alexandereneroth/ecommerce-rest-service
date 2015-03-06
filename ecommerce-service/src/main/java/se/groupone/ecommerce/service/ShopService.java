@@ -228,8 +228,6 @@ public class ShopService
 		{
 			throw new ShopServiceException("Could not create order: " + e.getMessage(), e);
 		}
-		System.out.println("Order created: " + newOrder.getUsername() + " : " 
-							+ newOrder.getId() + " : " + newOrder.getProductIds().toString());
 		return newOrder;
 	}
 
