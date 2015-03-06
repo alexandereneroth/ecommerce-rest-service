@@ -38,7 +38,7 @@ import java.net.URI;
 //
 // Ta bort en order för en användare
 
-@Path("customer")
+@Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CustomerService

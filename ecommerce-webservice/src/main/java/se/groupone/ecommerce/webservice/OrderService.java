@@ -17,14 +17,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-@Path("customer")
+import com.google.gson.JsonObject;
+
+@Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public final class OrderService
@@ -109,13 +109,14 @@ public final class OrderService
 	@POST
 	@Path("{username}/cart")
 	public Response getOrder(@PathParam("username") final String username, 
-							 @QueryParam("amount") @DefaultValue("1") Integer amount,
-							 Product product)
+							 @QueryParam("amount") @DefaultValue("1") final Integer amount,
+							 final Product product)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 		
 		try
 		{
+			ss.getProductWithId(product.getId()); // will throw exception if product does not exist
 			ss.addProductToCustomer(product.getId(), username, amount);
 			return Response.ok().build();
 		}
