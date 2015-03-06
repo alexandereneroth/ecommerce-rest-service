@@ -1,7 +1,7 @@
 package se.groupone.ecommerce.webservice;
 
 import java.net.URI;
-import java.util.List;
+import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.BadRequestException;
@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -53,7 +54,7 @@ public class ProductService
 	{
 		ShopService shopService = (ShopService) context.getAttribute("ss");
 
-		List<Product> products = shopService.getProducts();
+		ArrayList<Product> products = (ArrayList<Product>) shopService.getProducts();
 
 		StringBuilder productsStringBuilder = new StringBuilder();
 
@@ -69,7 +70,11 @@ public class ProductService
 			}
 		}
 
-		return Response.ok(productsStringBuilder.toString()).build();
+		return Response.ok(
+				new GenericEntity<ArrayList<Product>>(products)
+				{
+				}
+				).build();
 	}
 
 	//  Hämta en produkt med ett visst id
