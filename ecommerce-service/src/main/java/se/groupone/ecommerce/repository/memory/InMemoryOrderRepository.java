@@ -37,10 +37,8 @@ public class InMemoryOrderRepository implements OrderRepository
 	@Override
 	public Order getOrder(int orderId) throws RepositoryException
 	{
-		System.out.println("Inside getOrder.. getting orderId: " + orderId);
 		if (orders.containsKey(orderId))
 		{
-			System.out.println("Getting order with ID: " + orders.get(orderId).getId());
 			return orders.get(orderId);
 		}
 		throw new RepositoryException("Cannot get order: order does not exist in repository.");
