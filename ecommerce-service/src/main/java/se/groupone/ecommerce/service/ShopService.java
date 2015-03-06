@@ -246,7 +246,14 @@ public class ShopService
 
 	public synchronized List<Order> getOrders(String customerUsername)
 	{
-		return oR.getOrders(customerUsername);
+		try
+		{
+			return oR.getOrders(customerUsername);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not get orders.", e);
+		}
 	}
 
 	private int getNextProductId()
