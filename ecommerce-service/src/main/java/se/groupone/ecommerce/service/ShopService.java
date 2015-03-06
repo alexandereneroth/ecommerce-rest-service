@@ -255,7 +255,31 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not get orders.", e);
+			throw new ShopServiceException("Could not get orders: " + e.getMessage(), e);
+		}
+	}
+
+	public synchronized void updateOrder(Order order)
+	{
+		try
+		{
+			oR.updateOrder(order);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not update order: " + e.getMessage(), e);
+		}
+	}
+
+	public synchronized void removeOrder(int orderId)
+	{
+		try
+		{
+			oR.removeOrder(orderId);
+		}
+		catch (RepositoryException e)
+		{
+			throw new ShopServiceException("Could not remove order: " + e.getMessage(), e);
 		}
 	}
 
