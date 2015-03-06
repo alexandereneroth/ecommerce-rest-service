@@ -1,7 +1,10 @@
 package se.groupone.ecommerce.webservice;
 
 import se.groupone.ecommerce.exception.ShopServiceException;
+
 import se.groupone.ecommerce.model.Customer;
+import se.groupone.ecommerce.model.Order;
+
 import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
@@ -59,6 +62,31 @@ public class CustomerService
 		ss = (ShopService) context.getAttribute("ss");
 		Customer customer = ss.getCustomer(username);
 		return Response.ok(customer).build();
+	}
+	
+	@GET
+	@Path("{username}/orders")
+	public Response getOrders(@PathParam("username") final String username)
+	{
+		ArrayList<Order> orderList;
+		StringBuilder builder = new StringBuilder();
+		ShopService ss = (ShopService) context.getAttribute("ss");
+
+		try
+		{
+			orderList = new ArrayList<Order>(ss.getOrders(username));
+
+			for (Order order : orderList)
+			{
+				builder.append(order);
+				builder.append("<br>");
+			}
+			return Response.ok(builder.toString()).build();
+		}
+		catch (ShopServiceException e)
+		{
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
 	}
 
 	@POST

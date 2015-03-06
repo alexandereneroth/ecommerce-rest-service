@@ -255,4 +255,11 @@ public class SQLOrder implements OrderRepository
 			throw new RepositoryException("Could not get query MAX Ordert ID!", e);
 		}
 	}
+
+	@Override
+	public void updateOrder(Order order) throws RepositoryException
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -9,7 +9,10 @@ import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -19,7 +22,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
-@Path("customers")
+import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
+
+@Path("orders")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public final class OrderService
@@ -28,27 +33,17 @@ public final class OrderService
 	private ServletContext context;
 	@Context
 	private UriInfo uriInfo;
-
 	private ShopService ss;
 
 	@GET
-	@Path("{username}/orders")
-	public Response getOrders(@PathParam("username") final String username)
+	@Path("{orderId}")
+	public Response getOrder(@PathParam("orderId") final int orderId)
 	{
-		ArrayList<Order> orderList;
-		StringBuilder builder = new StringBuilder();
-		ShopService ss = (ShopService) context.getAttribute("ss");
-
+		ss = (ShopService) context.getAttribute("ss");
 		try
 		{
-			orderList = new ArrayList<Order>(ss.getOrders(username));
-
-			for (Order order : orderList)
-			{
-				builder.append(order);
-				builder.append("<br>");
-			}
-			return Response.ok(builder.toString()).build();
+			Order order = ss.getOrder(orderId);
+			return Response.ok(order).build();
 		}
 		catch (ShopServiceException e)
 		{
@@ -56,24 +51,30 @@ public final class OrderService
 		}
 	}
 
-	@GET
-	@Path("{username}/orders/{orderId}")
-	public Response getOrder(@PathParam("username") final String username, @PathParam("orderId") final int orderId)
+	@POST
+	public Response createOrder(final String username)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 
 		try
 		{
-			Order order = ss.getOrder(orderId);
+			ss.createOrder(username);
+			return Response.ok().build();
+		}
+		catch (ShopServiceException e)
+		{
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
 
-			// if path username and order username matches then return order
-			if (order.getUsername().equals(username))
-			{
-				return Response.ok(order).build();
-			}
+	@DELETE
+	public Response removeOrder(final String orderId)
+	{
+		ss = (ShopService) context.getAttribute("ss");
 
-			// otherwise send error code
-			return Response.status(Status.BAD_REQUEST).entity("Username mismatch between path and order info").build();
+		try
+		{
+			return Response.ok().build();
 		}
 		catch (ShopServiceException e)
 		{

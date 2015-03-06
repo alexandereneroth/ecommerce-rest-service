@@ -65,4 +65,11 @@ public class InMemoryOrderRepository implements OrderRepository
 		return 0;
 	}
 
+	@Override
+	public void updateOrder(Order order) throws RepositoryException
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }

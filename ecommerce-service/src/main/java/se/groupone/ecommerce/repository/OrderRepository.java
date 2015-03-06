@@ -16,4 +16,6 @@ public interface OrderRepository
 	public List<Order> getOrders(String customerUsername) throws RepositoryException;
 
 	public int getHighestId() throws RepositoryException;
+	
+	public void updateOrder(Order newOrder) throws RepositoryException;
 }
