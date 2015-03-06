@@ -52,7 +52,7 @@ public class ShopService
 		{
 			throw new ShopServiceException("Could not add product: " + e.getMessage(), e);
 		}
-		
+
 		return newProduct;
 	}
 
@@ -195,7 +195,10 @@ public class ShopService
 		{
 			Customer customer = cR.getCustomer(customerUsername);
 			ArrayList<Integer> orderedProductIds = customer.getShoppingCart();
-
+			if (orderedProductIds.isEmpty())
+			{
+				throw new ShopServiceException("This user has no items in their cart");
+			}
 			// decrease stock quantity of products in product repository
 			pR.decreaseQuantityOfProductsByOne(orderedProductIds);
 			try
