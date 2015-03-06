@@ -6,4 +6,5 @@ public class DBInfo
 	final static String port = "3939";
 	final static String username = "ecom";
 	final static String password = "wearetheone";
+	final static String database = "ecomm";
 }

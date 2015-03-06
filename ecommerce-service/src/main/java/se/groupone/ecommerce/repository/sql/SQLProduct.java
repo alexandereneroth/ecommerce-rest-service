@@ -12,14 +12,13 @@ import se.groupone.ecommerce.repository.ProductRepository;
 
 public class SQLProduct implements ProductRepository
 {
-	private final String dbName = "ecomm";
 	private final String dbTable = "product";
 	private final SQLConnector sql;
 	public SQLProduct() throws RepositoryException
 	{
 		try
 		{
-			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, dbName);
+			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
 		}
 		catch(SQLException e)
 		{
@@ -31,7 +30,7 @@ public class SQLProduct implements ProductRepository
 	public void addProduct(final Product product) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("INSERT INTO " + dbName + "." + dbTable +" ");
+		builder.append("INSERT INTO " + DBInfo.database + "." + dbTable +" ");
 		builder.append("(id_product, title, category, manufacturer, description, img, price, quantity) ");
 		builder.append("VALUES(" + product.getId() + ", ");
 		builder.append("'" + product.getTitle() + "', ");
@@ -55,7 +54,7 @@ public class SQLProduct implements ProductRepository
 	public Product getProduct(final int productID) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT * FROM " + dbName+"."+dbTable + " ");
+		builder.append("SELECT * FROM " + DBInfo.database+"."+dbTable + " ");
 		builder.append("WHERE id_product = " + productID + ";");
 		ResultSet rs;
 		try
@@ -101,7 +100,7 @@ public class SQLProduct implements ProductRepository
 		final int numRows;
 		try
 		{
-			final String numRowsQuery = "SELECT count(id_product) FROM "+dbName+"."+dbTable+";";
+			final String numRowsQuery = "SELECT count(id_product) FROM "+DBInfo.database+"."+dbTable+";";
 			rs = sql.queryResult(numRowsQuery);
 			rs.next();
 			numRows = rs.getInt(1);
@@ -113,7 +112,7 @@ public class SQLProduct implements ProductRepository
 		
 		try
 		{
-			final String fetchAllQuery = "SELECT * FROM "+dbName+"."+dbTable+";";
+			final String fetchAllQuery = "SELECT * FROM "+DBInfo.database+"."+dbTable+";";
 			rs = sql.queryResult(fetchAllQuery);
 		}
 		catch(SQLException e)
@@ -151,7 +150,7 @@ public class SQLProduct implements ProductRepository
 	@Override
 	public void removeProduct(final int productID) throws RepositoryException
 	{
-		final String removeQuery = "DELETE FROM " + dbName + "." + dbTable + " WHERE id_product = " + productID + ";";
+		final String removeQuery = "DELETE FROM " + DBInfo.database + "." + dbTable + " WHERE id_product = " + productID + ";";
 		try
 		{
 			sql.query(removeQuery);
@@ -167,7 +166,7 @@ public class SQLProduct implements ProductRepository
 	public void updateProduct(Product product) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("UPDATE "+dbName+"."+dbTable+" SET ");
+		builder.append("UPDATE "+DBInfo.database+"."+dbTable+" SET ");
 		builder.append("id_product = "+product.getId()+", ");
 		builder.append("title = '"+product.getTitle()+"', ");
 		builder.append("category = '"+product.getCategory()+"', ");
@@ -203,7 +202,7 @@ public class SQLProduct implements ProductRepository
 	@Override
 	public int getHighestId() throws RepositoryException
 	{
-		final String query = "SELECT MAX(id_product) FROM "+dbName+"."+dbTable;
+		final String query = "SELECT MAX(id_product) FROM "+DBInfo.database+"."+dbTable;
 		ResultSet rs;
 		try
 		{
@@ -225,7 +224,7 @@ public class SQLProduct implements ProductRepository
 		{
 			Product product = getProduct(ids.get(i));
 			StringBuilder builder = new StringBuilder();
-			builder.append("UPDATE "+dbName+"."+dbTable+" SET ");
+			builder.append("UPDATE "+DBInfo.database+"."+dbTable+" SET ");
 			builder.append("quantity = "+(product.getQuantity()+quantityChange)+" ");
 			builder.append("WHERE id_product = "+product.getId()+";");
 			try
