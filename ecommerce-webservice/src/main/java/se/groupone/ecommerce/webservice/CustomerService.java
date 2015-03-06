@@ -4,6 +4,7 @@ import se.groupone.ecommerce.exception.ShopServiceException;
 
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Order;
+import se.groupone.ecommerce.model.Product;
 
 import se.groupone.ecommerce.service.ShopService;
 
@@ -70,19 +71,14 @@ public class CustomerService
 	public Response getOrders(@PathParam("username") final String username)
 	{
 		ArrayList<Order> orderList;
-		StringBuilder builder = new StringBuilder();
 		ShopService ss = (ShopService) context.getAttribute("ss");
 
 		try
 		{
 			orderList = new ArrayList<Order>(ss.getOrders(username));
-
-			for (Order order : orderList)
-			{
-				builder.append(order);
-				builder.append("<br>");
-			}
-			return Response.ok(builder.toString()).build();
+			return Response.ok(new GenericEntity<ArrayList<Order>>(orderList)
+					{
+					}).build();
 		}
 		catch (ShopServiceException e)
 		{

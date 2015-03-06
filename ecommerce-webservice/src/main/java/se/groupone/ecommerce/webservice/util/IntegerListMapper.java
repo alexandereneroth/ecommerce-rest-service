@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -17,6 +16,7 @@ import javax.ws.rs.ext.Provider;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -26,7 +26,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonWriter;
 
 @Provider
-@Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public final class IntegerListMapper implements MessageBodyWriter<ArrayList<Integer>>
 {
@@ -70,11 +69,14 @@ public final class IntegerListMapper implements MessageBodyWriter<ArrayList<Inte
 		public JsonElement serialize(ArrayList<Integer> integerList, Type typeOfSrc, JsonSerializationContext context)
 		{
 			final JsonObject integerListJson = new JsonObject();
+			final JsonArray jsonArray = new JsonArray();
 
-			for(int i = 0; i < integerList.size(); ++i)
+			for (Integer i : integerList)
 			{
-				integerListJson.add(i+ "", new JsonPrimitive(integerList.get(i)));
+				jsonArray.add(new JsonPrimitive(i));
 			}
+			
+			integerListJson.add("integerArray", jsonArray);
 			return integerListJson;
 		}
 	}
