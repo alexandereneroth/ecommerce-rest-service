@@ -55,7 +55,21 @@ public class ProductService
 
 		List<Product> products = shopService.getProducts();
 
-		return Response.ok(products).build();
+		StringBuilder productsStringBuilder = new StringBuilder();
+
+		for (int i = 0; i < products.size(); ++i)
+		{
+			Product product = products.get(i);
+
+			productsStringBuilder.append(product.toString());
+			// only append a comma if this is not the last product
+			if (i < products.size() - 1)
+			{
+				productsStringBuilder.append(",\n");
+			}
+		}
+
+		return Response.ok(productsStringBuilder.toString()).build();
 	}
 
 	//  Hämta en produkt med ett visst id
