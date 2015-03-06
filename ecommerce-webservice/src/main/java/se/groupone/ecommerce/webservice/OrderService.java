@@ -110,14 +110,14 @@ public final class OrderService
 	@Path("{username}/cart")
 	public Response getOrder(@PathParam("username") final String username, 
 							 @QueryParam("amount") @DefaultValue("1") final Integer amount,
-							 final Product product)
+							 final String productId)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 		
 		try
 		{
-			ss.getProductWithId(product.getId()); // will throw exception if product does not exist
-			ss.addProductToCustomer(product.getId(), username, amount);
+			ss.getProductWithId(Integer.parseInt(productId)); // will throw exception if product does not exist
+			ss.addProductToCustomer(Integer.parseInt(productId), username, amount);
 			return Response.ok().build();
 		}
 		catch (ShopServiceException e)
