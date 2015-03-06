@@ -31,7 +31,7 @@ public class InMemoryOrderRepository implements OrderRepository
 		{
 			orders.remove(id);
 		}
-		else 
+		else
 		{
 			throw new RepositoryException("Could not remove order: order does not exist in repository:");
 		}
@@ -49,7 +49,7 @@ public class InMemoryOrderRepository implements OrderRepository
 
 	// Get orders for a specific user
 	@Override
-	public List<Order> getOrders(String customerUsername)
+	public List<Order> getOrders(String customerUsername) throws RepositoryException
 	{
 		ArrayList<Order> orderList = new ArrayList<Order>();
 		for (Order order : orders.values())
@@ -58,6 +58,10 @@ public class InMemoryOrderRepository implements OrderRepository
 			{
 				orderList.add(order);
 			}
+		}
+		if (orderList.isEmpty())
+		{
+			throw new RepositoryException("No orders for this user");
 		}
 		return orderList;
 	}

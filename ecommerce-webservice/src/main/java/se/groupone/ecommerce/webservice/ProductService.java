@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import javax.servlet.ServletContext;
-import javax.ws.rs.BadRequestException;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,7 +19,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import se.groupone.ecommerce.exception.ShopServiceException;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
 import se.groupone.ecommerce.service.ShopService;
@@ -53,28 +51,9 @@ public class ProductService
 	public Response getProducts()
 	{
 		ShopService shopService = (ShopService) context.getAttribute("ss");
-
 		ArrayList<Product> products = (ArrayList<Product>) shopService.getProducts();
-
-		StringBuilder productsStringBuilder = new StringBuilder();
-
-		for (int i = 0; i < products.size(); ++i)
-		{
-			Product product = products.get(i);
-
-			productsStringBuilder.append(product.toString());
-			// only append a comma if this is not the last product
-			if (i < products.size() - 1)
-			{
-				productsStringBuilder.append(",\n");
-			}
-		}
-
-		return Response.ok(
-				new GenericEntity<ArrayList<Product>>(products)
-				{
-				}
-				).build();
+		
+		return Response.ok(new GenericEntity<ArrayList<Product>>(products){}).build();
 	}
 
 	//  Hämta en produkt med ett visst id
@@ -86,7 +65,6 @@ public class ProductService
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-
 			Product product = shopService.getProductWithId(productIdInt);
 
 			return Response.ok(product).build();
@@ -94,10 +72,6 @@ public class ProductService
 		catch (NumberFormatException e)
 		{
 			return Response.status(Status.BAD_REQUEST).entity("Product id must be parsable to an integer.").build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
 
@@ -107,18 +81,10 @@ public class ProductService
 	public Response putProduct(@PathParam("productId") final String productId, final ProductParameters productParameters)
 	{
 		ShopService shopService = (ShopService) context.getAttribute("ss");
-
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-			try
-			{
-				shopService.updateProduct(productIdInt, productParameters);
-			}
-			catch (ShopServiceException e)
-			{
-				throw new BadRequestException(e.getMessage(), e);
-			}
+			shopService.updateProduct(productIdInt, productParameters);
 
 			return Response.status(Status.NO_CONTENT).build();
 		}
@@ -134,19 +100,11 @@ public class ProductService
 	public Response deleteProduct(@PathParam("productId") final String productId)
 	{
 		ShopService shopService = (ShopService) context.getAttribute("ss");
-
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-			try
-			{
-				shopService.removeProduct(productIdInt);
-				return Response.noContent().build();
-			}
-			catch (ShopServiceException e)
-			{
-				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-			}
+			shopService.removeProduct(productIdInt);
+			return Response.noContent().build();
 		}
 		catch (NumberFormatException e)
 		{

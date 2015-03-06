@@ -1,10 +1,7 @@
 package se.groupone.ecommerce.webservice;
 
-import se.groupone.ecommerce.exception.ShopServiceException;
-
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Order;
-import se.groupone.ecommerce.model.Product;
 
 import se.groupone.ecommerce.service.ShopService;
 
@@ -65,25 +62,15 @@ public class CustomerService
 		Customer customer = ss.getCustomer(username);
 		return Response.ok(customer).build();
 	}
-	
+
 	@GET
 	@Path("{username}/orders")
 	public Response getOrders(@PathParam("username") final String username)
 	{
 		ArrayList<Order> orderList;
 		ShopService ss = (ShopService) context.getAttribute("ss");
-
-		try
-		{
-			orderList = new ArrayList<Order>(ss.getOrders(username));
-			return Response.ok(new GenericEntity<ArrayList<Order>>(orderList)
-					{
-					}).build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		orderList = new ArrayList<Order>(ss.getOrders(username));
+		return Response.ok(new GenericEntity<ArrayList<Order>>(orderList){}).build();
 	}
 
 	@POST
@@ -101,23 +88,14 @@ public class CustomerService
 	public Response putCustomer(@PathParam("username") final String username, final Customer customer)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-
+		
 		// if path username and new customer username matches then update
 		// repository
 		if (username.equals(customer.getUsername()))
 		{
-			try
-			{
-				ss.updateCustomer(customer);
-			}
-			catch (ShopServiceException e)
-			{
-				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-			}
-
+			ss.updateCustomer(customer);
 			return Response.status(Status.NO_CONTENT).build();
 		}
-
 		// otherwise send error code
 		return Response.status(Status.BAD_REQUEST).entity("Username mismatch between path and new customer info").build();
 	}
@@ -127,15 +105,8 @@ public class CustomerService
 	public Response deleteCustomer(@PathParam("username") final String username)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-		try
-		{
-			ss.removeCustomer(username);
-			return Response.noContent().build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		ss.removeCustomer(username);
+		return Response.noContent().build();
 	}
 
 	@GET
@@ -145,25 +116,14 @@ public class CustomerService
 		ArrayList<Integer> cartList;
 		StringBuilder builder = new StringBuilder();
 		ss = (ShopService) context.getAttribute("ss");
+		cartList = ss.getCustomer(username).getShoppingCart();
 
-		try
+		for (Integer productId : cartList)
 		{
-			cartList = ss.getCustomer(username).getShoppingCart();
-
-			for (Integer productId : cartList)
-			{
-				builder.append(ss.getProductWithId(productId).toString());
-				builder.append("<br>");
-			}
-
-			return Response.ok(new GenericEntity<ArrayList<Integer>>(cartList)
-			{
-			}).build();
+			builder.append(ss.getProductWithId(productId).toString());
+			builder.append("<br>");
 		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		return Response.ok(new GenericEntity<ArrayList<Integer>>(cartList){}).build();
 	}
 
 	@POST
@@ -176,17 +136,9 @@ public class CustomerService
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-			try
-			{
 				ss.addProductToCustomer(productIdInt, username, amount);
 				final URI location = uriInfo.getAbsolutePathBuilder().build();
-
 				return Response.created(location).build();
-			}
-			catch (ShopServiceException e)
-			{
-				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-			}
 		}
 		catch (NumberFormatException e)
 		{

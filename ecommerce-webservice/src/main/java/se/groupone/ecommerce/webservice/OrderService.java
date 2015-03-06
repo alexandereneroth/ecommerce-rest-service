@@ -2,7 +2,6 @@ package se.groupone.ecommerce.webservice;
 
 import se.groupone.ecommerce.model.Order;
 
-import se.groupone.ecommerce.exception.ShopServiceException;
 import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
@@ -18,7 +17,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.Response.Status;
 
 @Path("orders")
 @Produces(MediaType.APPLICATION_JSON)
@@ -36,45 +34,24 @@ public final class OrderService
 	public Response getOrder(@PathParam("orderId") final int orderId)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-		try
-		{
-			Order order = ss.getOrder(orderId);
-			return Response.ok(order).build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		Order order = ss.getOrder(orderId);
+		return Response.ok(order).build();
 	}
 
 	@POST
 	public Response createOrder(final String username)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-		try
-		{
-			ss.createOrder(username);
-			return Response.ok().build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		ss.createOrder(username);
+		return Response.ok().build();
 	}
 
 	@PUT
 	public Response updateOrder(final Order order)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-		try
-		{
-			ss.updateOrder(order);
-			return Response.ok().build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		ss.updateOrder(order);
+		return Response.ok().build();
 	}
 
 	@DELETE
@@ -82,15 +59,7 @@ public final class OrderService
 	public Response removeOrder(@PathParam("orderId") final Integer orderId)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-
-		try
-		{
-			ss.removeOrder(orderId);
-			return Response.ok().build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
+		ss.removeOrder(orderId);
+		return Response.ok().build();
 	}
 }
