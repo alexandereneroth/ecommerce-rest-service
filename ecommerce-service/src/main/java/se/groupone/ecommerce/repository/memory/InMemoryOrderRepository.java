@@ -49,7 +49,7 @@ public class InMemoryOrderRepository implements OrderRepository
 		ArrayList<Order> orderList = new ArrayList<Order>();
 		for (Order order : orders.values())
 		{
-			if (order.getUsername() == customerUsername)
+			if (order.getUsername().equals(customerUsername))
 			{
 				orderList.add(order);
 			}

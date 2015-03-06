@@ -13,6 +13,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,7 +40,7 @@ public final class OrderService
 			System.out.println("Order list is empty: " + orderList.isEmpty());
 			StringBuilder builder = new StringBuilder();
 			for (Order order : orderList) {
-				builder.append(order.toString());
+				builder.append(order);
 			}
 			System.out.println(builder.toString());
 			return Response.ok(builder.toString()).build();
