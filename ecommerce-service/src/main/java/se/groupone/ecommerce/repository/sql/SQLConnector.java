@@ -30,6 +30,7 @@ public final class SQLConnector
 		this.password = password;
 		this.database = database;
 		
+		// Checks if sqlDriver is available
 		try
 		{
 			Class.forName(sqlDriver);

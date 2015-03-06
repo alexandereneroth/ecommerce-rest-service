@@ -1,5 +1,7 @@
 package se.groupone.ecommerce.webservice;
 
+import se.groupone.ecommerce.exception.ShopServiceException;
+
 import se.groupone.ecommerce.model.Customer;
 
 import se.groupone.ecommerce.service.ShopService;
@@ -16,15 +18,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import java.net.URI;
 
-// Hämta en användare med ett visst id
-//
-// Skapa en ny användare – detta ska returnera en länk till den skapade 
-//
-//användaren i Location-headern
 //
 // Uppdatera en användare 
 //
@@ -50,7 +48,7 @@ public class CustomerService
 	private ServletContext context;
 	@Context
 	private UriInfo uriInfo;
-	
+
 	private ShopService ss;
 
 	@GET
@@ -63,26 +61,53 @@ public class CustomerService
 	}
 
 	@POST
-	public Response createCustomer(Customer customer)
+	public Response createCustomer(final Customer customer)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 		ss.addCustomer(customer);
-		
+
 		final URI location = uriInfo.getAbsolutePathBuilder().path(customer.getUsername()).build();
 		return Response.created(location).build();
 	}
 
 	@PUT
 	@Path("{username}")
-	public Response putCustomer(@PathParam("username") final String customerId)
+	public Response putCustomer(@PathParam("username") final String username, final Customer customer)
 	{
-		throw new RuntimeException("unimplemented");// TODO
+		ss = (ShopService) context.getAttribute("ss");
+		
+		// if path username and new customer username matches then update repository
+		if (username.equals(customer.getUsername()))
+		{
+			try 
+			{
+				ss.updateCustomer(customer);
+			}
+			catch (ShopServiceException e)
+			{
+				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+			}
+			
+			return Response.status(Status.NO_CONTENT).build();
+		}
+		
+		// otherwise send error code
+		return Response.status(Status.BAD_REQUEST).entity("Username mismatch between path and new customer info").build();
 	}
 
 	@DELETE
 	@Path("{username}")
-	public Response deleteCustomer(@PathParam("username") final String customerId)
+	public Response deleteCustomer(@PathParam("username") final String username)
 	{
-		throw new RuntimeException("unimplemented");// TODO
+		ss = (ShopService) context.getAttribute("ss");
+		try
+		{
+			ss.removeCustomer(username);
+			return Response.noContent().build();
+		}
+		catch (ShopServiceException e)
+		{
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
 	}
 }
