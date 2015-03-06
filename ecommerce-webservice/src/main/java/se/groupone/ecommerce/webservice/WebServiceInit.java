@@ -62,7 +62,7 @@ public class WebServiceInit implements ServletContextListener
 		Product p2 = ss.addProduct(params2);
 		ss.addProductToCustomer(p1.getId(), "tom", 2);
 		ss.addProductToCustomer(p2.getId(), "tom");
-
+		ss.createOrder("tom");
 	}
 
 	@Override
