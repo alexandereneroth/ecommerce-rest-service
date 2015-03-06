@@ -13,14 +13,13 @@ import java.util.List;
 public final class SQLCustomer implements CustomerRepository
 {
 	private final SQLConnector sql;
-	private final String dbName = "ecomm";
 	private final String dbTable = "customer";
 
 	public SQLCustomer() throws RepositoryException
 	{
 		try
 		{
-			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, dbName);
+			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
 		}
 		catch(SQLException e)
 		{
@@ -33,7 +32,7 @@ public final class SQLCustomer implements CustomerRepository
 	public void addCustomer(final Customer customer) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("INSERT INTO " + dbName + "." + dbTable + " ");
+		builder.append("INSERT INTO " + DBInfo.database + "." + dbTable + " ");
 		builder.append("(user_name, password, email, first_name, last_name, address, phone) ");
 		builder.append("VALUES('" + customer.getUsername() + "', ");
 		builder.append("'" + customer.getPassword() + "', ");
@@ -56,7 +55,7 @@ public final class SQLCustomer implements CustomerRepository
 	public Customer getCustomer(final String username) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("SELECT * FROM " + dbName+"."+dbTable + " ");
+		builder.append("SELECT * FROM " + DBInfo.database+"."+dbTable + " ");
 		builder.append("WHERE user_name = '" + username + "';");
 		ResultSet rs;
 		try
@@ -99,7 +98,7 @@ public final class SQLCustomer implements CustomerRepository
 		final int numRows;
 		try
 		{
-			final String numRowsQuery = "SELECT count(user_name) FROM "+dbName+"."+dbTable+";";
+			final String numRowsQuery = "SELECT count(user_name) FROM "+DBInfo.database+"."+dbTable+";";
 			rs = sql.queryResult(numRowsQuery);
 			rs.next();
 			numRows = rs.getInt(1);
@@ -111,7 +110,7 @@ public final class SQLCustomer implements CustomerRepository
 		
 		try
 		{
-			final String fetchAllQuery = "SELECT * FROM "+dbName+"."+dbTable+";";
+			final String fetchAllQuery = "SELECT * FROM "+DBInfo.database+"."+dbTable+";";
 			rs = sql.queryResult(fetchAllQuery);
 		}
 		catch(SQLException e)
@@ -147,7 +146,7 @@ public final class SQLCustomer implements CustomerRepository
 	public void updateCustomer(final Customer customer) throws RepositoryException
 	{
 		StringBuilder builder = new StringBuilder();
-		builder.append("UPDATE "+dbName+"."+dbTable+" SET ");
+		builder.append("UPDATE "+DBInfo.database+"."+dbTable+" SET ");
 		builder.append("password = '"+customer.getPassword()+"', ");
 		builder.append("email = '"+customer.getEmail()+"', ");
 		builder.append("first_name = '"+customer.getFirstName()+"', ");
@@ -170,7 +169,7 @@ public final class SQLCustomer implements CustomerRepository
 	@Override
 	public void removeCustomer(final String username) throws RepositoryException
 	{
-		final String removeQuery = "DELETE FROM " + dbName + "." + dbTable + " WHERE user_name = '" + username + "';";
+		final String removeQuery = "DELETE FROM " + DBInfo.database + "." + dbTable + " WHERE user_name = '" + username + "';";
 		try
 		{
 			sql.query(removeQuery);

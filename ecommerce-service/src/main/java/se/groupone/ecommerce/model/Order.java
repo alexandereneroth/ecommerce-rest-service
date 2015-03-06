@@ -67,5 +67,25 @@ public final class Order
 				+ ", dateCreated=" + dateCreated + ", dateShipped="
 				+ dateShipped + ", products=" + productIds + "]";
 	}
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other == this)
+		{
+			return true;
+		}
+		if (other instanceof Order)
+		{
+			Order o = (Order) other;
+			if (this.getId() == o.getId()
+			 && this.getUsername().equals(o.getUsername())
+			 && this.getProductIds().equals(o.getProductIds()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
 
 }
