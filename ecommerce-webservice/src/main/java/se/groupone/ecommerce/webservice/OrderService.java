@@ -18,7 +18,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-@Path("order")
+@Path("orders")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public final class OrderService
@@ -29,17 +29,19 @@ public final class OrderService
 	
 	@GET
 	@Path("{username}")
-	public Response getOrder(@PathParam("username") final String username )
+	public Response getOrders(@PathParam("username") final String username )
 	{
 		ShopService ss = (ShopService) context.getAttribute("ss");
 		ArrayList<Order> orderList;
 		try
 		{
-			orderList = new ArrayList<Order>(ss.getOrders());
+			orderList = new ArrayList<Order>(ss.getOrders(username));
+			System.out.println("Order list is empty: " + orderList.isEmpty());
 			StringBuilder builder = new StringBuilder();
 			for (Order order : orderList) {
 				builder.append(order.toString());
 			}
+			System.out.println(builder.toString());
 			return Response.ok(builder.toString()).build();
 		}
 		catch (ShopServiceException e)
@@ -48,18 +50,18 @@ public final class OrderService
 		}
 	}
 	
-	@GET
-	@Path("{orderId}")
-	public Response getOrder(@PathParam("orderId") final int orderId )
-	{
-		try
-		{
-			Order order = ss.getOrder(orderId);
-			return Response.ok(order).build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
-	}
+//	@GET
+//	@Path("{orderId}")
+//	public Response getOrder(@PathParam("orderId") final int orderId )
+//	{
+//		try
+//		{
+//			Order order = ss.getOrder(orderId);
+//			return Response.ok(order).build();
+//		}
+//		catch (ShopServiceException e)
+//		{
+//			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+//		}
+//	}
 }
