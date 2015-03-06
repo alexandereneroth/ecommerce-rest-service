@@ -19,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -104,11 +105,12 @@ public class CustomerService
 	public Response putCustomer(@PathParam("username") final String username, final Customer customer)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-		
-		// if path username and new customer username matches then update repository
+
+		// if path username and new customer username matches then update
+		// repository
 		if (username.equals(customer.getUsername()))
 		{
-			try 
+			try
 			{
 				ss.updateCustomer(customer);
 			}
@@ -116,10 +118,10 @@ public class CustomerService
 			{
 				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 			}
-			
+
 			return Response.status(Status.NO_CONTENT).build();
 		}
-		
+
 		// otherwise send error code
 		return Response.status(Status.BAD_REQUEST).entity("Username mismatch between path and new customer info").build();
 	}
@@ -158,7 +160,9 @@ public class CustomerService
 				builder.append("<br>");
 			}
 
-			return Response.ok(builder.toString()).build();
+			return Response.ok(new GenericEntity<ArrayList<Integer>>(cartList)
+			{
+			}).build();
 		}
 		catch (ShopServiceException e)
 		{
