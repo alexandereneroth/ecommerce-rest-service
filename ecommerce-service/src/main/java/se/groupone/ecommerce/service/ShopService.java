@@ -40,7 +40,7 @@ public class ShopService
 		}
 	}
 
-	public void addProduct(ProductParameters product)
+	public synchronized void addProduct(ProductParameters product)
 	{
 		try
 		{
@@ -57,7 +57,7 @@ public class ShopService
 		addProductToCustomer(productId, customerUsername, 1);
 	}
 
-	public void addProductToCustomer(int productId, String customerUsername, int amount)
+	public synchronized void addProductToCustomer(int productId, String customerUsername, int amount)
 	{
 		try
 		{
@@ -79,7 +79,7 @@ public class ShopService
 		}
 	}
 
-	public Product getProductWithId(int productId)
+	public synchronized Product getProductWithId(int productId)
 	{
 		try
 		{
@@ -91,7 +91,7 @@ public class ShopService
 		}
 	}
 
-	public HashMap<Integer, Product> getProducts()
+	public synchronized HashMap<Integer, Product> getProducts()
 	{
 		try
 		{
@@ -103,7 +103,7 @@ public class ShopService
 		}
 	}
 
-	public void removeProduct(int productId)
+	public synchronized void removeProduct(int productId)
 	{
 		try
 		{
@@ -123,7 +123,7 @@ public class ShopService
 		}
 	}
 
-	public void updateProduct(int productId, ProductParameters productParams)
+	public synchronized void updateProduct(int productId, ProductParameters productParams)
 	{
 		try
 		{
@@ -135,7 +135,7 @@ public class ShopService
 		}
 	}
 
-	public void addCustomer(Customer customer)
+	public synchronized void addCustomer(Customer customer)
 	{
 		try
 		{
@@ -147,7 +147,7 @@ public class ShopService
 		}
 	}
 
-	public Customer getCustomer(String customerUsername)
+	public synchronized Customer getCustomer(String customerUsername)
 	{
 		try
 		{
@@ -159,7 +159,7 @@ public class ShopService
 		}
 	}
 
-	public void updateCustomer(Customer customer)
+	public synchronized void updateCustomer(Customer customer)
 	{
 		try
 		{
@@ -171,7 +171,7 @@ public class ShopService
 		}
 	}
 
-	public void removeCustomer(String customerUsername)
+	public synchronized void removeCustomer(String customerUsername)
 	{
 		try
 		{
@@ -183,7 +183,7 @@ public class ShopService
 		}
 	}
 
-	public void createOrder(String customerUsername)
+	public synchronized void createOrder(String customerUsername)
 	{
 		try
 		{
@@ -223,7 +223,7 @@ public class ShopService
 		}
 	}
 
-	public Order getOrder(int orderId)
+	public synchronized Order getOrder(int orderId)
 	{
 		try
 		{
@@ -235,7 +235,7 @@ public class ShopService
 		}
 	}
 
-	public HashMap<Integer, Order> getOrders()
+	public synchronized HashMap<Integer, Order> getOrders()
 	{
 		return oR.getOrders();
 	}
