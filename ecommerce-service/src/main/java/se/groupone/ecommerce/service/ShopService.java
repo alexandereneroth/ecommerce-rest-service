@@ -40,18 +40,23 @@ public class ShopService
 		}
 	}
 
-	public synchronized void addProduct(ProductParameters product)
+	public synchronized Product addProduct(ProductParameters productParams)
 	{
+		Product newProduct;
 		try
 		{
-			pR.addProduct(new Product(getNextProductId(), product));
+			newProduct = new Product(getNextProductId(), productParams);
+			pR.addProduct(newProduct);
 		}
 		catch (RepositoryException e)
 		{
 			throw new ShopServiceException("Could not add product: " + e.getMessage(), e);
 		}
+		
+		return newProduct;
 	}
 
+	// Defaults to quantity: 1 if no amount is provided.
 	public void addProductToCustomer(int productId, String customerUsername)
 	{
 		addProductToCustomer(productId, customerUsername, 1);
@@ -183,8 +188,9 @@ public class ShopService
 		}
 	}
 
-	public synchronized void createOrder(String customerUsername)
+	public synchronized Order createOrder(String customerUsername)
 	{
+		Order newOrder;
 		try
 		{
 			Customer customer = cR.getCustomer(customerUsername);
@@ -196,7 +202,8 @@ public class ShopService
 			{
 				// place a order containing the products removed from stock
 				int orderId = getNextOrderId();
-				oR.addOrder(new Order(orderId, customerUsername, orderedProductIds));
+				newOrder = new Order(orderId, customerUsername, orderedProductIds);
+				oR.addOrder(newOrder);
 				try
 				{
 					// clear the customers shopping cart
@@ -221,6 +228,8 @@ public class ShopService
 		{
 			throw new ShopServiceException("Could not create order: " + e.getMessage(), e);
 		}
+		
+		return newOrder;
 	}
 
 	public synchronized Order getOrder(int orderId)

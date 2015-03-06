@@ -28,6 +28,7 @@ public class ProductService
 		ShopService shopService = (ShopService) context.getAttribute("ss");
 		
 		shopService.getProducts();
+		return null;
 	}
 
 	// Hämta en produkt med ett visst id 
