@@ -20,8 +20,8 @@ public class InMemoryOrderRepository implements OrderRepository
 			throw new RepositoryException("Could not add order: order already exists in repository.");
 		}
 		orders.put(order.getId(), order);
-		System.out.println("Order added: " + order.getUsername() + " : " 
-							+ order.getId() + " : " + order.getProductIds().toString());
+		System.out.println("Order added: " + order.getUsername() + " : "
+				+ order.getId() + " : " + order.getProductIds().toString());
 	}
 
 	@Override
@@ -68,8 +68,14 @@ public class InMemoryOrderRepository implements OrderRepository
 	@Override
 	public void updateOrder(Order order) throws RepositoryException
 	{
-		// TODO Auto-generated method stub
-		
+		if (orders.containsKey(order.getId()))
+		{
+			orders.replace(order.getId(), order);
+		}
+		else
+		{
+			throw new RepositoryException("No order with this ID exists in repository");
+		}
 	}
 
 }
