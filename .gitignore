@@ -5,6 +5,7 @@ pom.xml.releaseBackup
 pom.xml.versionsBackup
 pom.xml.next
 release.properties
+ecommerce-webservice/src/main/webapp/META-INF/MANIFEST.MF
 
 ########### Java
 *.class
