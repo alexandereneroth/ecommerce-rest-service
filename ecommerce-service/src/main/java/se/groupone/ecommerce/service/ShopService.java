@@ -251,6 +251,7 @@ public class ShopService
 	{
 		try
 		{
+			cR.getCustomer(customerUsername); // Should throw exception if user does not exist
 			return oR.getOrders(customerUsername);
 		}
 		catch (RepositoryException e)
