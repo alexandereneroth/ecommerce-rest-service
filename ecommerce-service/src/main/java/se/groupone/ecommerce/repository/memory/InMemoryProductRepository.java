@@ -4,6 +4,7 @@ import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.repository.ProductRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,11 +33,10 @@ public class InMemoryProductRepository implements ProductRepository
 		throw new RepositoryException("Cannot get product: product with this id does not exist in repository");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public HashMap<Integer, Product> getProducts()
+	public List<Product> getProducts()
 	{
-		return (HashMap<Integer, Product>) products.clone();
+		return new ArrayList<Product>(products.values());
 	}
 
 	@Override
@@ -59,8 +59,9 @@ public class InMemoryProductRepository implements ProductRepository
 
 	@Override
 	public void decreaseQuantityOfProductsByOne(List<Integer> ids)
-			throws RepositoryException {
-		for(int productId : ids)
+			throws RepositoryException
+	{
+		for (int productId : ids)
 		{
 			products.get(productId).decreaseQuantity(1);
 		}
@@ -68,11 +69,12 @@ public class InMemoryProductRepository implements ProductRepository
 
 	@Override
 	public void increaseQuantityOfProductsByOne(List<Integer> ids)
-			throws RepositoryException {
-		for(int productId : ids)
+			throws RepositoryException
+	{
+		for (int productId : ids)
 		{
 			products.get(productId).increaseQuantity(1);
 		}
-		
+
 	}
 }

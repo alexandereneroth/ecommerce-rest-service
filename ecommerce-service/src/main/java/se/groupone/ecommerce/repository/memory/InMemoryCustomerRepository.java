@@ -4,52 +4,53 @@ import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.repository.CustomerRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryCustomerRepository implements CustomerRepository
 {
 
-	private HashMap<String, Customer> accounts = new HashMap<String, Customer>();
+	private HashMap<String, Customer> customers = new HashMap<String, Customer>();
 
 	@Override
 	public void addCustomer(Customer customer) throws RepositoryException
 	{
-		if (accounts.containsKey(customer.getUsername()))
+		if (customers.containsKey(customer.getUsername()))
 		{
 			throw new RepositoryException("Could not add customer: customer already exists");
 		}
-		accounts.put(customer.getUsername(), customer);
+		customers.put(customer.getUsername(), customer);
 	}
 
 	@Override
 	public Customer getCustomer(String username) throws RepositoryException
 	{
-		if (accounts.containsKey(username))
+		if (customers.containsKey(username))
 		{
-			return accounts.get(username);
+			return customers.get(username);
 		}
 		throw new RepositoryException("Could not get customer: customer goes not exist");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public HashMap<String, Customer> getCustomers()
+	public List<Customer> getCustomers()
 	{
-		return (HashMap<String, Customer>) accounts.clone();
+		return new ArrayList<Customer>(customers.values());
 	}
 
 	@Override
 	public void updateCustomer(Customer customer)
 	{
-		accounts.replace(customer.getUsername(), customer);
+		customers.replace(customer.getUsername(), customer);
 	}
 
 	@Override
 	public void removeCustomer(String username) throws RepositoryException
 	{
-		if (accounts.containsKey(username))
+		if (customers.containsKey(username))
 		{
-			accounts.remove(username);
+			customers.remove(username);
 			return;
 		}
 		throw new RepositoryException("Could not remove customer: customer does not exist.");

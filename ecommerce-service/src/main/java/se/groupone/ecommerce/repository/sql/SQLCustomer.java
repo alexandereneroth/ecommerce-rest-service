@@ -7,7 +7,8 @@ import se.groupone.ecommerce.exception.RepositoryException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class SQLCustomer implements CustomerRepository
 {
@@ -92,7 +93,7 @@ public final class SQLCustomer implements CustomerRepository
 	}
 
 	@Override
-	public HashMap<String, Customer> getCustomers() throws RepositoryException
+	public List<Customer> getCustomers() throws RepositoryException
 	{
 		ResultSet rs;
 		final int numRows;
@@ -120,7 +121,7 @@ public final class SQLCustomer implements CustomerRepository
 		
 		try
 		{
-			HashMap<String, Customer> customerList = new HashMap<>();
+			List<Customer> customerList = new ArrayList<>();
 			for(int i = 0; i < numRows; i++)
 			{
 				rs.next();
@@ -131,7 +132,7 @@ public final class SQLCustomer implements CustomerRepository
 										   rs.getString("last_name"),
 										   rs.getString("address"),
 										   rs.getString("phone"));
-				customerList.put(cu.getUsername(), cu);
+				customerList.add(cu);
 			}
 			rs.close();
 			return customerList;

@@ -2,7 +2,9 @@
 package se.groupone.ecommerce.test;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -58,9 +60,9 @@ public class SQLCustomerTest
 	public void c_getCustomers() throws RepositoryException, InterruptedException
 	{
 		SQLCustomer sqlcu = new SQLCustomer();
-		HashMap<String, Customer> allCustomers = new HashMap<>();
-		allCustomers.put(cu.getUsername(), cu);
-		allCustomers.put(cu2.getUsername(), cu2);
+		List<Customer> allCustomers = new ArrayList<>();
+		allCustomers.add(cu);
+		allCustomers.add(cu2);
 		
 		assertEquals(allCustomers, sqlcu.getCustomers());
 		Thread.sleep(SLEEP);

@@ -4,7 +4,9 @@ import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.repository.OrderRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryOrderRepository implements OrderRepository
 {
@@ -40,11 +42,10 @@ public class InMemoryOrderRepository implements OrderRepository
 		throw new RepositoryException("Cannot get order: order does not exist in repository.");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public HashMap<Integer, Order> getOrders()
+	public List<Order> getOrders()
 	{
-		return (HashMap<Integer, Order>) orders.clone();
+		return new ArrayList<Order>(orders.values());
 	}
 
 	@Override

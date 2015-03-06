@@ -2,7 +2,7 @@ package se.groupone.ecommerce.repository.sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import se.groupone.ecommerce.exception.RepositoryException;
@@ -95,7 +95,7 @@ public class SQLProduct implements ProductRepository
 	}
 
 	@Override
-	public HashMap<Integer, Product> getProducts() throws RepositoryException
+	public List<Product> getProducts() throws RepositoryException
 	{
 		ResultSet rs;
 		final int numRows;
@@ -123,7 +123,7 @@ public class SQLProduct implements ProductRepository
 		
 		try
 		{
-			HashMap<Integer, Product> productList = new HashMap<>();
+			List<Product> productList = new ArrayList<>();
 			for(int i = 0; i < numRows; i++)
 			{
 				rs.next();
@@ -137,7 +137,7 @@ public class SQLProduct implements ProductRepository
 													  rs.getDouble("price"),
 													  rs.getInt("quantity"));
 				final Product product = new Product(productID, productParams);
-				productList.put(productID, product);
+				productList.add(product);
 			}
 			rs.close();
 			return productList;

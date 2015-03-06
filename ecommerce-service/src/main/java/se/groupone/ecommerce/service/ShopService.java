@@ -12,7 +12,7 @@ import se.groupone.ecommerce.repository.OrderRepository;
 import se.groupone.ecommerce.repository.ProductRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopService
@@ -91,7 +91,7 @@ public class ShopService
 		}
 	}
 
-	public synchronized HashMap<Integer, Product> getProducts()
+	public synchronized List<Product> getProducts()
 	{
 		try
 		{
@@ -107,7 +107,7 @@ public class ShopService
 	{
 		try
 		{
-			for (Customer c : cR.getCustomers().values())
+			for (Customer c : cR.getCustomers())
 			{
 				boolean aProductWasRemoved = c.removeProductsWithIdFromShoppingCart(productId);
 				if (aProductWasRemoved)
@@ -235,7 +235,7 @@ public class ShopService
 		}
 	}
 
-	public synchronized HashMap<Integer, Order> getOrders()
+	public synchronized List<Order> getOrders()
 	{
 		return oR.getOrders();
 	}

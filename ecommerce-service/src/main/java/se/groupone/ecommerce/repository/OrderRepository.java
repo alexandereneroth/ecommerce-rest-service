@@ -3,7 +3,7 @@ package se.groupone.ecommerce.repository;
 import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Order;
 
-import java.util.HashMap;
+import java.util.List;
 
 public interface OrderRepository
 {
@@ -13,7 +13,7 @@ public interface OrderRepository
 	
 	public void removeOrder(int id) throws RepositoryException;
 
-	public HashMap<Integer, Order> getOrders();
+	public List<Order> getOrders();
 
 	public int getHighestId();
 }

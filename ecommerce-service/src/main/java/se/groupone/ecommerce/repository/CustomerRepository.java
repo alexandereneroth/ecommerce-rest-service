@@ -3,7 +3,7 @@ package se.groupone.ecommerce.repository;
 import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
 
-import java.util.HashMap;
+import java.util.List;
 
 public interface CustomerRepository
 {
@@ -11,7 +11,7 @@ public interface CustomerRepository
 
 	public Customer getCustomer(String customerUsername) throws RepositoryException;
 
-	public HashMap<String, Customer> getCustomers() throws RepositoryException;
+	public List<Customer> getCustomers() throws RepositoryException;
 
 	public void updateCustomer(Customer customer) throws RepositoryException;
 

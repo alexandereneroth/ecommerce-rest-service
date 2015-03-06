@@ -78,9 +78,9 @@ public class SQLProductTest
 	public void c_getProducts() throws RepositoryException, InterruptedException
 	{
 		SQLProduct sqlp = new SQLProduct();
-		HashMap<Integer, Product> allProducts = new HashMap<>();
-		allProducts.put(p1.getId(), p1);
-		allProducts.put(p2.getId(), p2);
+		List<Product> allProducts = new ArrayList<>();
+		allProducts.add(p1);
+		allProducts.add(p2);
 		
 		assertEquals(allProducts, sqlp.getProducts());
 		Thread.sleep(SLEEP);

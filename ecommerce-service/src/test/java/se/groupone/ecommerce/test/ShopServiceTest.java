@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.After;
@@ -52,7 +52,7 @@ public class ShopServiceTest
 	private static final Product PRODUCT_TOMATO = new Product(PRODUCT_ID_TOMATO, PRODUCT_PARAMETERS_TOMATO);
 	private static final Product PRODUCT_LETTUCE = new Product(PRODUCT_ID_LETTUCE, PRODUCT_PARAMETERS_LETTUCE);
 	// Product collection
-	private static final HashMap<Integer, Product> PRODUCTS = new HashMap<>();
+	private static final List<Product> PRODUCTS = new ArrayList<>();
 
 	// // CUSTOMERS ////
 	private static final Customer CUSTOMER_1 = new Customer("kero", "dreamhack",
@@ -65,7 +65,7 @@ public class ShopServiceTest
 			"marte_carl@spray.se", "Martin", "Carlsson",
 			"Jumkils-dalkarlsbo Dalsäter 230", "0708663760");
 	// Customers
-	private static final HashMap<String, Customer> CUSTOMERS = new HashMap<>();
+	private static final List<Customer> CUSTOMERS = new ArrayList<>();
 
 	// // ORDERS ////
 	// Order IDs
@@ -74,12 +74,12 @@ public class ShopServiceTest
 	private static final ArrayList<Integer> ORDER_PRODUCTS_TWO_TOMATOES = new ArrayList<Integer>();
 	private static final Order ORDER_TWO_TOMATOES;
 
-	private static final HashMap<Integer, Order> ORDERS = new HashMap<>();
+	private static final List<Order> ORDERS = new ArrayList<>();
 
 	static
 	{
-		PRODUCTS.put(PRODUCT_ID_TOMATO, PRODUCT_TOMATO);
-		PRODUCTS.put(PRODUCT_ID_LETTUCE, PRODUCT_LETTUCE);
+		PRODUCTS.add(PRODUCT_TOMATO);
+		PRODUCTS.add(PRODUCT_LETTUCE);
 
 		CUSTOMER_1.addProductToShoppingCart(PRODUCT_ID_LETTUCE);
 		CUSTOMER_1.addProductToShoppingCart(PRODUCT_ID_LETTUCE);
@@ -88,14 +88,14 @@ public class ShopServiceTest
 		CUSTOMER_3.addProductToShoppingCart(PRODUCT_ID_LETTUCE);
 		CUSTOMER_3.addProductToShoppingCart(PRODUCT_ID_LETTUCE);
 
-		CUSTOMERS.put(CUSTOMER_1.getUsername(), CUSTOMER_1);
-		CUSTOMERS.put(CUSTOMER_2.getUsername(), CUSTOMER_2);
-		CUSTOMERS.put(CUSTOMER_3.getUsername(), CUSTOMER_3);
+		CUSTOMERS.add(CUSTOMER_1);
+		CUSTOMERS.add(CUSTOMER_2);
+		CUSTOMERS.add(CUSTOMER_3);
 
 		ORDER_PRODUCTS_TWO_TOMATOES.add(PRODUCT_ID_TOMATO);
 		ORDER_PRODUCTS_TWO_TOMATOES.add(PRODUCT_ID_TOMATO);
 		ORDER_TWO_TOMATOES = new Order(ORDER_ID_TWO_TOMATOES, CUSTOMER_1.getUsername(), ORDER_PRODUCTS_TWO_TOMATOES);
-		ORDERS.put(ORDER_ID_TWO_TOMATOES, ORDER_TWO_TOMATOES);
+		ORDERS.add(ORDER_TWO_TOMATOES);
 	}
 
 	@Before
@@ -174,7 +174,7 @@ public class ShopServiceTest
 	@Test
 	public void testGetProducts() throws RepositoryException
 	{
-		HashMap<Integer, Product> products = shopService.getProducts();
+		List<Product> products = shopService.getProducts();
 
 		verify(pR, times(1)).getProducts();
 		assertThat(products, is(PRODUCTS));
@@ -271,7 +271,7 @@ public class ShopServiceTest
 	@Test
 	public void testGetOrders()
 	{
-		HashMap<Integer, Order> returnedOrders = shopService.getOrders();
+		List<Order> returnedOrders = shopService.getOrders();
 
 		verify(oR).getOrders();
 		assertThat(returnedOrders, is(ORDERS));

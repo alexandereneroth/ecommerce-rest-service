@@ -3,7 +3,6 @@ package se.groupone.ecommerce.repository;
 import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Product;
 
-import java.util.HashMap;
 import java.util.List;
 
 public interface ProductRepository
@@ -12,7 +11,7 @@ public interface ProductRepository
 
 	public Product getProduct(int id) throws RepositoryException;
 
-	public HashMap<Integer, Product> getProducts() throws RepositoryException;
+	public List<Product> getProducts() throws RepositoryException;
 
 	public void removeProduct(int id) throws RepositoryException;
 
