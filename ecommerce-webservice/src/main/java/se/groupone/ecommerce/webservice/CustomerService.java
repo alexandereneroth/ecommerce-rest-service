@@ -1,20 +1,20 @@
 package se.groupone.ecommerce.webservice;
 
 import se.groupone.ecommerce.exception.ShopServiceException;
-
 import se.groupone.ecommerce.model.Customer;
-
 import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 //
 // Uppdatera en användare 
@@ -38,7 +39,7 @@ import java.net.URI;
 //
 // Ta bort en order för en användare
 
-@Path("customer")
+@Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class CustomerService
@@ -108,6 +109,60 @@ public class CustomerService
 		catch (ShopServiceException e)
 		{
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@GET
+	@Path("{username}/cart")
+	public Response getOrder(@PathParam("username") final String username)
+	{
+		ArrayList<Integer> cartList;
+		StringBuilder builder = new StringBuilder();
+		ss = (ShopService) context.getAttribute("ss");
+
+		try
+		{
+			cartList = ss.getCustomer(username).getShoppingCart();
+
+			for (Integer productId : cartList)
+			{
+				builder.append(ss.getProductWithId(productId).toString());
+				builder.append("<br>");
+			}
+
+			return Response.ok(builder.toString()).build();
+		}
+		catch (ShopServiceException e)
+		{
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path("{username}/cart")
+	public Response addToCart(@PathParam("username") final String username,
+			@QueryParam("amount") @DefaultValue("1") final Integer amount,
+			final String productId)
+	{
+		ss = (ShopService) context.getAttribute("ss");
+		try
+		{
+			int productIdInt = Integer.parseInt(productId);
+			try
+			{
+				ss.addProductToCustomer(productIdInt, username, amount);
+				final URI location = uriInfo.getAbsolutePathBuilder().build();
+
+				return Response.created(location).build();
+			}
+			catch (ShopServiceException e)
+			{
+				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+			}
+		}
+		catch (NumberFormatException e)
+		{
+			return Response.status(Status.BAD_REQUEST).entity("Expected body to be parsable as integers").build();
 		}
 	}
 }

@@ -1,9 +1,7 @@
 package se.groupone.ecommerce.webservice;
 
 import se.groupone.ecommerce.model.Order;
-import se.groupone.ecommerce.model.Product;
 
-import java.net.URI;
 import java.util.ArrayList;
 
 import se.groupone.ecommerce.exception.ShopServiceException;
@@ -11,23 +9,17 @@ import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
-@Path("customer")
+@Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public final class OrderService
@@ -36,7 +28,7 @@ public final class OrderService
 	private ServletContext context;
 	@Context
 	private UriInfo uriInfo;
-	
+
 	private ShopService ss;
 
 	@GET
@@ -86,59 +78,6 @@ public final class OrderService
 		catch (ShopServiceException e)
 		{
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
-	}
-
-	@GET
-	@Path("{username}/cart")
-	public Response getOrder(@PathParam("username") final String username)
-	{
-		ArrayList<Integer> cartList;
-		StringBuilder builder = new StringBuilder();
-		ss = (ShopService) context.getAttribute("ss");
-
-		try
-		{
-			cartList = ss.getCustomer(username).getShoppingCart();
-
-			for (Integer productId : cartList)
-			{
-				builder.append(ss.getProductWithId(productId).toString());
-				builder.append("<br>");
-			}
-
-			return Response.ok(builder.toString()).build();
-		}
-		catch (ShopServiceException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-		}
-	}
-
-	@POST
-	@Path("{username}/cart")
-	public Response addToCart(@PathParam("username") final String username, String productId)
-	{
-		ss = (ShopService) context.getAttribute("ss");
-
-		try
-		{
-			int productIdInt = Integer.parseInt(productId);
-			try
-			{
-				ss.addProductToCustomer(productIdInt, username);
-				final URI location = uriInfo.getAbsolutePathBuilder().build();
-				
-				return Response.created(location).build();
-			}
-			catch (ShopServiceException e)
-			{
-				return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
-			}
-		}
-		catch (NumberFormatException e)
-		{
-			return Response.status(Status.BAD_REQUEST).entity("Expected body to be parsable as integers").build();
 		}
 	}
 }
