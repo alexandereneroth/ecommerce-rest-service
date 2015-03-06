@@ -36,7 +36,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not instantiate ShopService.", e);
+			throw new ShopServiceException("Could not instantiate ShopService: " + e.getMessage(), e);
 		}
 	}
 
@@ -48,7 +48,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not add product.", e);
+			throw new ShopServiceException("Could not add product: " + e.getMessage(), e);
 		}
 	}
 
@@ -75,7 +75,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not add product to customer.", e);
+			throw new ShopServiceException("Could not add product to customer: " + e.getMessage(), e);
 		}
 	}
 
@@ -87,7 +87,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not getProduct.", e);
+			throw new ShopServiceException("Could not getProduct: " + e.getMessage(), e);
 		}
 	}
 
@@ -99,7 +99,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not get products.", e);
+			throw new ShopServiceException("Could not get products.: " + e.getMessage(), e);
 		}
 	}
 
@@ -119,7 +119,7 @@ public class ShopService
 		}
 		catch (RepositoryException | ModelException e)
 		{
-			throw new ShopServiceException("Could not remove product.", e);
+			throw new ShopServiceException("Could not remove product: " + e.getMessage(), e);
 		}
 	}
 
@@ -131,7 +131,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not updateProduct", e);
+			throw new ShopServiceException("Could not updateProduct: " + e.getMessage(), e);
 		}
 	}
 
@@ -143,7 +143,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not add customer.", e);
+			throw new ShopServiceException("Could not add customer: " + e.getMessage(), e);
 		}
 	}
 
@@ -155,7 +155,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not get customer.", e);
+			throw new ShopServiceException("Could not get customer: " + e.getMessage(), e);
 		}
 	}
 
@@ -167,7 +167,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not update customer.", e);
+			throw new ShopServiceException("Could not update customer: " + e.getMessage(), e);
 		}
 	}
 
@@ -179,7 +179,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not remove customer.", e);
+			throw new ShopServiceException("Could not remove customer: " + e.getMessage(), e);
 		}
 	}
 
@@ -219,7 +219,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not create order.", e);
+			throw new ShopServiceException("Could not create order: " + e.getMessage(), e);
 		}
 	}
 
@@ -231,7 +231,7 @@ public class ShopService
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not get order.", e);
+			throw new ShopServiceException("Could not get order: " + e.getMessage(), e);
 		}
 	}
 

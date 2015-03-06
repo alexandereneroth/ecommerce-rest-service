@@ -28,7 +28,7 @@ public class InMemoryCustomerRepository implements CustomerRepository
 		{
 			return accounts.get(username);
 		}
-		throw new RepositoryException("Could not get customer: customer goes not exist");
+		throw new RepositoryException("Could not get customer: customer does not exist");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -39,9 +39,16 @@ public class InMemoryCustomerRepository implements CustomerRepository
 	}
 
 	@Override
-	public void updateCustomer(Customer customer)
+	public void updateCustomer(Customer customer) throws RepositoryException
 	{
-		accounts.replace(customer.getUsername(), customer);
+		if (accounts.containsKey(customer.getUsername()))
+		{
+			accounts.replace(customer.getUsername(), customer);
+		}
+		else
+		{
+			throw new RepositoryException("Could not update customer: customer does not exist");
+		}
 	}
 
 	@Override
