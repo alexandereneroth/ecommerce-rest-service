@@ -31,7 +31,10 @@ public class InMemoryOrderRepository implements OrderRepository
 		{
 			orders.remove(id);
 		}
-		throw new RepositoryException("Could not remove order: order does not exist in repository:");
+		else 
+		{
+			throw new RepositoryException("Could not remove order: order does not exist in repository:");
+		}
 	}
 
 	@Override

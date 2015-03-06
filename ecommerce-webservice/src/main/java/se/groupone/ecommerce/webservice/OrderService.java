@@ -2,8 +2,6 @@ package se.groupone.ecommerce.webservice;
 
 import se.groupone.ecommerce.model.Order;
 
-import java.util.ArrayList;
-
 import se.groupone.ecommerce.exception.ShopServiceException;
 import se.groupone.ecommerce.service.ShopService;
 
@@ -21,8 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-
-import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 
 @Path("orders")
 @Produces(MediaType.APPLICATION_JSON)
@@ -55,7 +51,6 @@ public final class OrderService
 	public Response createOrder(final String username)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-
 		try
 		{
 			ss.createOrder(username);
@@ -67,13 +62,30 @@ public final class OrderService
 		}
 	}
 
+	@PUT
+	public Response updateOrder(final Order order)
+	{
+		ss = (ShopService) context.getAttribute("ss");
+		try
+		{
+			ss.updateOrder(order);
+			return Response.ok().build();
+		}
+		catch (ShopServiceException e)
+		{
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
 	@DELETE
-	public Response removeOrder(final String orderId)
+	@Path("{orderId}")
+	public Response removeOrder(@PathParam("orderId") final Integer orderId)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 
 		try
 		{
+			ss.removeOrder(orderId);
 			return Response.ok().build();
 		}
 		catch (ShopServiceException e)

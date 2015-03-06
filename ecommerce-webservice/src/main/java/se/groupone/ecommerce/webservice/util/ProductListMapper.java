@@ -30,23 +30,23 @@ import com.google.gson.stream.JsonWriter;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class ListOfProductMapper implements MessageBodyWriter<ArrayList<Product>>
+public final class ProductListMapper implements MessageBodyWriter<ArrayList<Product>>
 {
 	private Gson gson;
-	private Type listOfProductType = new TypeToken<ArrayList<Product>>()
+	private Type productListType = new TypeToken<ArrayList<Product>>()
 	{
 	}.getType();
 
-	public ListOfProductMapper()
+	public ProductListMapper()
 	{
-		gson = new GsonBuilder().registerTypeAdapter(listOfProductType, new ProductAdapter()).create();
+		gson = new GsonBuilder().registerTypeAdapter(productListType, new ProductAdapter()).create();
 	}
 
 	// MessageBodyWriter
 	@Override
 	public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
 	{
-		return genericType.equals(listOfProductType);
+		return genericType.equals(productListType);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public final class ListOfProductMapper implements MessageBodyWriter<ArrayList<Pr
 	{
 		try (final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
 		{
-			gson.toJson(productList, listOfProductType, writer);
+			gson.toJson(productList, productListType, writer);
 		}
 	}
 
