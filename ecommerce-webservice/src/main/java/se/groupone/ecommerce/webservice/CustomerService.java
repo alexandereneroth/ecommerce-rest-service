@@ -26,21 +26,6 @@ import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.util.ArrayList;
 
-//
-// Uppdatera en användare 
-//
-// Ta bort en användare (eller sätta den som inaktiv)
-//
-// Skapa en order för en användare
-//
-// Hämta en användares alla order
-//
-// Hämta en viss order för en användare 
-//
-// Uppdatera en order för en användare 
-//
-// Ta bort en order för en användare
-
 @Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -63,6 +48,7 @@ public class CustomerService
 		return Response.ok(customer).build();
 	}
 
+	// Hämta en användares alla order
 	@GET
 	@Path("{username}/orders")
 	public Response getOrders(@PathParam("username") final String username)
@@ -72,7 +58,9 @@ public class CustomerService
 		orderList = new ArrayList<Order>(ss.getOrders(username));
 		return Response.ok(new GenericEntity<ArrayList<Order>>(orderList){}).build();
 	}
-
+	
+	// Skapa en ny användare – detta ska returnera en länk till den skapade 
+	//användaren i Location-headern
 	@POST
 	public Response createCustomer(final Customer customer)
 	{
@@ -83,6 +71,7 @@ public class CustomerService
 		return Response.created(location).build();
 	}
 
+	// Uppdatera en användare 
 	@PUT
 	@Path("{username}")
 	public Response putCustomer(@PathParam("username") final String username, final Customer customer)
@@ -100,6 +89,7 @@ public class CustomerService
 		return Response.status(Status.BAD_REQUEST).entity("Username mismatch between path and new customer info").build();
 	}
 
+	// Ta bort en användare (eller sätta den som inaktiv)
 	@DELETE
 	@Path("{username}")
 	public Response deleteCustomer(@PathParam("username") final String username)

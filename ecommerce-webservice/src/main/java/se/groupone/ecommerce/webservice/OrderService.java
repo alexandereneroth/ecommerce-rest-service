@@ -29,6 +29,7 @@ public final class OrderService
 	private UriInfo uriInfo;
 	private ShopService ss;
 
+	// Hämta en viss order för en användare 
 	@GET
 	@Path("{orderId}")
 	public Response getOrder(@PathParam("orderId") final int orderId)
@@ -38,6 +39,7 @@ public final class OrderService
 		return Response.ok(order).build();
 	}
 
+	// Skapa en order för en användare
 	@POST
 	public Response createOrder(final String username)
 	{
@@ -46,6 +48,7 @@ public final class OrderService
 		return Response.ok().build();
 	}
 
+	// Uppdatera en order för en användare 
 	@PUT
 	public Response updateOrder(final Order order)
 	{
@@ -54,6 +57,7 @@ public final class OrderService
 		return Response.ok().build();
 	}
 
+	// Ta bort en order för en användare
 	@DELETE
 	@Path("{orderId}")
 	public Response removeOrder(@PathParam("orderId") final Integer orderId)
