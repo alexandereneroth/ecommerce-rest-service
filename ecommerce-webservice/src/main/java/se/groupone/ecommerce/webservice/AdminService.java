@@ -1,8 +1,10 @@
 package se.groupone.ecommerce.webservice;
 
+import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.repository.memory.InMemoryCustomerRepository;
 import se.groupone.ecommerce.repository.memory.InMemoryOrderRepository;
 import se.groupone.ecommerce.repository.memory.InMemoryProductRepository;
+import se.groupone.ecommerce.repository.sql.SQLCustomer;
 import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
@@ -18,11 +20,11 @@ public class AdminService
 	private ServletContext context;
 	
 	@POST
-	public Response readAdminCommand(String command) 
+	public Response readAdminCommand(String command) throws RepositoryException 
 	{
 		if(command.equals("reset-repo"))
 		{
-			ShopService newShopService = new ShopService(new InMemoryCustomerRepository(), 
+			ShopService newShopService = new ShopService(new SQLCustomer(), 
 					new InMemoryProductRepository(), new InMemoryOrderRepository());
 			
 			context.setAttribute("ss", newShopService);

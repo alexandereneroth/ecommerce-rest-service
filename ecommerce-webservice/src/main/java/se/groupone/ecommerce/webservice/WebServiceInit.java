@@ -24,9 +24,18 @@ public class WebServiceInit implements ServletContextListener
 	@Override
 	public void contextInitialized(ServletContextEvent sce)
 	{
-		ShopService ss = new ShopService(new InMemoryCustomerRepository(), 
-				new InMemoryProductRepository(), new InMemoryOrderRepository());
-		sce.getServletContext().setAttribute("ss", ss);
+		ShopService ss;
+		try
+		{
+			ss = new ShopService(new SQLCustomer(), 
+					new InMemoryProductRepository(), new InMemoryOrderRepository());
+			sce.getServletContext().setAttribute("ss", ss);
+		}
+		catch (RepositoryException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 //		// add some dummy data for DB
 //		final String pName = "Voffla";
