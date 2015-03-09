@@ -1,18 +1,29 @@
 package se.groupone.ecommerce.test.webservice;
 
 import se.groupone.ecommerce.model.Product;
+import se.groupone.ecommerce.model.ProductParameters;
 
+import java.net.URI;
 import java.util.ArrayList;
 
+import se.groupone.ecommerce.service.ShopService;
 import se.groupone.ecommerce.webservice.util.ProductListMapper;
 import se.groupone.ecommerce.webservice.util.ProductMapper;
 
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import static org.junit.Assert.*;
 
@@ -65,9 +76,34 @@ public class ProductServiceTest
 		
 	}
 
-	//  Hämta en användare med ett visst id
+
+	//  Skapa en ny produkt – detta ska returnera en länk till den skapade
+	// produkten i Location-headern
 	@Test
-	public void canGetCustomerOfId()
-	{ // TODO
+	public void canCreateProduct()
+	{
+		fail("Not yet implemented");
 	}
+
+	//  Hämta alla produkter
+	@Test
+	public void canGetAllProducts()
+	{
+		fail("Not yet implemented");
+	}
+
+	//  Uppdatera en produkt
+	@Test
+	public void canUpdateAProduct()
+	{
+		fail("Not yet implemented");
+	}
+
+	//  Ta bort en produkt (eller sätta den som inaktiv)
+	@Test
+	public void canDeleteAProduct()
+	{
+		fail("Not yet implemented");
+	}
+	
 }
