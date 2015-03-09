@@ -50,5 +50,23 @@ public class ShoppingCart
 	{
 		return "ShoppingCart [products=" + productIds + "]";
 	}
+	
+	@Override
+	public boolean equals(Object other)
+	{
+		if (other == this)
+		{
+			return true;
+		}
+		if (other instanceof ShoppingCart)
+		{
+			ShoppingCart sc = (ShoppingCart) other;
+			if(this.getProductIds().equals(sc.getProductIds()))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

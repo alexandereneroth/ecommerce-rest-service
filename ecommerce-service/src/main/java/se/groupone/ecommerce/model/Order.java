@@ -14,14 +14,16 @@ public final class Order
 	private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");	
 
 	@SuppressWarnings("unchecked")
-	public Order(int id, String customerUsername, ArrayList<Integer> shoppingCartProductIds)
+	public Order(int id,
+			     String customerUsername,
+			     ArrayList<Integer> shoppingCartProductIds)
 	{
 		this.id = id;
-		// Klonar shoppingcart, ej referens då shoppingcarten kommer tömmas.
 		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
 		this.customerUsername = customerUsername;
 		this.dateCreated = new Date(System.currentTimeMillis());
 	}
+	@SuppressWarnings("unchecked")
 	public Order(int id,
 				 String customerUsername,
 				 ArrayList<Integer> shoppingCartProductIds,
@@ -29,7 +31,6 @@ public final class Order
 				 Date dateShipped)
 	{
 		this.id = id;
-		// Klonar shoppingcart, ej referens då shoppingcarten kommer tömmas.
 		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
 		this.customerUsername = customerUsername;
 		this.dateCreated = dateCreated;
