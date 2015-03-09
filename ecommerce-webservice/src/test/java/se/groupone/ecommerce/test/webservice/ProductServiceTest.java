@@ -47,6 +47,8 @@ public class ProductServiceTest
 	private static final Client client = ClientBuilder.newBuilder().register(ProductMapper.class).register(ProductParamMapper.class).build();
 
 	private static final WebTarget RESOURCE_TARGET;
+	
+	private static final int FIRST_GENERATED_PRODUCT_ID = 3;
 
 	static
 	{
@@ -117,7 +119,7 @@ public class ProductServiceTest
 		
 		//GET
 
-		WebTarget targetProductId1 = RESOURCE_TARGET.path("3");
+		WebTarget targetProductId1 = RESOURCE_TARGET.path(FIRST_GENERATED_PRODUCT_ID + "");
 		Invocation invocationProd1 = targetProductId1.request(MediaType.APPLICATION_JSON).buildGet();
 		Response responseProd1 = invocationProd1.invoke();
 		System.out.println("Requst status code: " + responseProd1.getStatus());
