@@ -3,41 +3,37 @@ package se.groupone.ecommerce.test.webservice;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
 
-import java.net.URI;
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-import se.groupone.ecommerce.service.ShopService;
-import se.groupone.ecommerce.webservice.util.ProductListMapper;
 import se.groupone.ecommerce.webservice.util.ProductMapper;
 import se.groupone.ecommerce.webservice.util.ProductParamMapper;
 
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 
-import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 
 public class ProductServiceTest
 {
 	private static final String HOST_NAME = "localhost";
-	private static final int HOST_IP = 8080;
+	private static final int HOST_IP = 9999;
 	private static final String PROJECT_NAME = "ecommerce-webservice";
 	private static final String RESOURCE = "products";
 	private static final String URL_BASE = "http://" + HOST_NAME + ":" + HOST_IP + "/"
@@ -48,107 +44,140 @@ public class ProductServiceTest
 
 	private static final WebTarget RESOURCE_TARGET;
 	
-	private static final int FIRST_GENERATED_PRODUCT_ID = 3;
+	private static final int FIRST_GENERATED_PRODUCT_ID = 1;
 
+	// // PRODUCTS ////
+	// ProductsParameters
+	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vedgetables", "Spain", "A beautiful tomato",
+			"http://google.com/tomato.jpg", 45, 5);
+	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vedgetables", "France", "A mound of lettuce",
+			"http://altavista.com/lettuce.jpg", 88, 2);
+
+	// ProductIDs
+	private static final int PRODUCT_ID_TOMATO = FIRST_GENERATED_PRODUCT_ID;
+	private static final int PRODUCT_ID_LETTUCE = FIRST_GENERATED_PRODUCT_ID + 1;
+	// Products
+	private static final Product PRODUCT_TOMATO = new Product(PRODUCT_ID_TOMATO, PRODUCT_PARAMETERS_TOMATO);
+	private static final Product PRODUCT_LETTUCE = new Product(PRODUCT_ID_LETTUCE, PRODUCT_PARAMETERS_LETTUCE);
+	
+	
 	static
 	{
 		RESOURCE_TARGET = client.target(RESOURCE_URL);
 	}
-
-	//  Hämta en produkt med ett visst id
-	@Test
-	public void canGetProductAndProductByIdWithMediaTypeJson()
+	
+	@After
+	public void tearDown() 
 	{
-		WebTarget targetProductId1 = RESOURCE_TARGET.path("1");
-		WebTarget targetProductId2 = RESOURCE_TARGET.path("2");
-
-		Invocation invocationProd1 = targetProductId1.request(MediaType.APPLICATION_JSON).buildGet();
-		Invocation invocationProd2 = targetProductId2.request(MediaType.APPLICATION_JSON).buildGet();
-
-		Response responseProd1 = invocationProd1.invoke();
-		Response responseProd2 = invocationProd2.invoke();
-
-		assertEquals(MediaType.APPLICATION_JSON, responseProd1.getMediaType().toString());
-		assertEquals(MediaType.APPLICATION_JSON, responseProd2.getMediaType().toString());
-
-		// System.out.println(responseProd1.readEntity(String.class).getClass());
-		System.out.println();
-
-		System.out.println("Requst status code: " + responseProd1.getStatus());
-		System.out.println("Product with ID 1:");
-		System.out.println(responseProd1.readEntity(Product.class));
-
-		System.out.println();
-
-		System.out.println("Requst status code: " + responseProd2.getStatus());
-		System.out.println("Product with ID 2:");
-		System.out.println(responseProd2.readEntity(String.class));
-
+		WebTarget admin = client.target(URL_BASE + "/admin");
+		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 	}
 
+	//  Hämta en produkt med ett visst id
 	//  Skapa en ny produkt – detta ska returnera en länk till den skapade
 	// produkten i Location-headern
 	@Test
-	public void canCreateProduct()
+	public void canCreateAndGetProduct()
 	{
-
-		/*productJson.add("id", new JsonPrimitive(product.getId()));
-		productJson.add("title", new JsonPrimitive(product.getTitle()));
-		productJson.add("category", new JsonPrimitive(product.getCategory()));
-		productJson.add("manufacturer", new JsonPrimitive(product.getManufacturer()));
-		productJson.add("description", new JsonPrimitive(product.getDescription()));
-		productJson.add("img", new JsonPrimitive(product.getImg()));
-		productJson.add("price", new JsonPrimitive(product.getPrice()));
-		productJson.add("quantity", new JsonPrimitive(product.getQuantity()));*/
-
 		//POST
-		String jsonProductString =
-				"{"
-				+ "\"title\":\"carrot\", "
-				+ "\"category\":\"vedgetable\", "
-				+ "\"manufacturer\":\"ica\", "
-				+ "\"description\":\"a nice carrot\", "
-				+ "\"img\":\"hello.jpg\", "
-				+ "\"price\":5,"
-				+ "\"quantity\":5"
-				+ "}";
-		Invocation createInvocation = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
-										.buildPost(Entity.entity(jsonProductString,MediaType.APPLICATION_JSON));
+		Response creationResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+										.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
+										.invoke();
 		
-		Response response = createInvocation.invoke();
 		
 		//GET
-
-		WebTarget targetProductId1 = RESOURCE_TARGET.path(FIRST_GENERATED_PRODUCT_ID + "");
-		Invocation invocationProd1 = targetProductId1.request(MediaType.APPLICATION_JSON).buildGet();
-		Response responseProd1 = invocationProd1.invoke();
-		System.out.println("Requst status code: " + responseProd1.getStatus());
-		System.out.println("Product with ID 3:");
-		System.out.println(responseProd1.readEntity(String.class));
+		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+				.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
-		
+		assertThat(createdProduct, is(PRODUCT_TOMATO));
 		
 	}
 
 	//  Hämta alla produkter
 	@Test
-	public void canGetAllProducts()
+	public void canGetAllProducts() throws IOException
 	{
-		fail("Not yet implemented");
+		//POST
+		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
+						.invoke();
+		//POST
+		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+						.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE,MediaType.APPLICATION_JSON))
+						.invoke();
+		
+//		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+//				.request(MediaType.APPLICATION_JSON).get(Product.class);
+
+		String json = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON).get(String.class);
+		System.out.println(json);
+//		Gson gson = new Gson();
+//		Type collectionType = new TypeToken<ArrayList<Product>>(){}.getType();
+//		ArrayList<Product> ints2 = gson.fromJson(json, collectionType);
+//		
+//		for(Product product : ints2)
+//		{
+//			System.out.println(product);
+//			
+//		}
 	}
 
 	//  Uppdatera en produkt
 	@Test
 	public void canUpdateAProduct()
 	{
-		fail("Not yet implemented");
+		//POST
+		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
+						.invoke();
+
+		//GET
+		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+				.request(MediaType.APPLICATION_JSON).get(Product.class);
+		
+		assertThat(createdProduct, is(PRODUCT_TOMATO));
+		
+
+		//PUT
+		RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "").request(MediaType.APPLICATION_JSON)
+						.buildPut(Entity.entity(PRODUCT_PARAMETERS_LETTUCE,MediaType.APPLICATION_JSON))
+						.invoke();
+
+		//GET
+		Product updatedProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+				.request(MediaType.APPLICATION_JSON).get(Product.class);
+		
+		assertThat(updatedProduct.getTitle(), is(PRODUCT_LETTUCE.getTitle()));
+		assertThat(updatedProduct.getQuantity(), is(PRODUCT_LETTUCE.getQuantity()));
 	}
 
 	//  Ta bort en produkt (eller sätta den som inaktiv)
 	@Test
-	public void canDeleteAProduct()
+	public void canDeleteAProduct() throws IOException
 	{
-		fail("Not yet implemented");
+		//POST
+		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
+						.invoke();
+
+		//GET
+		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+				.request(MediaType.APPLICATION_JSON).get(Product.class);
+		
+		assertThat(createdProduct, is(PRODUCT_TOMATO));
+
+		//DELETE
+		RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "").request(MediaType.APPLICATION_JSON)
+						.delete();
+
+		//GET
+		Response deletedProductResponse = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+				.request(MediaType.APPLICATION_JSON).get();
+		String body = new BufferedReader(new InputStreamReader((InputStream)deletedProductResponse.getEntity())).readLine();
+		
+		assertThat(deletedProductResponse.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+		assertThat(body, containsString("does not exist"));
+		
 	}
 
 }
