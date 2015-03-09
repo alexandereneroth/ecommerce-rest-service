@@ -30,6 +30,8 @@ public class ProductServiceTest
 			+ PROJECT_NAME + "/" + RESOURCE;
 	private static final Client client = ClientBuilder.newBuilder().register(ProductMapper.class).build();
 	
+
+	//  Hämta en produkt med ett visst id
 	@Test
 	public void canGetProductAndProductByIdWithMediaTypeJson()
 	{
