@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import se.groupone.ecommerce.service.ShopService;
 import se.groupone.ecommerce.webservice.util.ProductListMapper;
 import se.groupone.ecommerce.webservice.util.ProductMapper;
+import se.groupone.ecommerce.webservice.util.ProductParamMapper;
 
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -36,14 +37,14 @@ import com.google.gson.JsonPrimitive;
 public class ProductServiceTest
 {
 	private static final String HOST_NAME = "localhost";
-	private static final int HOST_IP = 8080;
+	private static final int HOST_IP = 9999;
 	private static final String PROJECT_NAME = "ecommerce-webservice";
 	private static final String RESOURCE = "products";
 	private static final String URL_BASE = "http://" + HOST_NAME + ":" + HOST_IP + "/"
 			+ PROJECT_NAME;
 	private static final String RESOURCE_URL = "http://" + HOST_NAME + ":" + HOST_IP + "/"
 			+ PROJECT_NAME + "/" + RESOURCE;
-	private static final Client client = ClientBuilder.newBuilder().register(ProductMapper.class).build();
+	private static final Client client = ClientBuilder.newBuilder().register(ProductMapper.class).register(ProductParamMapper.class).build();
 
 	private static final WebTarget RESOURCE_TARGET;
 
@@ -97,10 +98,10 @@ public class ProductServiceTest
 		productJson.add("img", new JsonPrimitive(product.getImg()));
 		productJson.add("price", new JsonPrimitive(product.getPrice()));
 		productJson.add("quantity", new JsonPrimitive(product.getQuantity()));*/
-		
+
+		//POST
 		String jsonProductString =
 				"{"
-				+ "\"id\":5, "
 				+ "\"title\":\"carrot\", "
 				+ "\"category\":\"vedgetable\", "
 				+ "\"manufacturer\":\"ica\", "
@@ -111,6 +112,19 @@ public class ProductServiceTest
 				+ "}";
 		Invocation createInvocation = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
 										.buildPost(Entity.entity(jsonProductString,MediaType.APPLICATION_JSON));
+		
+		Response response = createInvocation.invoke();
+		
+		//GET
+
+		WebTarget targetProductId1 = RESOURCE_TARGET.path("3");
+		Invocation invocationProd1 = targetProductId1.request(MediaType.APPLICATION_JSON).buildGet();
+		Response responseProd1 = invocationProd1.invoke();
+		System.out.println("Requst status code: " + responseProd1.getStatus());
+		System.out.println("Product with ID 3:");
+		System.out.println(responseProd1.readEntity(String.class));
+		
+		
 		
 	}
 

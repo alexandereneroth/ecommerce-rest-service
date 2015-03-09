@@ -39,6 +39,7 @@ public class CustomerService
 
 	private ShopService ss;
 
+	// Hämta en användare med ett visst id
 	@GET
 	@Path("{username}")
 	public Response getCustomer(@PathParam("username") final String username)
