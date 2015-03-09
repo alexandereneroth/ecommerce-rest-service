@@ -1,5 +1,6 @@
 package se.groupone.ecommerce.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -10,6 +11,7 @@ public final class Order
 
 	private Date dateCreated, dateShipped = null;
 	private ArrayList<Integer> productIds = new ArrayList<>();
+	private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");	
 
 	@SuppressWarnings("unchecked")
 	public Order(int id, String customerUsername, ArrayList<Integer> shoppingCartProductIds)
@@ -19,6 +21,27 @@ public final class Order
 		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
 		this.customerUsername = customerUsername;
 		this.dateCreated = new Date(System.currentTimeMillis());
+	}
+	public Order(int id,
+				 String customerUsername,
+				 ArrayList<Integer> shoppingCartProductIds,
+				 Date dateCreated,
+				 Date dateShipped)
+	{
+		this.id = id;
+		// Klonar shoppingcart, ej referens då shoppingcarten kommer tömmas.
+		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
+		this.customerUsername = customerUsername;
+		this.dateCreated = dateCreated;
+		
+		if(dateShipped.toString().equals("1970-01-01"))
+		{
+			this.dateShipped = null;
+		}
+		else
+		{
+			this.dateShipped = dateShipped;	
+		}
 	}
 
 	public int getId()
@@ -79,7 +102,10 @@ public final class Order
 			Order o = (Order) other;
 			if (this.getId() == o.getId()
 			 && this.getUsername().equals(o.getUsername())
-			 && this.getProductIds().equals(o.getProductIds()))
+			 && this.getProductIds().equals(o.getProductIds())
+			 && sqlDateFormat.format(this.getDateCreated()).equals(sqlDateFormat.format(o.getDateCreated()))
+			 && this.isShipped() == o.isShipped()
+			 )
 			{
 				return true;
 			}

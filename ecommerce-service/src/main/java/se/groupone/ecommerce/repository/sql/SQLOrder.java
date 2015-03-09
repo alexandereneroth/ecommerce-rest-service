@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Order;
@@ -15,6 +17,7 @@ public class SQLOrder implements OrderRepository
 	private final String dbTableOrders = "order";
 	private final String dbTableOrderItems = "order_items";
 	private final SQLConnector sql;
+	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");	
 
 	public SQLOrder() throws RepositoryException
 	{
@@ -31,21 +34,33 @@ public class SQLOrder implements OrderRepository
 	@Override
 	public void addOrder(final Order order) throws RepositoryException
 	{
+		final String sqlDateCreated = sdf.format(order.getDateCreated());
+		String sqlDateShipped;
+		if(order.getDateShipped() == null)
+		{
+			sqlDateShipped = sdf.format(new Date(0L));
+		}
+		else
+		{
+			sqlDateShipped = sdf.format(order.getDateShipped());
+		}
+		
 		StringBuilder toOrderTable = new StringBuilder();
 		toOrderTable.append("INSERT INTO " + DBInfo.database + ".`" + dbTableOrders +"` ");
-		toOrderTable.append("(id_order, customer_name) ");
+		toOrderTable.append("(id_order, customer_name, created, shipped) ");
 		toOrderTable.append("VALUES(" + order.getId() + ", ");
-		toOrderTable.append("'" + order.getUsername() + "');");
+		toOrderTable.append("'" + order.getUsername() + "', ");
+		toOrderTable.append("'" + sqlDateCreated + "', ");
+		toOrderTable.append("'" + sqlDateShipped + "');");
 		try
 		{
 			sql.query(toOrderTable.toString());
 		}
 		catch(SQLException e)
 		{
-			throw new RepositoryException("Could not Customer to Order table in database!", e);
+			throw new RepositoryException("Could not add Order values to database!", e);
 		}
 		
-	
 		ArrayList<Integer> productIDs = order.getProductIds();
 		try
 		{
@@ -57,12 +72,11 @@ public class SQLOrder implements OrderRepository
 				toOrderItemsTable.append("VALUES(" + order.getId() + ", ");
 				toOrderItemsTable.append("" + productIDs.get(i) + ");");
 				sql.query(toOrderItemsTable.toString());
-				System.out.println("SQL: "+toOrderItemsTable.toString());
 			}
 		}
 		catch(SQLException e)
 		{
-			throw new RepositoryException("Could not add OrderIDs to Order! in database!", e);
+			throw new RepositoryException("Could not add OrderID values to database!", e);
 		}
 	}
 	
@@ -70,25 +84,37 @@ public class SQLOrder implements OrderRepository
 	public Order getOrder(final int orderID) throws RepositoryException
 	{
 		final String customerUserName;
-		final int numProductsInOrder;
-		StringBuilder customerQuery = new StringBuilder();
-		customerQuery.append("SELECT customer_name FROM " + DBInfo.database + "." + dbTableOrders +" ");
-		customerQuery.append("WHERE id_order = " + orderID + ";");
+		Date dateOrderCreated;
+		Date dateOrderShipped;
 		ResultSet rs;
+		
+		StringBuilder orderInfoQuery = new StringBuilder();
+		orderInfoQuery.append("SELECT customer_name, created, shipped FROM " + DBInfo.database + ".`" + dbTableOrders +"` ");
+		orderInfoQuery.append("WHERE id_order = " + orderID + ";");
 		try
 		{
-			rs = sql.queryResult(customerQuery.toString());
+			rs = sql.queryResult(orderInfoQuery.toString());
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches for CustomerUserName found in database!\nSQL QUERY: "+customerQuery.toString());
+				throw new RepositoryException("No matches for found for query: "+orderInfoQuery.toString());
 			}
+		}
+		catch(SQLException e)
+		{
+			throw new RepositoryException("Could not query database for Order info!", e);
+		}
+		
+		try
+		{
 			rs.next();
-			customerUserName = rs.getString(1);
+			customerUserName = rs.getString("customer_name");
+			dateOrderCreated = rs.getDate("created");
+			dateOrderShipped = rs.getDate("shipped");
 			rs.close();
 		}
 		catch(SQLException e)
 		{
-			throw new RepositoryException("Could not query CustomerUserName from Order!", e);
+			throw new RepositoryException("Could not parse SQL values!", e);
 		}
 		
 		StringBuilder numOfItemIDsQuery = new StringBuilder();
@@ -99,15 +125,24 @@ public class SQLOrder implements OrderRepository
 			rs = sql.queryResult(numOfItemIDsQuery.toString());
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches for count(id_product) in database!\nSQL QUERY: "+customerQuery.toString());
+				throw new RepositoryException("No matches for count(id_product) in database!\nSQL QUERY: "+numOfItemIDsQuery.toString());
 			}
+		}
+		catch(SQLException e)
+		{
+			throw new RepositoryException("Could not count product IDs from OrderItems database!", e);
+		}
+		
+		final int numProductsInOrder;
+		try
+		{
 			rs.next();
 			numProductsInOrder = rs.getInt(1);
 			rs.close();
 		}
 		catch(SQLException e)
 		{
-			throw new RepositoryException("Could not count product IDs from OrderItems database!", e);
+			throw new RepositoryException("Could not parse SQL values!", e);
 		}
 		
 		StringBuilder orderIDsQuery = new StringBuilder();
@@ -118,14 +153,13 @@ public class SQLOrder implements OrderRepository
 			rs = sql.queryResult(orderIDsQuery.toString());
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches for orderID found in OrderItems database!\nSQL QUERY: "+customerQuery.toString());
+				throw new RepositoryException("No matches for orderID found in database!\nSQL QUERY: "+orderIDsQuery.toString());
 			}
 		}
 		catch(SQLException e)
 		{
 			throw new RepositoryException("Could not query CustomerUserName from Order!", e);
 		}
-		
 		
 		try
 		{
@@ -136,9 +170,7 @@ public class SQLOrder implements OrderRepository
 				productIds.add(rs.getInt(1));
 			}
 			rs.close();
-			Order order = new Order(orderID, customerUserName, productIds);
-			return order;
-			
+			return new Order(orderID, customerUserName, productIds, dateOrderCreated, dateOrderShipped);
 		}
 		catch(SQLException e)
 		{
@@ -189,12 +221,21 @@ public class SQLOrder implements OrderRepository
 			{
 				throw new RepositoryException("No matches for count(customer_name) in database!\nSQL QUERY: "+countOrderIDs.toString());
 			}
-			rs.next();
-			numOrderIDs = rs.getInt(1);
 		}
 		catch(SQLException e)
 		{
 			throw new RepositoryException("Could not fetch OrderIDs from database!\nSQL: "+countOrderIDs.toString(), e);
+		}
+		
+		try
+		{
+			rs.next();
+			numOrderIDs = rs.getInt(1);
+			rs.close();
+		}
+		catch(SQLException e)
+		{
+			throw new RepositoryException("Could not parse SQL values!", e);
 		}
 		
 		StringBuilder getOrderIDs = new StringBuilder();
@@ -212,7 +253,6 @@ public class SQLOrder implements OrderRepository
 		{
 			throw new RepositoryException("Could not fetch OrderIDs from database!\nSQL QUERY: "+getOrderIDs.toString(), e);
 		}
-		
 		
 		int customerOrderIDs[] = new int[numOrderIDs];
 		try
@@ -257,9 +297,65 @@ public class SQLOrder implements OrderRepository
 	}
 
 	@Override
-	public void updateOrder(Order order) throws RepositoryException
+	public void updateOrder(final Order order) throws RepositoryException
 	{
-		// TODO Auto-generated method stub
+		//Firstly, lets convert java.util.Date format into MYSQL DATE format String
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");	
+		final String sqlDateCreated = sdf.format(order.getDateCreated());
+		String sqlDateShipped;
+		if(order.getDateShipped() == null)
+		{
+			sqlDateShipped = sdf.format(new Date(0L));
+		}
+		else
+		{
+			sqlDateShipped = sdf.format(order.getDateShipped());
+		}
 		
+		//Now lets update the orders created and shipped fields
+		StringBuilder updateTableOrders = new StringBuilder();
+		updateTableOrders.append("UPDATE " + DBInfo.database + ".`" + dbTableOrders +"` SET ");
+		updateTableOrders.append("created = '" + sqlDateCreated + "', ");
+		updateTableOrders.append("shipped = '" + sqlDateShipped + "' ");
+		updateTableOrders.append("WHERE id_order = " + order.getId() + ";");
+		
+		try
+		{
+			sql.query(updateTableOrders.toString());
+		}
+		catch(SQLException e)
+		{
+			throw new RepositoryException("Could not query Order update!", e);
+		}
+		
+		StringBuilder deleteOrderItems = new StringBuilder();
+		deleteOrderItems.append("DELETE FROM " + DBInfo.database + "." + dbTableOrderItems +" ");
+		deleteOrderItems.append("WHERE id_order = " + order.getId() + ";");
+		try
+		{
+			sql.query(deleteOrderItems.toString());
+		}
+		catch(SQLException e)
+		{
+			throw new RepositoryException("Could not delete Order items!", e);
+		}
+		
+		ArrayList<Integer> productIDs = order.getProductIds();
+		try
+		{
+			for(int i = 0; i < productIDs.size(); i++)
+			{
+				StringBuilder toOrderItemsTable = new StringBuilder();
+				toOrderItemsTable.append("INSERT INTO " + DBInfo.database + "." + dbTableOrderItems +" ");
+				toOrderItemsTable.append("(id_order, id_product) ");
+				toOrderItemsTable.append("VALUES(" + order.getId() + ", ");
+				toOrderItemsTable.append("" + productIDs.get(i) + ");");
+				sql.query(toOrderItemsTable.toString());
+			}
+		}
+		catch(SQLException e)
+		{
+			throw new RepositoryException("Could not add OrderIDs to Order! in database!", e);
+		}
 	}
 }

@@ -167,7 +167,7 @@ public class SQLProduct implements ProductRepository
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("UPDATE "+DBInfo.database+"."+dbTable+" SET ");
-		builder.append("id_product = "+product.getId()+", ");
+		//builder.append("id_product = "+product.getId()+", ");
 		builder.append("title = '"+product.getTitle()+"', ");
 		builder.append("category = '"+product.getCategory()+"', ");
 		builder.append("manufacturer = '"+product.getManufacturer()+"', ");
