@@ -3,6 +3,7 @@ package se.groupone.ecommerce.webservice;
 import se.groupone.ecommerce.model.Order;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 import se.groupone.ecommerce.service.ShopService;
 
@@ -16,6 +17,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -68,6 +70,6 @@ public final class OrderService
 	{
 		ss = (ShopService) context.getAttribute("ss");
 		ss.removeOrder(orderId);
-		return Response.ok().build();
+		return Response.noContent().build();
 	}
 }

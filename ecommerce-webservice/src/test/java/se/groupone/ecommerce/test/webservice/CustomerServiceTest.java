@@ -3,6 +3,7 @@ package se.groupone.ecommerce.test.webservice;
 import static org.junit.Assert.*;
 
 import se.groupone.ecommerce.model.Customer;
+import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
 
@@ -46,14 +47,16 @@ public class CustomerServiceTest
 			+ PROJECT_NAME;
 	private static final String CUSTOMERS_URL = URL_BASE + "/customers";
 	private static final String PRODUCTS_URL = URL_BASE + "/products";
+	private static final String ORDERS_URL = URL_BASE + "/orders";
 	private static final Client client = ClientBuilder.newBuilder()
 			.register(CustomerMapper.class)
 			.register(IntegerListMapper.class)
 			.register(ProductMapper.class)
 			.register(ProductParamMapper.class)
 			.build();
-	private static final WebTarget CUSTOMER_TARGET;
-	private static final WebTarget PRODUCT_TARGET;
+	private static final WebTarget CUSTOMERS_TARGET;
+	private static final WebTarget PRODUCTS_TARGET;
+	private static final WebTarget ORDERS_TARGET;
 	private static final Customer CUSTOMER1;
 	private static final Customer CUSTOMER2;
 	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO;
@@ -61,8 +64,9 @@ public class CustomerServiceTest
 
 	static
 	{
-		CUSTOMER_TARGET = client.target(CUSTOMERS_URL);
-		PRODUCT_TARGET = client.target(PRODUCTS_URL);
+		CUSTOMERS_TARGET = client.target(CUSTOMERS_URL);
+		PRODUCTS_TARGET = client.target(PRODUCTS_URL);
+		ORDERS_TARGET = client.target(ORDERS_URL);
 		CUSTOMER1 = new Customer("tom", "password", "email@email.com", "Tomcat", "Blackmore", "C3LStreet", "123456");
 		CUSTOMER2 = new Customer("alex", "password", "alex@email.com", "Alexander", "Sol", "Banangatan 1", "543211");
 
@@ -85,7 +89,7 @@ public class CustomerServiceTest
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 
 		// Remove customer2 from DB
-		CUSTOMER_TARGET.path(CUSTOMER2.getUsername())
+		CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.buildDelete()
 				.invoke();
@@ -96,13 +100,13 @@ public class CustomerServiceTest
 	public void canCreateCustomer()
 	{
 		// POST - Create customer
-		Response response = CUSTOMER_TARGET.request(MediaType.APPLICATION_JSON)
+		Response response = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER2, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, response.getStatus());
 
 		// GET - Retrieve created customer
-		Customer createdCustomer = CUSTOMER_TARGET.path(CUSTOMER2.getUsername())
+		Customer createdCustomer = CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get(Customer.class);
 		assertEquals(createdCustomer, CUSTOMER2);
@@ -116,7 +120,7 @@ public class CustomerServiceTest
 		final URI EXPECTED_URI = new URI("http://localhost:8080/ecommerce-webservice/customers/"
 				+ CUSTOMER2.getUsername());
 		// POST - Create new customer
-		Response response = CUSTOMER_TARGET.request(MediaType.APPLICATION_JSON)
+		Response response = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER2, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, response.getStatus());
@@ -127,10 +131,10 @@ public class CustomerServiceTest
 
 	//  Uppdatera en användare
 	@Test
-	public void canUpdateUser()
+	public void canUpdateCustomer()
 	{
 		// POST - create Customer2 in repo
-		Response postResponse = CUSTOMER_TARGET.request(MediaType.APPLICATION_JSON)
+		Response postResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER2, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, postResponse.getStatus());
@@ -140,14 +144,14 @@ public class CustomerServiceTest
 				CUSTOMER2.getFirstName(), CUSTOMER2.getLastName(),
 				CUSTOMER2.getAddress(), CUSTOMER2.getPhoneNumber());
 		// POST - Update customer
-		Response putResponse = CUSTOMER_TARGET.path(CUSTOMER2.getUsername())
+		Response putResponse = CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.buildPut(Entity.entity(updatedCustomer2, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(204, putResponse.getStatus());
 
 		// GET - Check that customer is updated
-		Customer updatedCustomer2FromRepo = CUSTOMER_TARGET.path(CUSTOMER2.getUsername())
+		Customer updatedCustomer2FromRepo = CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get(Customer.class);
 		assertEquals(updatedCustomer2, updatedCustomer2FromRepo);
@@ -158,26 +162,26 @@ public class CustomerServiceTest
 	public void canRemoveCustomer()
 	{
 		// POST - Create customer
-		Response postResponse = CUSTOMER_TARGET.request(MediaType.APPLICATION_JSON)
+		Response postResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER2, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, postResponse.getStatus());
 
 		// GET - Check that it is in repo
-		Response thisShouldSucceedResponse = CUSTOMER_TARGET.path(CUSTOMER2.getUsername())
+		Response thisShouldSucceedResponse = CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get();
 		assertEquals(200, thisShouldSucceedResponse.getStatus());
 
 		// DELETE - Delete it
-		Response deleteResponse = CUSTOMER_TARGET.path(CUSTOMER2.getUsername())
+		Response deleteResponse = CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.buildDelete()
 				.invoke();
 		assertEquals(204, deleteResponse.getStatus());
 
 		// GET - Try to retrieve deleted customer, should fail
-		Response thisShouldFailResponse = CUSTOMER_TARGET.path(CUSTOMER2.getUsername())
+		Response thisShouldFailResponse = CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get();
 		assertEquals(400, thisShouldFailResponse.getStatus());
@@ -188,13 +192,13 @@ public class CustomerServiceTest
 	{
 
 		// POST - Create customer
-		Response createCustomerResponse = CUSTOMER_TARGET.request(MediaType.APPLICATION_JSON)
+		Response createCustomerResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER2, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, createCustomerResponse.getStatus());
 
 		// POST - Create products
-		Response createProductResponse1 = PRODUCT_TARGET.request(MediaType.APPLICATION_JSON)
+		Response createProductResponse1 = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, createProductResponse1.getStatus());
@@ -211,7 +215,7 @@ public class CustomerServiceTest
 				.get(Product.class);
 
 		// POST - Add products to cart
-		final Response addProductsToCartResponse = CUSTOMER_TARGET
+		final Response addProductsToCartResponse = CUSTOMERS_TARGET
 				.path(CUSTOMER2.getUsername())
 				.path("cart")
 				.request()
@@ -220,32 +224,98 @@ public class CustomerServiceTest
 		assertEquals(201, addProductsToCartResponse.getStatus());
 		
 		// GET - Get cart contents and verify
-		final Response shoppingCartGetResponse = CUSTOMER_TARGET
+		final Response shoppingCartGetResponse = CUSTOMERS_TARGET
 				.path(CUSTOMER2.getUsername())
 				.path("cart")
 				.request(MediaType.APPLICATION_JSON)
 				.get();
 		System.out.println(shoppingCartGetResponse.getStatus());
 		
-		final String shoppingCartJson = CUSTOMER_TARGET
+		final String shoppingCartJson = CUSTOMERS_TARGET
 				.path(CUSTOMER2.getUsername())
 				.path("cart")
 				.request(MediaType.APPLICATION_JSON)
 				.get(String.class);
 		
-		// Fulkod...
+		// Fulkod... TODO Avfula detta...
 		Gson gson = new Gson();
 		JsonObject shoppingCartJsonObject = gson.fromJson(shoppingCartJson, JsonObject.class);
-		System.out.println(shoppingCartJsonObject.get("integerArray"));
 		ArrayList<Integer> cartArrayList = new ArrayList<Integer>();
 		JsonArray cartJsonArray = shoppingCartJsonObject.get("integerArray").getAsJsonArray();
 		for(JsonElement element : cartJsonArray) 
 		{
 			cartArrayList.add(element.getAsInt());
 		}
-		
 		assertEquals(PRODUCT_TOMATO.getId(), (int) cartArrayList.get(0));
+	}
+	
+	//  Hämta en användares alla order
+	@Test
+	public void canGetCustomerOrders()
+	{
+		// POST - Create customer
+		Response createCustomerResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
+				.buildPost(Entity.entity(CUSTOMER2, MediaType.APPLICATION_JSON))
+				.invoke();
+		assertEquals(201, createCustomerResponse.getStatus());
 		
+		addOrder(CUSTOMER2);
+		addOrder(CUSTOMER2);
+		addOrder(CUSTOMER2);
 		
+		// GET - Retrieve created order
+		final String ordersJson = CUSTOMERS_TARGET
+				.path(CUSTOMER2.getUsername())
+				.path("orders")
+				.request()
+				.get(String.class);
+		System.out.println(ordersJson);
+		
+		// Fulkod... TODO Avfula detta...
+		Gson gson = new Gson();
+		JsonObject orderJsonObject = gson.fromJson(ordersJson, JsonObject.class);
+		ArrayList<JsonObject> orderArrayList = new ArrayList<JsonObject>();
+		JsonArray orderJsonArray = orderJsonObject.get("orderArray").getAsJsonArray();
+		for(JsonObject object : orderArrayList) 
+		{
+			orderArrayList.add(object);
+			JsonArray productIds = object.get("productIds").getAsJsonArray();
+			
+		}
+	}
+	
+	private void addOrder(Customer customer) 
+	{	
+		// POST - Create products
+		Response createProductResponse1 = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
+				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
+				.invoke();
+		assertEquals(201, createProductResponse1.getStatus());
+
+		Response createProductResponse2 = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
+				.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE, MediaType.APPLICATION_JSON))
+				.invoke();
+		assertEquals(201, createProductResponse2.getStatus());
+		
+		final Product PRODUCT_TOMATO = client.target(createProductResponse1.getLocation())
+				.request(MediaType.APPLICATION_JSON)
+				.get(Product.class);
+		
+		// POST - Add products to cart
+		final Response addProductsToCartResponse = CUSTOMERS_TARGET
+				.path(customer.getUsername())
+				.path("cart")
+				.request()
+				.buildPost(Entity.entity(Integer.toString(PRODUCT_TOMATO.getId()), MediaType.APPLICATION_JSON))
+				.invoke();
+		System.out.println(addProductsToCartResponse.readEntity(String.class));
+		assertEquals(201, addProductsToCartResponse.getStatus());
+		
+		// POST - Create order
+		final Response createOrderResponse = ORDERS_TARGET
+				.request()
+				.buildPost(Entity.entity(CUSTOMER2.getUsername(), MediaType.APPLICATION_JSON))
+				.invoke();
+		assertEquals(201, createOrderResponse.getStatus());
 	}
 }

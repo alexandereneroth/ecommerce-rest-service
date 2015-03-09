@@ -48,17 +48,6 @@ public class CustomerService
 		Customer customer = ss.getCustomer(username);
 		return Response.ok(customer).build();
 	}
-
-	// Hämta en användares alla order
-	@GET
-	@Path("{username}/orders")
-	public Response getOrders(@PathParam("username") final String username)
-	{
-		ArrayList<Order> orderList;
-		ShopService ss = (ShopService) context.getAttribute("ss");
-		orderList = new ArrayList<Order>(ss.getOrders(username));
-		return Response.ok(new GenericEntity<ArrayList<Order>>(orderList){}).build();
-	}
 	
 	// Skapa en ny användare – detta ska returnera en länk till den skapade 
 	//användaren i Location-headern
@@ -129,5 +118,16 @@ public class CustomerService
 		{
 			return Response.status(Status.BAD_REQUEST).entity("Expected body to be parsable as integers").build();
 		}
+	}
+	
+	// Hämta en användares alla order
+	@GET
+	@Path("{username}/orders")
+	public Response getOrders(@PathParam("username") final String username)
+	{
+		ArrayList<Order> orderList;
+		ShopService ss = (ShopService) context.getAttribute("ss");
+		orderList = new ArrayList<Order>(ss.getOrders(username));
+		return Response.ok(new GenericEntity<ArrayList<Order>>(orderList){}).build();
 	}
 }
