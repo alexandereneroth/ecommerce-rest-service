@@ -56,6 +56,10 @@ public class CustomerServiceTest
 	{
 		WebTarget admin = client.target(URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
+		Response deleteResponse = RESOURCE_TARGET.path(CUSTOMER2.getUsername())
+				 .request(MediaType.APPLICATION_JSON)
+				 .buildDelete()
+				 .invoke();
 	}
 
 	//  Skapa en ny användare
