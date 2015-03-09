@@ -48,9 +48,9 @@ public class ProductServiceTest
 
 	// // PRODUCTS ////
 	// ProductsParameters
-	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vedgetables", "Spain", "A beautiful tomato",
+	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables", "Spain", "A beautiful tomato",
 			"http://google.com/tomato.jpg", 45, 5);
-	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vedgetables", "France", "A mound of lettuce",
+	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vegetables", "France", "A mound of lettuce",
 			"http://altavista.com/lettuce.jpg", 88, 2);
 
 	// ProductIDs
