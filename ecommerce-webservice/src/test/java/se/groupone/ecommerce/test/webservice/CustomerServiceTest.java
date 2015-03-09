@@ -6,6 +6,18 @@ import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
 
+import se.groupone.ecommerce.webservice.util.CustomerMapper;
+import se.groupone.ecommerce.webservice.util.ProductMapper;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,63 +25,72 @@ import com.sun.org.apache.xml.internal.security.Init;
 
 public class CustomerServiceTest
 {
-	private ProductParameters productParams1;
-	private ProductParameters productParams2;
+	private static final String HOST_NAME = "localhost";
+	private static final int HOST_IP = 8080;
+	private static final String PROJECT_NAME = "ecommerce-webservice";
+	private static final String RESOURCE = "customers";
+	private static final String URL_BASE = "http://" + HOST_NAME + ":" + HOST_IP + "/" 
+			+ PROJECT_NAME;
+	private static final String RESOURCE_URL = "http://" + HOST_NAME + ":" + HOST_IP + "/" 
+			+ PROJECT_NAME + "/" + RESOURCE;
+	private static final Client client = ClientBuilder.newBuilder().register(CustomerMapper.class).build();
+	private static final WebTarget RESOURCE_TARGET;
+
 	private Customer customer1;
 	private Customer customer2;
 	
+	static
+	{
+		RESOURCE_TARGET = client.target(RESOURCE_URL);
+	}
 
 	@Before
 	public void Init()
 	{
-		// add some dummy data for DB
-		final String pName = "Voffla";
-		final String pCategory = "Bakverk";
-		final String pManufacturer = "Steffe";
-		final String pDescription = "En våffa gjord av steffe!";
-		final String pImg = "delicious.png";
-		final double pPrice = 10;
-		final int pQuantity = 100;
-		
-		final String pName2 = "Pannkaka";
-		final String pCategory2 = "Bakverk";
-		final String pManufacturer2 = "SteffeKeff";
-		final String pDescription2 = "En pannkaka gjord av steffe!";
-		final String pImg2 = "delicious2.png";
-		final double pPrice2 = 5;
-		final int pQuantity2 = 200;
-		
-		
-		productParams1 = new ProductParameters(pName,
-									   pCategory,
-									   pManufacturer,
-									   pDescription,
-									   pImg,
-									   pPrice,
-								       pQuantity);
-	
-		productParams2 = new ProductParameters(pName2,
-							    	   pCategory2,
-									   pManufacturer2,
-									   pDescription2,
-									   pImg2,
-									   pPrice2,
-									   pQuantity2);
 		customer1 = new Customer("tom", "password", "email@email.com", "Tomcat", "Blackmore", "C3LStreet", "123456");
 		customer2 = new Customer("alex", "password", "alex@email.com", "Alexander", "Sol", "Banangatan 1", "543211");
+	}
+	
+	@After
+	public void tearDown() 
+	{
+		
 	}
 
 	//  Skapa en ny användare
 	@Test
 	public void canCreateCustomer()
 	{
+		//POST
 
+		Response response = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+										   .buildPost(Entity.entity(customer2,MediaType.APPLICATION_JSON))
+										   .invoke();
+		assertEquals(Response.Status.CREATED.toString(), response.getStatus());
+		
+		//GET
+		Customer createdCustomer = RESOURCE_TARGET.path(customer2.getUsername())
+												  .request(MediaType.APPLICATION_JSON)
+												  .get(Customer.class);
+		
+		System.out.println(createdCustomer + " equals " + customer1);
+		assertEquals(createdCustomer, customer2);
 	}
 
 	//  Hämta en användare med ett visst id
 	@Test
 	public void canGetCustomerOfId()
-	{ // TODO
+	{
+		//POST
+		Invocation createInvocation = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+										.buildPost(Entity.entity(customer1,MediaType.APPLICATION_JSON));
+		Response response = createInvocation.invoke();
+		
+		//GET
+		Customer createdCustomer = RESOURCE_TARGET.path(customer1.getUsername())
+												  .request(MediaType.APPLICATION_JSON)
+												  .get(Customer.class);
+		assertEquals(createdCustomer, customer1);
 	}
 
 	//  Skapa en ny användare – detta ska returnera en länk till den skapade

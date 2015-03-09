@@ -37,7 +37,7 @@ import com.google.gson.JsonPrimitive;
 public class ProductServiceTest
 {
 	private static final String HOST_NAME = "localhost";
-	private static final int HOST_IP = 9999;
+	private static final int HOST_IP = 8080;
 	private static final String PROJECT_NAME = "ecommerce-webservice";
 	private static final String RESOURCE = "products";
 	private static final String URL_BASE = "http://" + HOST_NAME + ":" + HOST_IP + "/"

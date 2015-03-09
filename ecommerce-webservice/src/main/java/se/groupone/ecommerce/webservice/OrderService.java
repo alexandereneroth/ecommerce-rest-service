@@ -2,6 +2,8 @@ package se.groupone.ecommerce.webservice;
 
 import se.groupone.ecommerce.model.Order;
 
+import java.net.URI;
+
 import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContext;
@@ -44,8 +46,10 @@ public final class OrderService
 	public Response createOrder(final String username)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-		ss.createOrder(username);
-		return Response.ok().build();
+		Order newOrder = ss.createOrder(username);
+		
+		final URI location = uriInfo.getAbsolutePathBuilder().path(Integer.toString(newOrder.getId())).build();
+		return Response.created(location).build();
 	}
 
 	// Uppdatera en order för en användare 
