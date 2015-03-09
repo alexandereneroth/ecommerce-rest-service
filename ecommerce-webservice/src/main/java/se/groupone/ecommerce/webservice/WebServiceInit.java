@@ -25,12 +25,10 @@ public class WebServiceInit implements ServletContextListener
 	public void contextInitialized(ServletContextEvent sce)
 	{
 		ShopService ss;
-		try
-		{
-			ss = new ShopService(new SQLCustomer(), 
-					new InMemoryProductRepository(), new InMemoryOrderRepository());
-			sce.getServletContext().setAttribute("ss", ss);
-			
+		ss = new ShopService(new InMemoryCustomerRepository(), 
+				new InMemoryProductRepository(), new InMemoryOrderRepository());
+		sce.getServletContext().setAttribute("ss", ss);
+//		
 //			// add some dummy data for DB
 //			final String pName = "Voffla";
 //			final String pCategory = "Bakverk";
@@ -71,12 +69,19 @@ public class WebServiceInit implements ServletContextListener
 //			ss.createOrder("tom");
 //			ss.addProductToCustomer(p2.getId(), "tom");
 //			ss.createOrder("tom");
-		}
-		catch (RepositoryException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+//		try
+//		{
+//			ss = new ShopService(new SQLCustomer(), 
+//					new InMemoryProductRepository(), new InMemoryOrderRepository());
+//			sce.getServletContext().setAttribute("ss", ss);
+//			
+//		}
+//		catch (RepositoryException e)
+//		{
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		
 		/////////////////  Uncommet below and Comment above to switch to SQL Repo ///////////////

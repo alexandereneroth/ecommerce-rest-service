@@ -105,15 +105,9 @@ public class CustomerService
 	public Response getOrder(@PathParam("username") final String username)
 	{
 		ArrayList<Integer> cartList;
-		StringBuilder builder = new StringBuilder();
 		ss = (ShopService) context.getAttribute("ss");
 		cartList = ss.getCustomer(username).getShoppingCart();
 
-		for (Integer productId : cartList)
-		{
-			builder.append(ss.getProductWithId(productId).toString());
-			builder.append("<br>");
-		}
 		return Response.ok(new GenericEntity<ArrayList<Integer>>(cartList){}).build();
 	}
 

@@ -31,6 +31,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.sun.org.apache.xml.internal.security.Init;
 
 public class CustomerServiceTest
@@ -107,7 +111,7 @@ public class CustomerServiceTest
 	//  Skapa en ny användare – detta ska returnera en länk till den skapade
 	// användaren i Location-headern
 	@Test
-	public void assertLocationHeaderOfCreatedCustomerIsCorrect() throws URISyntaxException
+	public void createCustomerReturnsCorrectLocationHeaderForCreatedCustomer() throws URISyntaxException
 	{
 		final URI EXPECTED_URI = new URI("http://localhost:8080/ecommerce-webservice/customers/"
 				+ CUSTOMER2.getUsername());
@@ -195,26 +199,53 @@ public class CustomerServiceTest
 				.invoke();
 		assertEquals(201, createProductResponse1.getStatus());
 
-		Response createProductResponse2 = PRODUCT_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE, MediaType.APPLICATION_JSON))
-				.invoke();
-		assertEquals(201, createProductResponse2.getStatus());
+//		Response createProductResponse2 = PRODUCT_TARGET.request(MediaType.APPLICATION_JSON)
+//				.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE, MediaType.APPLICATION_JSON))
+//				.invoke();
+//		assertEquals(201, createProductResponse2.getStatus());
 
 		// GET - Get created products
-		final WebTarget PRODUCT_TARGET1 = client.target(createProductResponse1.getLocation());
-		final Product PRODUCT_TOMATO = PRODUCT_TARGET1.request(MediaType.APPLICATION_JSON)
+		
+		final Product PRODUCT_TOMATO = client.target(createProductResponse1.getLocation())
+				.request(MediaType.APPLICATION_JSON)
 				.get(Product.class);
 
-		// POST - add products to cart
+		// POST - Add products to cart
 		final Response addProductsToCartResponse = CUSTOMER_TARGET
-				.path(CUSTOMER1.getUsername())
+				.path(CUSTOMER2.getUsername())
 				.path("cart")
 				.request()
 				.buildPost(Entity.entity(Integer.toString(PRODUCT_TOMATO.getId()), MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, addProductsToCartResponse.getStatus());
 		
-		// GET - cart contents and verify
-//		final ArrayList<Integer> shoppingCart = 
+		// GET - Get cart contents and verify
+		final Response shoppingCartGetResponse = CUSTOMER_TARGET
+				.path(CUSTOMER2.getUsername())
+				.path("cart")
+				.request(MediaType.APPLICATION_JSON)
+				.get();
+		System.out.println(shoppingCartGetResponse.getStatus());
+		
+		final String shoppingCartJson = CUSTOMER_TARGET
+				.path(CUSTOMER2.getUsername())
+				.path("cart")
+				.request(MediaType.APPLICATION_JSON)
+				.get(String.class);
+		
+		// Fulkod...
+		Gson gson = new Gson();
+		JsonObject shoppingCartJsonObject = gson.fromJson(shoppingCartJson, JsonObject.class);
+		System.out.println(shoppingCartJsonObject.get("integerArray"));
+		ArrayList<Integer> cartArrayList = new ArrayList<Integer>();
+		JsonArray cartJsonArray = shoppingCartJsonObject.get("integerArray").getAsJsonArray();
+		for(JsonElement element : cartJsonArray) 
+		{
+			cartArrayList.add(element.getAsInt());
+		}
+		
+		assertEquals(PRODUCT_TOMATO.getId(), (int) cartArrayList.get(0));
+		
+		
 	}
 }
