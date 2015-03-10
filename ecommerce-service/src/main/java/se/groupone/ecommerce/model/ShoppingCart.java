@@ -3,6 +3,8 @@ package se.groupone.ecommerce.model;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import se.groupone.ecommerce.exception.ModelException;
+
 public class ShoppingCart
 {
 	private ArrayList<Integer> productIds = new ArrayList<>();
@@ -50,7 +52,7 @@ public class ShoppingCart
 	{
 		return "ShoppingCart [products=" + productIds + "]";
 	}
-	
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -61,12 +63,11 @@ public class ShoppingCart
 		if (other instanceof ShoppingCart)
 		{
 			ShoppingCart sc = (ShoppingCart) other;
-			if(this.getProductIds().equals(sc.getProductIds()))
+			if (this.getProductIds().equals(sc.getProductIds()))
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-
 }

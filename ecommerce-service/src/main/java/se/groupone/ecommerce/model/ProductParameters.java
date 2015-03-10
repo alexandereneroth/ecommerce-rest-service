@@ -7,12 +7,12 @@ public class ProductParameters
 	private final double price;
 
 	public ProductParameters(String title,
-							 String category,
-							 String manufacturer,
-							 String description,
-							 String img,
-							 double price,
-							 int quantity)
+			String category,
+			String manufacturer,
+			String description,
+			String img,
+			double price,
+			int quantity)
 	{
 		this.title = title;
 		this.category = category;

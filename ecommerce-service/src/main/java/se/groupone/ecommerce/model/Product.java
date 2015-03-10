@@ -8,7 +8,7 @@ public class Product
 	private double price;
 
 	public Product(int id, ProductParameters params)
-	{	
+	{
 		this.id = id;
 		this.title = params.getTitle();
 		this.category = params.getCategory();
@@ -53,12 +53,12 @@ public class Product
 	{
 		quantity -= decrease;
 	}
-	
+
 	public void increaseQuantity(int increase)
 	{
 		quantity += increase;
 	}
-	
+
 	public int getId()
 	{
 		return id;
@@ -106,7 +106,7 @@ public class Product
 				", baker=" + manufacturer + ", description=" + description +
 				", img=" + img + ", price=" + price + ", quantity=" + quantity + "]";
 	}
-	
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -118,13 +118,13 @@ public class Product
 		{
 			Product p = (Product) other;
 			if (this.getId() == p.getId()
-				&& this.getTitle().equals(p.getTitle())
-				&& this.getCategory().equals(p.getCategory())
-				&& this.getManufacturer().equals(p.getManufacturer())
-				&& this.getDescription().equals(p.getDescription())
-				&& this.getImg().equals(p.getImg())
-				&& this.getPrice() == p.getPrice()
-				&& this.getQuantity() == p.getQuantity())
+					&& this.getTitle().equals(p.getTitle())
+					&& this.getCategory().equals(p.getCategory())
+					&& this.getManufacturer().equals(p.getManufacturer())
+					&& this.getDescription().equals(p.getDescription())
+					&& this.getImg().equals(p.getImg())
+					&& this.getPrice() == p.getPrice()
+					&& this.getQuantity() == p.getQuantity())
 			{
 				return true;
 			}

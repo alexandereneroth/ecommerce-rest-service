@@ -8,27 +8,27 @@ public final class Order
 {
 	private final int id;
 	private final String customerUsername;
-
+	private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private Date dateCreated, dateShipped = null;
 	private ArrayList<Integer> productIds = new ArrayList<>();
-	private final SimpleDateFormat sqlDateFormat = new SimpleDateFormat("yyyy-MM-dd");	
 
 	@SuppressWarnings("unchecked")
 	public Order(int id,
-			     String customerUsername,
-			     ArrayList<Integer> shoppingCartProductIds)
+			String customerUsername,
+			ArrayList<Integer> shoppingCartProductIds)
 	{
 		this.id = id;
 		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
 		this.customerUsername = customerUsername;
 		this.dateCreated = new Date(System.currentTimeMillis());
 	}
+
 	@SuppressWarnings("unchecked")
 	public Order(int id,
-				 String customerUsername,
-				 ArrayList<Integer> shoppingCartProductIds,
-				 Date dateCreated,
-				 Date dateShipped)
+			String customerUsername,
+			ArrayList<Integer> shoppingCartProductIds,
+			Date dateCreated,
+			Date dateShipped)
 	{
 		this.id = id;
 		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
@@ -82,6 +82,7 @@ public final class Order
 				+ ", dateCreated=" + dateCreated + ", dateShipped="
 				+ dateShipped + ", products=" + productIds + "]";
 	}
+
 	@Override
 	public boolean equals(Object other)
 	{
@@ -93,17 +94,14 @@ public final class Order
 		{
 			Order o = (Order) other;
 			if (this.getId() == o.getId()
-			 && this.getUsername().equals(o.getUsername())
-			 && this.getProductIds().equals(o.getProductIds())
-			 && sqlDateFormat.format(this.getDateCreated()).equals(sqlDateFormat.format(o.getDateCreated()))
-			 && this.isShipped() == o.isShipped()
-			 )
+					&& this.getUsername().equals(o.getUsername())
+					&& this.getProductIds().equals(o.getProductIds())
+					&& sqlDateFormat.format(this.getDateCreated()).equals(sqlDateFormat.format(o.getDateCreated()))
+					&& this.isShipped() == o.isShipped())
 			{
 				return true;
 			}
 		}
 		return false;
 	}
-	
-
 }

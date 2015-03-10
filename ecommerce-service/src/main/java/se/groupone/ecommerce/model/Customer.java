@@ -2,6 +2,8 @@ package se.groupone.ecommerce.model;
 
 import java.util.ArrayList;
 
+import se.groupone.ecommerce.exception.ModelException;
+
 public final class Customer
 {
 	private final String username;

@@ -1,4 +1,4 @@
-package se.groupone.ecommerce.model;
+package se.groupone.ecommerce.exception;
 
 public class ModelException extends Exception
 {
