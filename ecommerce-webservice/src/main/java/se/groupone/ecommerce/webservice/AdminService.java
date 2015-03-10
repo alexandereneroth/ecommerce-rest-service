@@ -32,10 +32,9 @@ public class AdminService
 		{
 			ShopService newShopService = new ShopService(new SQLCustomer(), 
 			new SQLProduct(), new SQLOrder());
-	
 			context.setAttribute("ss", newShopService);
 			
-			SQLConnector sql = new SQLConnector("home.erikwelander.se", "3939", "ecom", "wearetheone", "ecomm");
+			SQLConnector sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
 //			sql.queryUpdate("TRUNCATE TABLE customer_cart;");
 //			sql.queryUpdate("TRUNCATE TABLE order_items;");
 			sql.queryUpdate("TRUNCATE TABLE product;");
