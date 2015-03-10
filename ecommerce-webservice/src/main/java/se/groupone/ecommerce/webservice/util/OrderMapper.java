@@ -83,7 +83,7 @@ public final class OrderMapper implements MessageBodyWriter<Order>, MessageBodyR
 		return order;
 	}
 
-	private static final class OrderAdapter implements JsonSerializer<Order>, JsonDeserializer<Order>
+	public static final class OrderAdapter implements JsonSerializer<Order>, JsonDeserializer<Order>
 	{
 		@Override
 		public JsonElement serialize(Order order, Type typeOfSrc, JsonSerializationContext context)

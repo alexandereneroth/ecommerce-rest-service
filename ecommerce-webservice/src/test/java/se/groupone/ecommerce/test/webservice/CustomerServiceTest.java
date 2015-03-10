@@ -1,20 +1,18 @@
 package se.groupone.ecommerce.test.webservice;
 
 import static se.groupone.ecommerce.test.webservice.ConnectionConfig.*;
-
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
-
 import se.groupone.ecommerce.webservice.util.CustomerMapper;
 import se.groupone.ecommerce.webservice.util.IntegerListMapper;
 import se.groupone.ecommerce.webservice.util.OrderMapper;
 import se.groupone.ecommerce.webservice.util.ProductMapper;
 import se.groupone.ecommerce.webservice.util.ProductParamMapper;
-
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -32,9 +30,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 public class CustomerServiceTest
 {
@@ -175,39 +175,31 @@ public class CustomerServiceTest
 	{
 
 		// POST - Create customer
-		Response createCustomerResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
+		Response createCustomerAlexResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
-		assertEquals(201, createCustomerResponse.getStatus());
+		assertEquals(201, createCustomerAlexResponse.getStatus());
 
 		// POST - Create products
-		Response createProductResponse1 = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
+		Response createProductTomatoResponse = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
 				.invoke();
-		assertEquals(201, createProductResponse1.getStatus());
-
-		// Response createProductResponse2 =
-		// PRODUCT_TARGET.request(MediaType.APPLICATION_JSON)
-		// .buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE,
-		// MediaType.APPLICATION_JSON))
-		// .invoke();
-		// assertEquals(201, createProductResponse2.getStatus());
+		assertEquals(201, createProductTomatoResponse.getStatus());
 
 		// GET - Get created products
-
-		final Product PRODUCT_TOMATO = client.target(createProductResponse1.getLocation())
+		final Product PRODUCT_TOMATO = client.target(createProductTomatoResponse.getLocation())
 				.request(MediaType.APPLICATION_JSON)
 				.get(Product.class);
 
 		// POST - Add products to cart
-		final Response addProductsToCartResponse = CUSTOMERS_TARGET
+		final Response addProductToCartResponse = CUSTOMERS_TARGET
 				.path(CUSTOMER_ALEX.getUsername())
 				.path("cart")
 				.request()
 				.buildPost(Entity.entity(Integer.toString(PRODUCT_TOMATO.getId()), MediaType.APPLICATION_JSON))
 				.invoke();
-		System.out.println(addProductsToCartResponse.readEntity(String.class));
-		assertEquals(201, addProductsToCartResponse.getStatus());
+		System.out.println(addProductToCartResponse.readEntity(String.class));
+		assertEquals(201, addProductToCartResponse.getStatus());
 
 		// GET - Get cart contents and verify
 		final String shoppingCartJson = CUSTOMERS_TARGET
@@ -217,14 +209,13 @@ public class CustomerServiceTest
 				.get(String.class);
 
 		// Fulkod... TODO Avfula detta...
-		Gson gson = new Gson();
+		Type integerListType = new TypeToken<ArrayList<Integer>>(){}.getType();
+		Gson gson = new GsonBuilder().registerTypeAdapter(integerListType, new IntegerListMapper.IntegerListAdapter()).create();
 		JsonObject shoppingCartJsonObject = gson.fromJson(shoppingCartJson, JsonObject.class);
-		ArrayList<Integer> cartArrayList = new ArrayList<Integer>();
 		JsonArray cartJsonArray = shoppingCartJsonObject.get("integerArray").getAsJsonArray();
-		for (JsonElement element : cartJsonArray)
-		{
-			cartArrayList.add(element.getAsInt());
-		}
+		
+		ArrayList<Integer> cartArrayList = gson.fromJson(cartJsonArray, integerListType);
+		
 		assertEquals(PRODUCT_TOMATO.getId(), (int) cartArrayList.get(0));
 	}
 
@@ -267,25 +258,15 @@ public class CustomerServiceTest
 
 	private HashMap<Integer, Order> parseOrderJsonArrayList(String ordersJson)
 	{
-		// Fulkod... TODO Avfula detta... kommentera? :(
-		Gson gson = new Gson();
+		Gson gson = new GsonBuilder().registerTypeAdapter(Order.class, new OrderMapper.OrderAdapter()).create();
 		HashMap<Integer, Order> customerOrders = new HashMap<>();
 		JsonObject orderJsonObject = gson.fromJson(ordersJson, JsonObject.class);
 		JsonArray orderJsonArray = orderJsonObject.get("orderArray").getAsJsonArray();
 
 		for (JsonElement order : orderJsonArray)
 		{
-			ArrayList<Integer> productIdArrayList = new ArrayList<>();
-			JsonArray productIds = ((JsonObject) order).get("productIds").getAsJsonArray();
-			for (JsonElement jElement : productIds)
-			{
-				productIdArrayList.add(jElement.getAsInt());
-			}
-			JsonObject newOrderJsonObject = (JsonObject) order;
-			Order newOrder = new Order(newOrderJsonObject.get("id").getAsInt(),
-					newOrderJsonObject.get("username").getAsString(),
-					productIdArrayList);
-			customerOrders.put(newOrder.getId(), newOrder);
+			Order newOrder2 = gson.fromJson(order, Order.class);
+			customerOrders.put(newOrder2.getId(), newOrder2);
 		}
 		return customerOrders;
 	}

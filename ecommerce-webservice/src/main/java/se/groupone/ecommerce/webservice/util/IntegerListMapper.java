@@ -63,7 +63,7 @@ public final class IntegerListMapper implements MessageBodyWriter<ArrayList<Inte
 		}
 	}
 
-	private static final class IntegerListAdapter implements JsonSerializer<ArrayList<Integer>>
+	public static final class IntegerListAdapter implements JsonSerializer<ArrayList<Integer>>
 	{
 		@Override
 		public JsonElement serialize(ArrayList<Integer> integerList, Type typeOfSrc, JsonSerializationContext context)
