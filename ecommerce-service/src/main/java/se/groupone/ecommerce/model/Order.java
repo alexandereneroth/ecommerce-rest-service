@@ -34,15 +34,6 @@ public final class Order
 		this.productIds = (ArrayList<Integer>) shoppingCartProductIds.clone();
 		this.customerUsername = customerUsername;
 		this.dateCreated = dateCreated;
-		
-		if(dateShipped.toString().equals("1970-01-01"))
-		{
-			this.dateShipped = null;
-		}
-		else
-		{
-			this.dateShipped = dateShipped;	
-		}
 	}
 
 	public int getId()
