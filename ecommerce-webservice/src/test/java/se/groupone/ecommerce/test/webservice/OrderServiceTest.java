@@ -68,9 +68,9 @@ public class OrderServiceTest
 		CUSTOMER2 = new Customer("alex", "password", "alex@email.com", "Alexander", "Sol", "Banangatan 1", "543211");
 
 		PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables", "Spain", "A beautiful tomato",
-				"http://google.com/tomato.jpg", 45, 5);
+				"http://google.com/tomato.jpg", 45, 500);
 		PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vegetables", "France", "A mound of lettuce",
-				"http://altavista.com/lettuce.jpg", 88, 2);
+				"http://altavista.com/lettuce.jpg", 88, 200);
 	}
 
 	@Before

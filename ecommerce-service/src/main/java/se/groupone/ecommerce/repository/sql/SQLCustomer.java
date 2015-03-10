@@ -22,13 +22,13 @@ public final class SQLCustomer implements CustomerRepository
 		{
 			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not construct SQLCustomer: Could not construct database object", e);
 		}
 
 	}
-	
+
 	@Override
 	public void addCustomer(final Customer customer) throws RepositoryException
 	{
@@ -46,15 +46,15 @@ public final class SQLCustomer implements CustomerRepository
 		{
 			sql.query(costumerQuery.toString());
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not add Custumer to database!", e);
 		}
-		
+
 		ArrayList<Integer> productIds = customer.getShoppingCart();
 		try
 		{
-			for(int i = 0; i < productIds.size(); i++)
+			for (int i = 0; i < productIds.size(); i++)
 			{
 				StringBuilder customerCartQuery = new StringBuilder();
 				customerCartQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomerItems + " ");
@@ -64,7 +64,7 @@ public final class SQLCustomer implements CustomerRepository
 				sql.query(customerCartQuery.toString());
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not add Shopping cart IDs to Customer!" + e.getMessage(), e);
 		}
@@ -74,7 +74,7 @@ public final class SQLCustomer implements CustomerRepository
 	public Customer getCustomer(final String username) throws RepositoryException
 	{
 		StringBuilder customerQuery = new StringBuilder();
-		customerQuery.append("SELECT * FROM " + DBInfo.database+"." + dbCustomer + " ");
+		customerQuery.append("SELECT * FROM " + DBInfo.database + "." + dbCustomer + " ");
 		customerQuery.append("WHERE user_name = '" + username + "';");
 		ResultSet rs;
 		try
@@ -82,47 +82,45 @@ public final class SQLCustomer implements CustomerRepository
 			rs = sql.queryResult(customerQuery.toString());
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches for Customer found in database!\nSQL QUERY: "+customerQuery.toString());
+				throw new RepositoryException("No matches for Customer found in database!\nSQL QUERY: " + customerQuery.toString());
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to retrieve Customer data from database!", e);
 		}
-		
+
 		Customer customer;
 		try
 		{
 			rs.next();
-			 customer = new Customer(rs.getString("user_name"),
-									 rs.getString("password"),
-									 rs.getString("email"),
-									 rs.getString("first_name"),
-									 rs.getString("last_name"),
-									 rs.getString("address"),
-									 rs.getString("phone"));
+			customer = new Customer(rs.getString("user_name"),
+					rs.getString("password"),
+					rs.getString("email"),
+					rs.getString("first_name"),
+					rs.getString("last_name"),
+					rs.getString("address"),
+					rs.getString("phone"));
 			rs.close();
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to construct Customer from database!", e);
 		}
-		
-		
-		
+
 		final int numCartItems;
 		StringBuilder numCartItemsQuery = new StringBuilder();
-		numCartItemsQuery.append("SELECT COUNT(id_item) FROM " + DBInfo.database+"." + dbCustomerItems + " ");
+		numCartItemsQuery.append("SELECT COUNT(id_item) FROM " + DBInfo.database + "." + dbCustomerItems + " ");
 		numCartItemsQuery.append("WHERE user_name = '" + username + "';");
 		try
 		{
 			rs = sql.queryResult(numCartItemsQuery.toString());
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches COUNT(id_item)In Customer shopping cart!\nSQL QUERY: "+numCartItemsQuery.toString());
+				throw new RepositoryException("No matches COUNT(id_item)In Customer shopping cart!\nSQL QUERY: " + numCartItemsQuery.toString());
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to retrieve Customer shopping cart data!", e);
 		}
@@ -132,39 +130,33 @@ public final class SQLCustomer implements CustomerRepository
 			numCartItems = rs.getInt(1);
 			rs.close();
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to parse Shopping cart data!", e);
 		}
-		
-		
-		
+
 		StringBuilder cartItemsQuery = new StringBuilder();
-		cartItemsQuery.append("SELECT id_item FROM " + DBInfo.database+"." + dbCustomerItems + " ");
+		cartItemsQuery.append("SELECT id_item FROM " + DBInfo.database + "." + dbCustomerItems + " ");
 		cartItemsQuery.append("WHERE user_name = '" + username + "';");
 		try
 		{
-			rs = sql.queryResult(numCartItemsQuery.toString());
-			if (!rs.isBeforeFirst())
-			{
-				throw new RepositoryException("No matches for user_name in Shoppingcart!\nSQL QUERY: "+cartItemsQuery.toString());
-			}
+			rs = sql.queryResult(cartItemsQuery.toString());
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to retrieve Customer shopping cart data!", e);
 		}
-		
+
 		try
 		{
-			for(int i = 0; i < numCartItems; i++)
+			for (int i = 0; i < numCartItems; i++)
 			{
 				rs.next();
 				customer.addProductToShoppingCart(rs.getInt(1));
 			}
 			rs.close();
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to parse Shopping cart data!", e);
 		}
@@ -178,60 +170,60 @@ public final class SQLCustomer implements CustomerRepository
 		final int numRows;
 		try
 		{
-			final String numRowsQuery = "SELECT COUNT(user_name) FROM "+DBInfo.database+"." + dbCustomer + ";";
+			final String numRowsQuery = "SELECT COUNT(user_name) FROM " + DBInfo.database + "." + dbCustomer + ";";
 			rs = sql.queryResult(numRowsQuery);
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches for user_name in Customers!\nSQL QUERY: "+numRowsQuery);
+				throw new RepositoryException("No matches for user_name in Customers!\nSQL QUERY: " + numRowsQuery);
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not count all Customers usernames from database!", e);
 		}
-		
+
 		try
 		{
 			rs.next();
 			numRows = rs.getInt(1);
 			rs.close();
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not parse Customer username value!", e);
 		}
-		
+
 		try
 		{
-			final String allCustomersQuery = "SELECT user_name FROM "+DBInfo.database+"." + dbCustomer + ";";
+			final String allCustomersQuery = "SELECT user_name FROM " + DBInfo.database + "." + dbCustomer + ";";
 			rs = sql.queryResult(allCustomersQuery);
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches for user_name in Customers!\nSQL QUERY: "+allCustomersQuery);
+				throw new RepositoryException("No matches for user_name in Customers!\nSQL QUERY: " + allCustomersQuery);
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not fetch all Customers usernames from database!", e);
 		}
-		
+
 		String allUserNames[] = new String[numRows];
 		try
 		{
-			for(int i = 0; i < numRows; i++)
+			for (int i = 0; i < numRows; i++)
 			{
 				rs.next();
 				allUserNames[i] = rs.getString(1);
 			}
 			rs.close();
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not parse all Customer user names!", e);
 		}
 
 		List<Customer> customerList = new ArrayList<>();
-		for(int i = 0; i < numRows; i++)
+		for (int i = 0; i < numRows; i++)
 		{
 			customerList.add(getCustomer(allUserNames[i]));
 		}
@@ -270,16 +262,20 @@ public final class SQLCustomer implements CustomerRepository
 		}
 		
 		ArrayList<Integer> productIds = customer.getShoppingCart();
+		System.out.println("SQL Customer before loop: " + productIds.toString());
 		try
 		{
 			for(int i = 0; i < productIds.size(); i++)
 			{
-				StringBuilder customerCartQuery = new StringBuilder();
-				customerCartQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomerItems + " ");
-				customerCartQuery.append("(id_item, user_name) ");
-				customerCartQuery.append("VALUES(" + productIds.get(i) + ", ");
-				customerCartQuery.append("'" + customer.getUsername() + "'); ");
-				sql.query(customerCartQuery.toString());
+				final String customerCartQuery = "INSERT INTO ecomm.customer_cart (id_item, user_name) VALUES(" 
+									+ productIds.get(i) + ", '"+ customer.getUsername()+ "');";
+				sql.query(customerCartQuery);
+//				StringBuilder customerCartQuery = new StringBuilder();
+//				customerCartQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomerItems + " ");
+//				customerCartQuery.append("(id_item, user_name) ");
+//				customerCartQuery.append("VALUES(" + productIds.get(i) + ", ");
+//				customerCartQuery.append("'" + customer.getUsername() + "'); ");
+//				sql.query(customerCartQuery.toString());
 			}
 		}
 		catch(SQLException e)
@@ -296,17 +292,17 @@ public final class SQLCustomer implements CustomerRepository
 		{
 			sql.query(removeQuery);
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not query removal of Customer!", e);
 		}
-		
+
 		final String removeCartItems = "DELETE FROM " + DBInfo.database + "." + dbCustomerItems + " WHERE user_name = '" + username + "';";
 		try
 		{
 			sql.query(removeCartItems);
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not query Customer Items deletion!", e);
 		}

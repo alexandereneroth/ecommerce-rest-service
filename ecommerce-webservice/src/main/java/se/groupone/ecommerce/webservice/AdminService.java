@@ -45,7 +45,7 @@ public class AdminService
 //			sql.query("TRUNCATE TABLE order_items;");
 //			sql.query("TRUNCATE TABLE product;");
 //			sql.query("TRUNCATE TABLE order;");
-//			sql.queryUpdate("TRUNCATE TABLE customer;");
+			sql.queryUpdate("TRUNCATE TABLE customer;");
 			
 			return Response.ok("SQLRepo has been reset").build();
 			

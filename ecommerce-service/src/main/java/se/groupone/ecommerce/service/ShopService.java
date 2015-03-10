@@ -112,17 +112,28 @@ public class ShopService
 	{
 		try
 		{
-			for (Customer c : cR.getCustomers())
+			try
 			{
-				boolean aProductWasRemoved = c.removeProductsWithIdFromShoppingCart(productId);
-				if (aProductWasRemoved)
+				// If there are any customers first remove the item from their carts
+				List<Customer> customerList = cR.getCustomers();
+				for (Customer c : cR.getCustomers())
 				{
-					updateCustomer(c);
+					boolean aProductWasRemoved = c.removeProductsWithIdFromShoppingCart(productId);
+					if (aProductWasRemoved)
+					{
+						updateCustomer(c);
+					}
 				}
+				
 			}
+			catch (Exception e)
+			{
+				// DO NOTHING EVERYTHING IS FINE! :)
+			}
+			
 			pR.removeProduct(productId);
 		}
-		catch (RepositoryException | ModelException e)
+		catch (RepositoryException e)
 		{
 			throw new ShopServiceException("Could not remove product: " + e.getMessage(), e);
 		}
@@ -251,7 +262,8 @@ public class ShopService
 	{
 		try
 		{
-			cR.getCustomer(customerUsername); // Should throw exception if user does not exist
+			cR.getCustomer(customerUsername); // Should throw exception if user
+												// does not exist
 			return oR.getOrders(customerUsername);
 		}
 		catch (RepositoryException e)

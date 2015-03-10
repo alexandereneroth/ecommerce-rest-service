@@ -51,9 +51,9 @@ public class ProductServiceTest
 	// // PRODUCTS ////
 	// ProductsParameters
 	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables", "Spain", "A beautiful tomato",
-			"http://google.com/tomato.jpg", 45, 5);
+			"http://google.com/tomato.jpg", 45, 500);
 	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vegetables", "France", "A mound of lettuce",
-			"http://altavista.com/lettuce.jpg", 88, 2);
+			"http://altavista.com/lettuce.jpg", 88, 200);
 
 	// ProductIDs
 	private static final int PRODUCT_ID_TOMATO = FIRST_GENERATED_PRODUCT_ID;
