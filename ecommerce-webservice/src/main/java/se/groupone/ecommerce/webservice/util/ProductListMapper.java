@@ -46,7 +46,7 @@ public final class ProductListMapper implements MessageBodyWriter<ArrayList<Prod
 
 	public ProductListMapper()
 	{
-		gson = new GsonBuilder().registerTypeAdapter(productListType, new ProductAdapter()).create();
+		gson = new GsonBuilder().registerTypeAdapter(productListType, new ProductListAdapter()).create();
 	}
 
 	// MessageBodyWriter
@@ -87,7 +87,7 @@ public final class ProductListMapper implements MessageBodyWriter<ArrayList<Prod
 		return productArrayList;
 	}
 
-	private static final class ProductAdapter implements JsonSerializer<ArrayList<Product>>, JsonDeserializer<ArrayList<Product>>
+	private static final class ProductListAdapter implements JsonSerializer<ArrayList<Product>>, JsonDeserializer<ArrayList<Product>>
 	{
 		@Override
 		public JsonElement serialize(ArrayList<Product> productList, Type typeOfSrc, JsonSerializationContext context)

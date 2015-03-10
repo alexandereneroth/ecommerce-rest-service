@@ -38,7 +38,7 @@ public class AdminService
 			SQLConnector sql = new SQLConnector("home.erikwelander.se", "3939", "ecom", "wearetheone", "ecomm");
 //			sql.queryUpdate("TRUNCATE TABLE customer_cart;");
 //			sql.queryUpdate("TRUNCATE TABLE order_items;");
-//			sql.queryUpdate("TRUNCATE TABLE product;");
+			sql.queryUpdate("TRUNCATE TABLE product;");
 //			sql.queryUpdate("TRUNCATE TABLE order;");
 //			sql.queryUpdate("TRUNCATE TABLE customer;");
 //			sql.query("TRUNCATE TABLE customer_cart;");

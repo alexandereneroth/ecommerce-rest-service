@@ -3,10 +3,10 @@ package se.groupone.ecommerce.test.webservice;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import se.groupone.ecommerce.webservice.util.ProductMapper;
 import se.groupone.ecommerce.webservice.util.ProductParamMapper;
@@ -22,15 +22,14 @@ import javax.ws.rs.core.Response.Status;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.reflect.TypeToken;
 
 public class ProductServiceTest
 {
@@ -56,7 +55,6 @@ public class ProductServiceTest
 			"http://altavista.com/lettuce.jpg", 88, 200);
 
 	// ProductIDs
-	private static final int PRODUCT_ID_TOMATO = FIRST_GENERATED_PRODUCT_ID;
 	private static final int PRODUCT_ID_LETTUCE = FIRST_GENERATED_PRODUCT_ID + 1;
 	// Products
 	private static final Product PRODUCT_LETTUCE = new Product(PRODUCT_ID_LETTUCE, PRODUCT_PARAMETERS_LETTUCE);
@@ -110,16 +108,46 @@ public class ProductServiceTest
 	public void canGetAllProducts() throws IOException
 	{
 		//POST
-		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+		Response tomatoResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
 						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
 						.invoke();
+		assertEquals(201, tomatoResponse.getStatus());
+		
+		final Product tomatoProduct = client.target(tomatoResponse.getLocation())
+				.request(MediaType.APPLICATION_JSON)
+				.get(Product.class);
+		
 		//POST
-		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+		Response lettuceResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
 						.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE,MediaType.APPLICATION_JSON))
 						.invoke();
+		assertEquals(201, lettuceResponse.getStatus());
+		
+		final Product lettuceProduct = client.target(lettuceResponse.getLocation())
+				.request(MediaType.APPLICATION_JSON)
+				.get(Product.class);
 
-		String json = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON).get(String.class);
-//		System.out.println(json);
+		String productJson = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON).get(String.class);
+		HashMap<Integer, Product> productMap = parseProductJson(productJson);
+		assertEquals(tomatoProduct, productMap.get(tomatoProduct.getId()));
+		assertEquals(lettuceProduct, productMap.get(lettuceProduct.getId()));
+		
+	}
+	
+	private HashMap<Integer, Product> parseProductJson (String productJson)
+	{
+		Gson gson = new GsonBuilder().registerTypeAdapter(Product.class, new ProductMapper.ProductAdapter()).create();
+		HashMap<Integer, Product> productMap = new HashMap<>(); 
+		
+		JsonObject productsJsonObject = gson.fromJson(productJson, JsonObject.class);
+		Set<Map.Entry<String, JsonElement>> productSet = productsJsonObject.entrySet();
+		
+		for(Map.Entry<String, JsonElement> jsonEntry : productSet) 
+		{
+			Product newProduct = gson.fromJson(jsonEntry.getValue(), Product.class);
+			productMap.put(newProduct.getId(), newProduct);
+		}
+		return productMap;
 	}
 
 	//  Uppdatera en produkt
@@ -176,8 +204,6 @@ public class ProductServiceTest
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
-		
-		System.out.println(createProductResponse.getLocation());
 		
 		//DELETE
 		Response deleteProductResponse = client.target(createProductResponse.getLocation())

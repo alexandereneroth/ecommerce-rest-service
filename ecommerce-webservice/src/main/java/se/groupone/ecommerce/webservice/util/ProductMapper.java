@@ -82,7 +82,7 @@ public final class ProductMapper implements MessageBodyWriter<Product>, MessageB
 		return product;
 	}
 
-	private static final class ProductAdapter implements JsonSerializer<Product>, JsonDeserializer<Product>
+	public static final class ProductAdapter implements JsonSerializer<Product>, JsonDeserializer<Product>
 	{
 		@Override
 		public JsonElement serialize(Product product, Type typeOfSrc, JsonSerializationContext context)
