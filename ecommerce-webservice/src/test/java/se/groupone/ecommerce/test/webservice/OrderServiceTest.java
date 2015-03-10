@@ -59,7 +59,7 @@ public class OrderServiceTest
 	// Responses with info about created products (from init)
 	private Response createProductLettuceResponse;
 	private Response createProductTomatoResponse;
-	private Response createCustomerResponse;
+	private Response createCustomerAlexResponse;
 
 	@Before
 	public void init()
@@ -80,10 +80,10 @@ public class OrderServiceTest
 		assertEquals(201, createProductLettuceResponse.getStatus());
 
 		// POST - Create customer
-		createCustomerResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
+		createCustomerAlexResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
-		assertEquals(201, createCustomerResponse.getStatus());
+		assertEquals(201, createCustomerAlexResponse.getStatus());
 	}
 
 	@AfterClass

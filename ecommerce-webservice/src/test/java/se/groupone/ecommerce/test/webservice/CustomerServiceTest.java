@@ -47,7 +47,7 @@ public class CustomerServiceTest
 			.build();
 
 	// Models
-	private static final Customer CUSTOMER = new Customer("alex", "password", "alex@email.com", "Alexander", "Sol", "Banangatan 1", "543211");
+	private static final Customer CUSTOMER_ALEX = new Customer("alex", "password", "alex@email.com", "Alexander", "Sol", "Banangatan 1", "543211");
 	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables", "Spain", "A beautiful tomato",
 			"http://google.com/tomato.jpg", 45, 500);
 
@@ -84,15 +84,15 @@ public class CustomerServiceTest
 	{
 		// POST - Create customer
 		Response response = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(CUSTOMER, MediaType.APPLICATION_JSON))
+				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, response.getStatus());
 
 		// GET - Retrieve created customer
-		Customer createdCustomer = CUSTOMERS_TARGET.path(CUSTOMER.getUsername())
+		Customer createdCustomer = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get(Customer.class);
-		assertEquals(createdCustomer, CUSTOMER);
+		assertEquals(createdCustomer, CUSTOMER_ALEX);
 	}
 
 	//  Skapa en ny användare – detta ska returnera en länk till den skapade
@@ -101,10 +101,10 @@ public class CustomerServiceTest
 	public void createCustomerReturnsCorrectLocationHeaderForCreatedCustomer() throws URISyntaxException
 	{
 		final URI EXPECTED_URI = new URI("http://localhost:8080/ecommerce-webservice/customers/"
-				+ CUSTOMER.getUsername());
+				+ CUSTOMER_ALEX.getUsername());
 		// POST - Create new customer
 		Response response = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(CUSTOMER, MediaType.APPLICATION_JSON))
+				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, response.getStatus());
 
@@ -118,23 +118,23 @@ public class CustomerServiceTest
 	{
 		// POST - create Customer2 in repo
 		Response postResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(CUSTOMER, MediaType.APPLICATION_JSON))
+				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, postResponse.getStatus());
 
 		// Updated customer2 with changed password.
-		Customer updatedCustomer2 = new Customer(CUSTOMER.getUsername(), "secret", CUSTOMER.getEmail(),
-				CUSTOMER.getFirstName(), CUSTOMER.getLastName(),
-				CUSTOMER.getAddress(), CUSTOMER.getPhoneNumber());
+		Customer updatedCustomer2 = new Customer(CUSTOMER_ALEX.getUsername(), "secret", CUSTOMER_ALEX.getEmail(),
+				CUSTOMER_ALEX.getFirstName(), CUSTOMER_ALEX.getLastName(),
+				CUSTOMER_ALEX.getAddress(), CUSTOMER_ALEX.getPhoneNumber());
 		// POST - Update customer
-		Response putResponse = CUSTOMERS_TARGET.path(CUSTOMER.getUsername())
+		Response putResponse = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.buildPut(Entity.entity(updatedCustomer2, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(204, putResponse.getStatus());
 
 		// GET - Check that customer is updated
-		Customer updatedCustomer2FromRepo = CUSTOMERS_TARGET.path(CUSTOMER.getUsername())
+		Customer updatedCustomer2FromRepo = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get(Customer.class);
 		assertEquals(updatedCustomer2, updatedCustomer2FromRepo);
@@ -146,25 +146,25 @@ public class CustomerServiceTest
 	{
 		// POST - Create customer
 		Response postResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(CUSTOMER, MediaType.APPLICATION_JSON))
+				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, postResponse.getStatus());
 
 		// GET - Check that it is in repo
-		Response thisShouldSucceedResponse = CUSTOMERS_TARGET.path(CUSTOMER.getUsername())
+		Response thisShouldSucceedResponse = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get();
 		assertEquals(200, thisShouldSucceedResponse.getStatus());
 
 		// DELETE - Delete it
-		Response deleteResponse = CUSTOMERS_TARGET.path(CUSTOMER.getUsername())
+		Response deleteResponse = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.buildDelete()
 				.invoke();
 		assertEquals(204, deleteResponse.getStatus());
 
 		// GET - Try to retrieve deleted customer, should fail
-		Response thisShouldFailResponse = CUSTOMERS_TARGET.path(CUSTOMER.getUsername())
+		Response thisShouldFailResponse = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get();
 		assertEquals(400, thisShouldFailResponse.getStatus());
@@ -176,7 +176,7 @@ public class CustomerServiceTest
 
 		// POST - Create customer
 		Response createCustomerResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(CUSTOMER, MediaType.APPLICATION_JSON))
+				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, createCustomerResponse.getStatus());
 
@@ -201,7 +201,7 @@ public class CustomerServiceTest
 
 		// POST - Add products to cart
 		final Response addProductsToCartResponse = CUSTOMERS_TARGET
-				.path(CUSTOMER.getUsername())
+				.path(CUSTOMER_ALEX.getUsername())
 				.path("cart")
 				.request()
 				.buildPost(Entity.entity(Integer.toString(PRODUCT_TOMATO.getId()), MediaType.APPLICATION_JSON))
@@ -211,7 +211,7 @@ public class CustomerServiceTest
 
 		// GET - Get cart contents and verify
 		final String shoppingCartJson = CUSTOMERS_TARGET
-				.path(CUSTOMER.getUsername())
+				.path(CUSTOMER_ALEX.getUsername())
 				.path("cart")
 				.request(MediaType.APPLICATION_JSON)
 				.get(String.class);
@@ -234,17 +234,17 @@ public class CustomerServiceTest
 	{
 		// POST - Create customer
 		Response createCustomerResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(CUSTOMER, MediaType.APPLICATION_JSON))
+				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, createCustomerResponse.getStatus());
 
-		Order orderToBeChecked1 = addOrder(CUSTOMER);
-		Order orderToBeChecked2 = addOrder(CUSTOMER);
-		Order orderToBeChecked3 = addOrder(CUSTOMER);
+		Order orderToBeChecked1 = addOrder(CUSTOMER_ALEX);
+		Order orderToBeChecked2 = addOrder(CUSTOMER_ALEX);
+		Order orderToBeChecked3 = addOrder(CUSTOMER_ALEX);
 
 		// GET - Retrieve created order
 		final String ordersJson = CUSTOMERS_TARGET
-				.path(CUSTOMER.getUsername())
+				.path(CUSTOMER_ALEX.getUsername())
 				.path("orders")
 				.request()
 				.get(String.class);
@@ -315,7 +315,7 @@ public class CustomerServiceTest
 		// POST - Create order
 		final Response createOrderResponse = ORDERS_TARGET
 				.request()
-				.buildPost(Entity.entity(CUSTOMER.getUsername(), MediaType.APPLICATION_JSON))
+				.buildPost(Entity.entity(CUSTOMER_ALEX.getUsername(), MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, createOrderResponse.getStatus());
 
