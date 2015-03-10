@@ -2,9 +2,9 @@ package se.groupone.ecommerce.repository.sql;
 
 public class DBInfo
 {
-	final static String host = "home.erikwelander.se";
-	final static String port = "3939";
-	final static String username = "ecom";
-	final static String password = "wearetheone";
-	final static String database = "ecomm";
+	public final static String host = "home.erikwelander.se";
+	public final static String port = "3939";
+	public final static String username = "ecom";
+	public final static String password = "wearetheone";
+	public final static String database = "ecomm";
 }

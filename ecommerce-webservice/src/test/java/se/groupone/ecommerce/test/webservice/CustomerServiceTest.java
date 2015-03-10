@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response;
 import jdk.internal.dynalink.beans.StaticClass;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -84,20 +85,15 @@ public class CustomerServiceTest
 	@Before
 	public void Init()
 	{
-
+		WebTarget admin = client.target(URL_BASE + "/admin");
+		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 	}
 
-	@After
-	public void tearDown()
+	@AfterClass
+	public static void tearDown()
 	{
 		WebTarget admin = client.target(URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
-
-		// Remove customer2 from DB
-		CUSTOMERS_TARGET.path(CUSTOMER2.getUsername())
-				.request(MediaType.APPLICATION_JSON)
-				.buildDelete()
-				.invoke();
 	}
 
 	//  Skapa en ny användare
@@ -228,6 +224,7 @@ public class CustomerServiceTest
 				.request()
 				.buildPost(Entity.entity(Integer.toString(PRODUCT_TOMATO.getId()), MediaType.APPLICATION_JSON))
 				.invoke();
+		System.out.println(addProductsToCartResponse.readEntity(String.class));
 		assertEquals(201, addProductsToCartResponse.getStatus());
 
 		// GET - Get cart contents and verify

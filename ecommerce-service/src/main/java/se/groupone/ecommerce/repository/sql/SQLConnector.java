@@ -97,4 +97,16 @@ public final class SQLConnector
 			throw new SQLException("Error performing query: " + e.getMessage());
 		}
 	}
+	
+	public void queryUpdate(final String query) throws SQLException
+	{
+		try
+		{
+			statement.executeUpdate(query);
+		}
+		catch (SQLException e)
+		{
+			throw new SQLException("Error performing query: " + e.getMessage());
+		}
+	}
 }

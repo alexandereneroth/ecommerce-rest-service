@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,6 +76,9 @@ public class OrderServiceTest
 	@Before
 	public void init()
 	{
+		WebTarget admin = client.target(URL_BASE + "/admin");
+		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
+		
 		// POST - Create products
 		createProductResponse1 = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
@@ -93,8 +97,8 @@ public class OrderServiceTest
 		assertEquals(201, createCustomerResponse.getStatus());
 	}
 
-	@After
-	public void tearDown()
+	@AfterClass
+	public static void tearDown()
 	{
 		WebTarget admin = client.target(URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();

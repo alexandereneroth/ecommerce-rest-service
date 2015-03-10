@@ -23,6 +23,8 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.google.gson.Gson;
@@ -66,8 +68,15 @@ public class ProductServiceTest
 		RESOURCE_TARGET = client.target(RESOURCE_URL);
 	}
 	
-	@After
-	public void tearDown() 
+	@Before
+	public void Init()
+	{
+		WebTarget admin = client.target(URL_BASE + "/admin");
+		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
+	}
+	
+	@AfterClass
+	public static void tearDown()
 	{
 		WebTarget admin = client.target(URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();

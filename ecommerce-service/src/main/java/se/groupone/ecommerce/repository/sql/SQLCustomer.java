@@ -66,7 +66,7 @@ public final class SQLCustomer implements CustomerRepository
 		}
 		catch(SQLException e)
 		{
-			throw new RepositoryException("Could not add Shopping cart IDs to Customer!", e);
+			throw new RepositoryException("Could not add Shopping cart IDs to Customer!" + e.getMessage(), e);
 		}
 	}
 
