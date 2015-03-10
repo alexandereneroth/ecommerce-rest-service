@@ -35,15 +35,10 @@ public class AdminService
 			context.setAttribute("ss", newShopService);
 			
 			SQLConnector sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
-//			sql.queryUpdate("TRUNCATE TABLE customer_cart;");
-//			sql.queryUpdate("TRUNCATE TABLE order_items;");
+			sql.queryUpdate("TRUNCATE TABLE customer_cart;");
+			sql.queryUpdate("TRUNCATE TABLE order_items;");
 			sql.queryUpdate("TRUNCATE TABLE product;");
-//			sql.queryUpdate("TRUNCATE TABLE order;");
-//			sql.queryUpdate("TRUNCATE TABLE customer;");
-//			sql.query("TRUNCATE TABLE customer_cart;");
-//			sql.query("TRUNCATE TABLE order_items;");
-//			sql.query("TRUNCATE TABLE product;");
-//			sql.query("TRUNCATE TABLE order;");
+			sql.queryUpdate("TRUNCATE TABLE `order`;");
 			sql.queryUpdate("TRUNCATE TABLE customer;");
 			
 			return Response.ok("SQLRepo has been reset").build();
