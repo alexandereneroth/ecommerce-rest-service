@@ -10,9 +10,12 @@ import se.groupone.ecommerce.model.ProductParameters;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import se.groupone.ecommerce.webservice.util.CustomerMapper;
 import se.groupone.ecommerce.webservice.util.IntegerListMapper;
+import se.groupone.ecommerce.webservice.util.OrderMapper;
 import se.groupone.ecommerce.webservice.util.ProductMapper;
 import se.groupone.ecommerce.webservice.util.ProductParamMapper;
 
@@ -36,6 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.sun.org.apache.xml.internal.security.Init;
 
 public class CustomerServiceTest
@@ -53,6 +57,7 @@ public class CustomerServiceTest
 			.register(IntegerListMapper.class)
 			.register(ProductMapper.class)
 			.register(ProductParamMapper.class)
+			.register(OrderMapper.class)
 			.build();
 	private static final WebTarget CUSTOMERS_TARGET;
 	private static final WebTarget PRODUCTS_TARGET;
@@ -203,13 +208,15 @@ public class CustomerServiceTest
 				.invoke();
 		assertEquals(201, createProductResponse1.getStatus());
 
-//		Response createProductResponse2 = PRODUCT_TARGET.request(MediaType.APPLICATION_JSON)
-//				.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE, MediaType.APPLICATION_JSON))
-//				.invoke();
-//		assertEquals(201, createProductResponse2.getStatus());
+		// Response createProductResponse2 =
+		// PRODUCT_TARGET.request(MediaType.APPLICATION_JSON)
+		// .buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE,
+		// MediaType.APPLICATION_JSON))
+		// .invoke();
+		// assertEquals(201, createProductResponse2.getStatus());
 
 		// GET - Get created products
-		
+
 		final Product PRODUCT_TOMATO = client.target(createProductResponse1.getLocation())
 				.request(MediaType.APPLICATION_JSON)
 				.get(Product.class);
@@ -222,33 +229,32 @@ public class CustomerServiceTest
 				.buildPost(Entity.entity(Integer.toString(PRODUCT_TOMATO.getId()), MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, addProductsToCartResponse.getStatus());
-		
+
 		// GET - Get cart contents and verify
 		final Response shoppingCartGetResponse = CUSTOMERS_TARGET
 				.path(CUSTOMER2.getUsername())
 				.path("cart")
 				.request(MediaType.APPLICATION_JSON)
 				.get();
-		System.out.println(shoppingCartGetResponse.getStatus());
-		
+
 		final String shoppingCartJson = CUSTOMERS_TARGET
 				.path(CUSTOMER2.getUsername())
 				.path("cart")
 				.request(MediaType.APPLICATION_JSON)
 				.get(String.class);
-		
+
 		// Fulkod... TODO Avfula detta...
 		Gson gson = new Gson();
 		JsonObject shoppingCartJsonObject = gson.fromJson(shoppingCartJson, JsonObject.class);
 		ArrayList<Integer> cartArrayList = new ArrayList<Integer>();
 		JsonArray cartJsonArray = shoppingCartJsonObject.get("integerArray").getAsJsonArray();
-		for(JsonElement element : cartJsonArray) 
+		for (JsonElement element : cartJsonArray)
 		{
 			cartArrayList.add(element.getAsInt());
 		}
 		assertEquals(PRODUCT_TOMATO.getId(), (int) cartArrayList.get(0));
 	}
-	
+
 	//  Hämta en användares alla order
 	@Test
 	public void canGetCustomerOrders()
@@ -259,9 +265,9 @@ public class CustomerServiceTest
 				.invoke();
 		assertEquals(201, createCustomerResponse.getStatus());
 		
-		addOrder(CUSTOMER2);
-		addOrder(CUSTOMER2);
-		addOrder(CUSTOMER2);
+		Order orderToBeChecked1 = addOrder(CUSTOMER2);
+		Order orderToBeChecked2 = addOrder(CUSTOMER2);
+		Order orderToBeChecked3 = addOrder(CUSTOMER2);
 		
 		// GET - Retrieve created order
 		final String ordersJson = CUSTOMERS_TARGET
@@ -269,38 +275,60 @@ public class CustomerServiceTest
 				.path("orders")
 				.request()
 				.get(String.class);
-		System.out.println(ordersJson);
 		
-		// Fulkod... TODO Avfula detta...
-		Gson gson = new Gson();
-		JsonObject orderJsonObject = gson.fromJson(ordersJson, JsonObject.class);
-		ArrayList<JsonObject> orderArrayList = new ArrayList<JsonObject>();
-		JsonArray orderJsonArray = orderJsonObject.get("orderArray").getAsJsonArray();
-		for(JsonObject object : orderArrayList) 
-		{
-			orderArrayList.add(object);
-			JsonArray productIds = object.get("productIds").getAsJsonArray();
-			
-		}
+		// Check orderlist
+		HashMap<Integer, Order> customerOrders = parseOrderJsonArrayList(ordersJson);
+		
+		assertTrue(customerOrders.containsKey(orderToBeChecked1.getId()));
+		Order orderFromRepo1 = customerOrders.get(orderToBeChecked1.getId());
+		assertEquals(orderToBeChecked1, orderFromRepo1);
+		
+		assertTrue(customerOrders.containsKey(orderToBeChecked2.getId()));
+		Order orderFromRepo2 = customerOrders.get(orderToBeChecked2.getId());
+		assertEquals(orderToBeChecked2, orderFromRepo2);
+		
+		assertTrue(customerOrders.containsKey(orderToBeChecked3.getId()));
+		Order orderFromRepo3 = customerOrders.get(orderToBeChecked3.getId());
+		assertEquals(orderToBeChecked3, orderFromRepo3);
 	}
 	
-	private void addOrder(Customer customer) 
-	{	
+	private HashMap<Integer, Order> parseOrderJsonArrayList (String ordersJson)
+	{
+		// Fulkod... TODO Avfula detta... kommentera? :(
+		Gson gson = new Gson();
+		HashMap<Integer, Order> customerOrders = new HashMap<>(); 
+		JsonObject orderJsonObject = gson.fromJson(ordersJson, JsonObject.class);
+		JsonArray orderJsonArray = orderJsonObject.get("orderArray").getAsJsonArray();
+		
+		for(JsonElement order : orderJsonArray) 
+		{
+			ArrayList<Integer> productIdArrayList = new ArrayList<>();
+			JsonArray productIds = ((JsonObject) order).get("productIds").getAsJsonArray();
+			for(JsonElement jElement : productIds) 
+			{
+				productIdArrayList.add(jElement.getAsInt());
+			}
+			JsonObject newOrderJsonObject = (JsonObject) order;
+			Order newOrder = new Order(newOrderJsonObject.get("id").getAsInt(),
+					newOrderJsonObject.get("username").getAsString(),
+					productIdArrayList);
+			customerOrders.put(newOrder.getId(), newOrder);
+		}
+		return customerOrders;
+	}
+	
+	private Order addOrder(Customer customer)
+	{
 		// POST - Create products
 		Response createProductResponse1 = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, createProductResponse1.getStatus());
 
-		Response createProductResponse2 = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON)
-				.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE, MediaType.APPLICATION_JSON))
-				.invoke();
-		assertEquals(201, createProductResponse2.getStatus());
-		
 		final Product PRODUCT_TOMATO = client.target(createProductResponse1.getLocation())
 				.request(MediaType.APPLICATION_JSON)
 				.get(Product.class);
-		
+
 		// POST - Add products to cart
 		final Response addProductsToCartResponse = CUSTOMERS_TARGET
 				.path(customer.getUsername())
@@ -310,12 +338,21 @@ public class CustomerServiceTest
 				.invoke();
 		System.out.println(addProductsToCartResponse.readEntity(String.class));
 		assertEquals(201, addProductsToCartResponse.getStatus());
-		
+
 		// POST - Create order
 		final Response createOrderResponse = ORDERS_TARGET
 				.request()
 				.buildPost(Entity.entity(CUSTOMER2.getUsername(), MediaType.APPLICATION_JSON))
 				.invoke();
 		assertEquals(201, createOrderResponse.getStatus());
+		
+		// GET - Retrieve created order and check contents
+		final Order createdOrder = client.target(createOrderResponse.getLocation())
+				.request()
+				.get(Order.class);
+		
+		assertEquals(PRODUCT_TOMATO.getId(), (int)createdOrder.getProductIds().get(0));
+		
+		return createdOrder;
 	}
 }
