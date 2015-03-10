@@ -24,7 +24,7 @@ public class AdminService
 	{
 		if(command.equals("reset-repo"))
 		{
-			ShopService newShopService = new ShopService(new SQLCustomer(), 
+			ShopService newShopService = new ShopService(new InMemoryCustomerRepository(), 
 					new InMemoryProductRepository(), new InMemoryOrderRepository());
 			
 			context.setAttribute("ss", newShopService);

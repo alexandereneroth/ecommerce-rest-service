@@ -6,11 +6,11 @@ public final class Customer
 {
 	private final String username;
 	private String password,
-			email,
-			firstName,
-			lastName,
-			address,
-			phoneNumber;
+				   email,
+				   firstName,
+				   lastName,
+				   address,
+				   phoneNumber;
 	private ShoppingCart shoppingCart = new ShoppingCart();
 
 	public Customer(
@@ -30,6 +30,7 @@ public final class Customer
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 	}
+	
 
 	public void addProductToShoppingCart(int productId)
 	{
@@ -154,7 +155,8 @@ public final class Customer
 					&& this.getFirstName().equals(cu.getFirstName())
 					&& this.getLastName().equals(cu.getLastName())
 					&& this.getAddress().equals(cu.getAddress())
-					&& this.getPhoneNumber().equals(cu.getPhoneNumber()))
+					&& this.getPhoneNumber().equals(cu.getPhoneNumber())
+					&& this.getShoppingCart().equals(cu.getShoppingCart()))
 			{
 				return true;
 			}
