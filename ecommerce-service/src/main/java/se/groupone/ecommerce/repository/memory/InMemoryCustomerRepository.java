@@ -10,7 +10,6 @@ import java.util.List;
 
 public class InMemoryCustomerRepository implements CustomerRepository
 {
-
 	private HashMap<String, Customer> customers = new HashMap<String, Customer>();
 
 	@Override
@@ -62,5 +61,4 @@ public class InMemoryCustomerRepository implements CustomerRepository
 		}
 		throw new RepositoryException("Could not remove customer: customer does not exist.");
 	}
-
 }

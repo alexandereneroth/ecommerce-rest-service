@@ -10,7 +10,6 @@ import java.util.List;
 
 public class InMemoryProductRepository implements ProductRepository
 {
-
 	private HashMap<Integer, Product> products = new HashMap<Integer, Product>();
 
 	@Override
@@ -75,6 +74,5 @@ public class InMemoryProductRepository implements ProductRepository
 		{
 			products.get(productId).increaseQuantity(1);
 		}
-
 	}
 }

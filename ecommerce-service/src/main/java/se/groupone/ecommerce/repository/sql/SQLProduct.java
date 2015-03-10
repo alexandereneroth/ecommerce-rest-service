@@ -14,25 +14,26 @@ public class SQLProduct implements ProductRepository
 {
 	private final String dbTable = "product";
 	private final SQLConnector sql;
+
 	public SQLProduct() throws RepositoryException
 	{
 		try
 		{
 			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not construct SQLProduct: Could not construct database object", e);
 		}
 	}
-	
+
 	@Override
 	public void addProduct(final Product product) throws RepositoryException
 	{
 		try
 		{
 			StringBuilder addProductQuery = new StringBuilder();
-			addProductQuery.append("INSERT INTO " + DBInfo.database + "." + dbTable +" ");
+			addProductQuery.append("INSERT INTO " + DBInfo.database + "." + dbTable + " ");
 			addProductQuery.append("(id_product, title, category, manufacturer, description, img, price, quantity) ");
 			addProductQuery.append("VALUES(" + product.getId() + ", ");
 			addProductQuery.append("'" + product.getTitle() + "', ");
@@ -42,10 +43,10 @@ public class SQLProduct implements ProductRepository
 			addProductQuery.append("'" + product.getImg() + "', ");
 			addProductQuery.append("" + product.getPrice() + ", ");
 			addProductQuery.append("" + product.getQuantity() + ");");
-			
+
 			sql.query(addProductQuery.toString());
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not add Product to database!", e);
 		}
@@ -58,41 +59,40 @@ public class SQLProduct implements ProductRepository
 		try
 		{
 			StringBuilder getProductQuery = new StringBuilder();
-			getProductQuery.append("SELECT * FROM " + DBInfo.database+"."+dbTable + " ");
+			getProductQuery.append("SELECT * FROM " + DBInfo.database + "." + dbTable + " ");
 			getProductQuery.append("WHERE id_product = " + productID + ";");
-			
+
 			rs = sql.queryResult(getProductQuery.toString());
 			if (!rs.isBeforeFirst())
 			{
-				throw new RepositoryException("No matches for Product found in database!\nSQL QUERY: "+getProductQuery.toString());
+				throw new RepositoryException("No matches for Product found in database!\nSQL QUERY: " + getProductQuery.toString());
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to retrieve Product data from database!", e);
 		}
-		
+
 		try
 		{
 			rs.next();
 			final ProductParameters productParams = new ProductParameters(
-													  rs.getString("title"),
-													  rs.getString("category"),
-													  rs.getString("manufacturer"),
-													  rs.getString("description"),
-													  rs.getString("img"),
-													  rs.getDouble("price"),
-													  rs.getInt("quantity"));
-		
+					rs.getString("title"),
+					rs.getString("category"),
+					rs.getString("manufacturer"),
+					rs.getString("description"),
+					rs.getString("img"),
+					rs.getDouble("price"),
+					rs.getInt("quantity"));
+
 			final Product product = new Product(productID, productParams);
 			rs.close();
 			return product;
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Failed to construct Product from database!", e);
 		}
-
 	}
 
 	@Override
@@ -102,62 +102,62 @@ public class SQLProduct implements ProductRepository
 		final int numRows;
 		try
 		{
-			final String numRowsQuery = "SELECT count(id_product) FROM " + DBInfo.database+"." + dbTable + ";";
-			
+			final String numRowsQuery = "SELECT count(id_product) FROM " + DBInfo.database + "." + dbTable + ";";
+
 			rs = sql.queryResult(numRowsQuery);
 			if (!rs.isBeforeFirst())
 			{
 				throw new RepositoryException("No matches COUNT(id_product) in products!\nSQL QUERY: " + numRowsQuery);
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("No ProductCount recieved from database!", e);
 		}
-		
+
 		try
 		{
 			rs.next();
 			numRows = rs.getInt(1);
 			rs.close();
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not parse COUNT(id_product) from Product database!", e);
 		}
-		
+
 		try
 		{
-			final String fetchAllQuery = "SELECT * FROM " + DBInfo.database+"." + dbTable + ";";
+			final String fetchAllQuery = "SELECT * FROM " + DBInfo.database + "." + dbTable + ";";
 			rs = sql.queryResult(fetchAllQuery);
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not fetch all Products from database!", e);
 		}
-		
+
 		try
 		{
 			List<Product> productList = new ArrayList<>();
-			for(int i = 0; i < numRows; i++)
+			for (int i = 0; i < numRows; i++)
 			{
 				rs.next();
 				final int productID = rs.getInt("id_product");
 				final ProductParameters productParams = new ProductParameters(
-													  rs.getString("title"),
-													  rs.getString("category"),
-													  rs.getString("manufacturer"),
-													  rs.getString("description"),
-													  rs.getString("img"),
-													  rs.getDouble("price"),
-													  rs.getInt("quantity"));
+						rs.getString("title"),
+						rs.getString("category"),
+						rs.getString("manufacturer"),
+						rs.getString("description"),
+						rs.getString("img"),
+						rs.getDouble("price"),
+						rs.getInt("quantity"));
 				final Product product = new Product(productID, productParams);
 				productList.add(product);
 			}
 			rs.close();
 			return productList;
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not parse Products in database!", e);
 		}
@@ -169,35 +169,33 @@ public class SQLProduct implements ProductRepository
 		try
 		{
 			final String removeQuery = "DELETE FROM " + DBInfo.database + "." + dbTable + " WHERE id_product = " + productID + ";";
-			
 			sql.query(removeQuery);
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not query removal of Product!", e);
 		}
-		
 	}
 
 	@Override
 	public void updateProduct(Product product) throws RepositoryException
-	{		
+	{
 		try
 		{
 			StringBuilder updateProductQuery = new StringBuilder();
-			updateProductQuery.append("UPDATE "+DBInfo.database+"."+dbTable+" SET ");
-			updateProductQuery.append("title = '"+product.getTitle()+"', ");
-			updateProductQuery.append("category = '"+product.getCategory()+"', ");
-			updateProductQuery.append("manufacturer = '"+product.getManufacturer()+"', ");
-			updateProductQuery.append("description = '"+product.getDescription()+"', ");
-			updateProductQuery.append("img = '"+product.getImg()+"', ");
-			updateProductQuery.append("price = "+product.getPrice()+", ");
-			updateProductQuery.append("quantity = "+product.getQuantity()+" ");
-			updateProductQuery.append("WHERE id_product = "+product.getId()+";");
-			
+			updateProductQuery.append("UPDATE " + DBInfo.database + "." + dbTable + " SET ");
+			updateProductQuery.append("title = '" + product.getTitle() + "', ");
+			updateProductQuery.append("category = '" + product.getCategory() + "', ");
+			updateProductQuery.append("manufacturer = '" + product.getManufacturer() + "', ");
+			updateProductQuery.append("description = '" + product.getDescription() + "', ");
+			updateProductQuery.append("img = '" + product.getImg() + "', ");
+			updateProductQuery.append("price = " + product.getPrice() + ", ");
+			updateProductQuery.append("quantity = " + product.getQuantity() + " ");
+			updateProductQuery.append("WHERE id_product = " + product.getId() + ";");
+
 			sql.query(updateProductQuery.toString());
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not query Product update!", e);
 		}
@@ -206,7 +204,7 @@ public class SQLProduct implements ProductRepository
 	@Override
 	public void decreaseQuantityOfProductsByOne(List<Integer> ids) throws RepositoryException
 	{
-		 productsQuantityChange(ids, -1);
+		productsQuantityChange(ids, -1);
 	}
 
 	@Override
@@ -221,54 +219,53 @@ public class SQLProduct implements ProductRepository
 		ResultSet rs;
 		try
 		{
-			final String highestIDQuery = "SELECT MAX(id_product) FROM "+DBInfo.database+"."+dbTable;
+			final String highestIDQuery = "SELECT MAX(id_product) FROM " + DBInfo.database + "." + dbTable;
 			rs = sql.queryResult(highestIDQuery);
 			if (!rs.isBeforeFirst())
 			{
 				throw new RepositoryException("No matches MAX(id_product) in Products!\nSQL QUERY: " + highestIDQuery);
 			}
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not get query MAX Product ID!", e);
 		}
-		
+
 		try
 		{
 			rs.next();
 			final int highestProductID = rs.getInt(1);
 			rs.close();
-			return highestProductID;	
+			return highestProductID;
 		}
-		catch(SQLException e)
+		catch (SQLException e)
 		{
 			throw new RepositoryException("Could not parse MAX(id_product) Product database!", e);
 		}
-		
 	}
-	
+
 	private void productsQuantityChange(final List<Integer> ids, final int quantityChange) throws RepositoryException
 	{
-		
+
 		Product product[] = new Product[ids.size()];
-		for(int i = 0; i < ids.size(); i++)
+		for (int i = 0; i < ids.size(); i++)
 		{
 			product[i] = getProduct(ids.get(i));
 		}
-		
+
 		StringBuilder updateQuantityQuery = new StringBuilder();
-		for(int i = 0; i < ids.size(); i++)
+		for (int i = 0; i < ids.size(); i++)
 		{
-			updateQuantityQuery.append("UPDATE " + DBInfo.database+"." + dbTable + " SET ");
+			updateQuantityQuery.append("UPDATE " + DBInfo.database + "." + dbTable + " SET ");
 			updateQuantityQuery.append("quantity = " + (product[i].getQuantity() + quantityChange) + " ");
 			updateQuantityQuery.append("WHERE id_product = " + product[i].getId() + ";");
 			try
 			{
 				sql.query(updateQuantityQuery.toString());
-				
+
 				updateQuantityQuery.delete(0, updateQuantityQuery.length());
 			}
-			catch(SQLException e)
+			catch (SQLException e)
 			{
 				throw new RepositoryException("Could not query Product quantity update!", e);
 			}

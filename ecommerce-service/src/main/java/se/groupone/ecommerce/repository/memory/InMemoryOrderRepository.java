@@ -84,5 +84,4 @@ public class InMemoryOrderRepository implements OrderRepository
 			throw new RepositoryException("No order with this ID exists in repository");
 		}
 	}
-
 }
