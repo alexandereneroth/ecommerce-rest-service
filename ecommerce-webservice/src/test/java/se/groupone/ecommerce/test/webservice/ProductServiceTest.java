@@ -35,7 +35,7 @@ import com.google.gson.reflect.TypeToken;
 public class ProductServiceTest
 {
 	private static final String HOST_NAME = "localhost";
-	private static final int HOST_IP = 9999;
+	private static final int HOST_IP = 8080;
 	private static final String PROJECT_NAME = "ecommerce-webservice";
 	private static final String RESOURCE = "products";
 	private static final String URL_BASE = "http://" + HOST_NAME + ":" + HOST_IP + "/"
@@ -59,7 +59,6 @@ public class ProductServiceTest
 	private static final int PRODUCT_ID_TOMATO = FIRST_GENERATED_PRODUCT_ID;
 	private static final int PRODUCT_ID_LETTUCE = FIRST_GENERATED_PRODUCT_ID + 1;
 	// Products
-	private static final Product PRODUCT_TOMATO = new Product(PRODUCT_ID_TOMATO, PRODUCT_PARAMETERS_TOMATO);
 	private static final Product PRODUCT_LETTUCE = new Product(PRODUCT_ID_LETTUCE, PRODUCT_PARAMETERS_LETTUCE);
 	
 	
@@ -88,14 +87,18 @@ public class ProductServiceTest
 	@Test
 	public void canCreateAndGetProduct()
 	{
-		//POST
-		Response creationResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
-										.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
-										.invoke();
-		
+		// POST - Create products
+		Response createProductResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
+				.invoke();
+		assertEquals(201, createProductResponse.getStatus());
+
+		final Product PRODUCT_TOMATO = client.target(createProductResponse.getLocation())
+				.request(MediaType.APPLICATION_JSON)
+				.get(Product.class);
 		
 		//GET
-		WebTarget createdTarget = client.target(creationResponse.getLocation());
+		WebTarget createdTarget = client.target(createProductResponse.getLocation());
 		Product createdProduct = createdTarget.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
@@ -114,34 +117,27 @@ public class ProductServiceTest
 		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
 						.buildPost(Entity.entity(PRODUCT_PARAMETERS_LETTUCE,MediaType.APPLICATION_JSON))
 						.invoke();
-		
-//		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
-//				.request(MediaType.APPLICATION_JSON).get(Product.class);
 
 		String json = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON).get(String.class);
-		System.out.println(json);
-//		Gson gson = new Gson();
-//		Type collectionType = new TypeToken<ArrayList<Product>>(){}.getType();
-//		ArrayList<Product> ints2 = gson.fromJson(json, collectionType);
-//		
-//		for(Product product : ints2)
-//		{
-//			System.out.println(product);
-//			
-//		}
+//		System.out.println(json);
 	}
 
 	//  Uppdatera en produkt
 	@Test
 	public void canUpdateAProduct()
 	{
-		//POST
-		Response creationResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
-						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
-						.invoke();
+		// POST - Create products
+		Response createProductResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
+				.invoke();
+		assertEquals(201, createProductResponse.getStatus());
+
+		final Product PRODUCT_TOMATO = client.target(createProductResponse.getLocation())
+				.request(MediaType.APPLICATION_JSON)
+				.get(Product.class);
 
 		//GET
-		WebTarget createdTarget = client.target(creationResponse.getLocation());
+		WebTarget createdTarget = client.target(createProductResponse.getLocation());
 		Product createdProduct = createdTarget
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
@@ -165,27 +161,35 @@ public class ProductServiceTest
 	@Test
 	public void canDeleteAProduct() throws IOException
 	{
-		//POST
-		Response createdResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
-						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
-						.invoke();
+		// POST - Create products
+		Response createProductResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+				.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO, MediaType.APPLICATION_JSON))
+				.invoke();
+		assertEquals(201, createProductResponse.getStatus());
+
+		final Product PRODUCT_TOMATO = client.target(createProductResponse.getLocation())
+				.request(MediaType.APPLICATION_JSON)
+				.get(Product.class);
 
 		//GET
-		Product createdProduct = client.target(createdResponse.getLocation())
+		Product createdProduct = client.target(createProductResponse.getLocation())
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
-
+		
+		System.out.println(createProductResponse.getLocation());
+		
 		//DELETE
-		client.target(createdResponse.getLocation()).request(MediaType.APPLICATION_JSON)
+		Response deleteProductResponse = client.target(createProductResponse.getLocation())
+						.request()
 						.delete();
+		assertThat(deleteProductResponse.getStatus(), is(Status.NO_CONTENT.getStatusCode()));
 
 		//GET
-		Response deletedProductResponse = client.target(createdResponse.getLocation())
+		Response getDeletedProductResponse = client.target(createProductResponse.getLocation())
 				.request(MediaType.APPLICATION_JSON).get();
-		String body = new BufferedReader(new InputStreamReader((InputStream)deletedProductResponse.getEntity())).readLine();
 		
-		assertThat(deletedProductResponse.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
+		assertThat(getDeletedProductResponse.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
 	}
 
 }
