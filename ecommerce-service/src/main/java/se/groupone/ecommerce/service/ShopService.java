@@ -3,7 +3,6 @@ package se.groupone.ecommerce.service;
 import se.groupone.ecommerce.exception.ShopServiceException;
 import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
-import se.groupone.ecommerce.model.ModelException;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;

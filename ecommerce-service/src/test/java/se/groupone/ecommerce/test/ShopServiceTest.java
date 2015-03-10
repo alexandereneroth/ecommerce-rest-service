@@ -1,3 +1,5 @@
+// TODO Needs to be updated for new API
+//
 //package se.groupone.ecommerce.test;
 //
 //import static org.junit.Assert.*;
