@@ -58,7 +58,7 @@ public final class SQLCustomer implements CustomerRepository
 			{
 				StringBuilder customerCartQuery = new StringBuilder();
 				customerCartQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomerItems + " ");
-				customerCartQuery.append("(id_item, customer_name) ");
+				customerCartQuery.append("(id_item, user_name) ");
 				customerCartQuery.append("VALUES(" + productIds.get(i) + ", ");
 				customerCartQuery.append("'" + customer.getUsername() + "'); ");
 				sql.query(customerCartQuery.toString());
@@ -276,7 +276,7 @@ public final class SQLCustomer implements CustomerRepository
 			{
 				StringBuilder customerCartQuery = new StringBuilder();
 				customerCartQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomerItems + " ");
-				customerCartQuery.append("(id_item, customer_name) ");
+				customerCartQuery.append("(id_item, user_name) ");
 				customerCartQuery.append("VALUES(" + productIds.get(i) + ", ");
 				customerCartQuery.append("'" + customer.getUsername() + "'); ");
 				sql.query(customerCartQuery.toString());
