@@ -37,7 +37,7 @@ public class WebServiceInit implements ServletContextListener
 			e.printStackTrace();
 		}
 		
-//		// add some dummy data for DB
+		// add some dummy data for DB
 //		final String pName = "Voffla";
 //		final String pCategory = "Bakverk";
 //		final String pManufacturer = "Steffe";
@@ -84,7 +84,7 @@ public class WebServiceInit implements ServletContextListener
 //			ss = new ShopService(new SQLCustomer(), new SQLProduct(), new SQLOrder());
 //			sce.getServletContext().setAttribute("ss", ss);
 			
-			// add some dummy data for DB
+//			// add some dummy data for DB
 //			final String pName = "Voffla";
 //			final String pCategory = "Bakverk";
 //			final String pManufacturer = "Steffe";

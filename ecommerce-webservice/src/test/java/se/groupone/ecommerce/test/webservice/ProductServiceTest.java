@@ -86,8 +86,8 @@ public class ProductServiceTest
 		
 		
 		//GET
-		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
-				.request(MediaType.APPLICATION_JSON).get(Product.class);
+		WebTarget createdTarget = client.target(creationResponse.getLocation());
+		Product createdProduct = createdTarget.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
 		
@@ -127,24 +127,25 @@ public class ProductServiceTest
 	public void canUpdateAProduct()
 	{
 		//POST
-		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+		Response creationResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
 						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
 						.invoke();
 
 		//GET
-		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+		WebTarget createdTarget = client.target(creationResponse.getLocation());
+		Product createdProduct = createdTarget
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
 		
 
 		//PUT
-		RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "").request(MediaType.APPLICATION_JSON)
+		createdTarget.request(MediaType.APPLICATION_JSON)
 						.buildPut(Entity.entity(PRODUCT_PARAMETERS_LETTUCE,MediaType.APPLICATION_JSON))
 						.invoke();
 
 		//GET
-		Product updatedProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+		Product updatedProduct = createdTarget
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
 		assertThat(updatedProduct.getTitle(), is(PRODUCT_LETTUCE.getTitle()));
@@ -176,7 +177,7 @@ public class ProductServiceTest
 		String body = new BufferedReader(new InputStreamReader((InputStream)deletedProductResponse.getEntity())).readLine();
 		
 		assertThat(deletedProductResponse.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-		assertThat(body, containsString("does not exist"));
+		assertThat(body, containsString("could not get"));
 		
 	}
 
