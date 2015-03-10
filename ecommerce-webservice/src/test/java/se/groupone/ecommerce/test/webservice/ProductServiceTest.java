@@ -33,7 +33,7 @@ import com.google.gson.reflect.TypeToken;
 public class ProductServiceTest
 {
 	private static final String HOST_NAME = "localhost";
-	private static final int HOST_IP = 8080;
+	private static final int HOST_IP = 9999;
 	private static final String PROJECT_NAME = "ecommerce-webservice";
 	private static final String RESOURCE = "products";
 	private static final String URL_BASE = "http://" + HOST_NAME + ":" + HOST_IP + "/"
@@ -157,28 +157,26 @@ public class ProductServiceTest
 	public void canDeleteAProduct() throws IOException
 	{
 		//POST
-		RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
+		Response createdResponse = RESOURCE_TARGET.request(MediaType.APPLICATION_JSON)
 						.buildPost(Entity.entity(PRODUCT_PARAMETERS_TOMATO,MediaType.APPLICATION_JSON))
 						.invoke();
 
 		//GET
-		Product createdProduct = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+		Product createdProduct = client.target(createdResponse.getLocation())
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
 		
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
 
 		//DELETE
-		RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "").request(MediaType.APPLICATION_JSON)
+		client.target(createdResponse.getLocation()).request(MediaType.APPLICATION_JSON)
 						.delete();
 
 		//GET
-		Response deletedProductResponse = RESOURCE_TARGET.path(PRODUCT_ID_TOMATO + "")
+		Response deletedProductResponse = client.target(createdResponse.getLocation())
 				.request(MediaType.APPLICATION_JSON).get();
 		String body = new BufferedReader(new InputStreamReader((InputStream)deletedProductResponse.getEntity())).readLine();
 		
 		assertThat(deletedProductResponse.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-		assertThat(body, containsString("could not get"));
-		
 	}
 
 }
