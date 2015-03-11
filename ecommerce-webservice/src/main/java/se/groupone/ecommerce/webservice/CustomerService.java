@@ -36,10 +36,9 @@ public class CustomerService
 	private ServletContext context;
 	@Context
 	private UriInfo uriInfo;
-
 	private ShopService ss;
 
-	// Hämta en användare med ett visst id
+	//  Hämta en användare med ett visst id
 	@GET
 	@Path("{username}")
 	public Response getCustomer(@PathParam("username") final String username)
@@ -48,28 +47,27 @@ public class CustomerService
 		Customer customer = ss.getCustomer(username);
 		return Response.ok(customer).build();
 	}
-	
-	// Skapa en ny användare – detta ska returnera en länk till den skapade 
-	//användaren i Location-headern
+
+	//  Skapa en ny användare – detta ska returnera en länk till den skapade
+	// användaren i Location-headern
 	@POST
 	public Response createCustomer(final Customer customer)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 		ss.addCustomer(customer);
-
+		
 		final URI location = uriInfo.getAbsolutePathBuilder().path(customer.getUsername()).build();
 		return Response.created(location).build();
 	}
 
-	// Uppdatera en användare 
+	//  Uppdatera en användare
 	@PUT
 	@Path("{username}")
 	public Response putCustomer(@PathParam("username") final String username, final Customer customer)
 	{
 		ss = (ShopService) context.getAttribute("ss");
-		
-		// if path username and new customer username matches then update
-		// repository
+
+		// if path username and new customer username matches then update repository
 		if (username.equals(customer.getUsername()))
 		{
 			ss.updateCustomer(customer);
@@ -79,13 +77,14 @@ public class CustomerService
 		return Response.status(Status.BAD_REQUEST).entity("Username mismatch between path and new customer info").build();
 	}
 
-	// Ta bort en användare (eller sätta den som inaktiv)
+	//  Ta bort en användare (eller sätta den som inaktiv)
 	@DELETE
 	@Path("{username}")
 	public Response deleteCustomer(@PathParam("username") final String username)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 		ss.removeCustomer(username);
+		
 		return Response.noContent().build();
 	}
 
@@ -97,6 +96,7 @@ public class CustomerService
 		ss = (ShopService) context.getAttribute("ss");
 		cartList = ss.getCustomer(username).getShoppingCart();
 
+		// GenericEntity is created for IntegerListMapper generic handling
 		return Response.ok(new GenericEntity<ArrayList<Integer>>(cartList){}).build();
 	}
 
@@ -110,17 +110,18 @@ public class CustomerService
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-				ss.addProductToCustomer(productIdInt, username, amount);
-				final URI location = uriInfo.getAbsolutePathBuilder().build();
-				return Response.created(location).build();
+			ss.addProductToCustomer(productIdInt, username, amount);
+			
+			final URI location = uriInfo.getAbsolutePathBuilder().build();
+			return Response.created(location).build();
 		}
 		catch (NumberFormatException e)
 		{
 			return Response.status(Status.BAD_REQUEST).entity("Expected body to be parsable as integers").build();
 		}
 	}
-	
-	// Hämta en användares alla order
+
+	//  Hämta en användares alla order
 	@GET
 	@Path("{username}/orders")
 	public Response getOrders(@PathParam("username") final String username)
@@ -128,6 +129,8 @@ public class CustomerService
 		ArrayList<Order> orderList;
 		ShopService ss = (ShopService) context.getAttribute("ss");
 		orderList = new ArrayList<Order>(ss.getOrders(username));
+		
+		// GenericEntity is created for IntegerListMapper generic handling
 		return Response.ok(new GenericEntity<ArrayList<Order>>(orderList){}).build();
 	}
 }

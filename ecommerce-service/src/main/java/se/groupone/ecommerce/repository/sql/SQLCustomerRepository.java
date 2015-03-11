@@ -10,13 +10,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class SQLCustomer implements CustomerRepository
+public final class SQLCustomerRepository implements CustomerRepository
 {
 	private final SQLConnector sql;
 	private final String dbCustomer = "customer";
 	private final String dbCustomerItems = "customer_cart";
 
-	public SQLCustomer() throws RepositoryException
+	public SQLCustomerRepository() throws RepositoryException
 	{
 		try
 		{

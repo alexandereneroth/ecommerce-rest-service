@@ -10,12 +10,12 @@ import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
 import se.groupone.ecommerce.repository.ProductRepository;
 
-public class SQLProduct implements ProductRepository
+public class SQLProductRepository implements ProductRepository
 {
 	private final String dbTable = "product";
 	private final SQLConnector sql;
 
-	public SQLProduct() throws RepositoryException
+	public SQLProductRepository() throws RepositoryException
 	{
 		try
 		{

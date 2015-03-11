@@ -114,7 +114,6 @@ public class ShopService
 			try
 			{
 				// If there are any customers first remove the item from their carts
-				List<Customer> customerList = cR.getCustomers();
 				for (Customer c : cR.getCustomers())
 				{
 					boolean aProductWasRemoved = c.removeProductsWithIdFromShoppingCart(productId);
@@ -127,7 +126,7 @@ public class ShopService
 			}
 			catch (Exception e)
 			{
-				// DO NOTHING EVERYTHING IS FINE! :)
+				// No users in DB - no action needed
 			}
 			
 			pR.removeProduct(productId);

@@ -3,7 +3,6 @@ package se.groupone.ecommerce.webservice;
 import se.groupone.ecommerce.model.Order;
 
 import java.net.URI;
-import java.util.ArrayList;
 
 import se.groupone.ecommerce.service.ShopService;
 
@@ -17,7 +16,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -33,7 +31,7 @@ public final class OrderService
 	private UriInfo uriInfo;
 	private ShopService ss;
 
-	// Hämta en viss order för en användare 
+	//  Hämta en viss order för en användare
 	@GET
 	@Path("{orderId}")
 	public Response getOrder(@PathParam("orderId") final int orderId)
@@ -43,18 +41,18 @@ public final class OrderService
 		return Response.ok(order).build();
 	}
 
-	// Skapa en order för en användare
+	//  Skapa en order för en användare
 	@POST
 	public Response createOrder(final String username)
 	{
 		ss = (ShopService) context.getAttribute("ss");
 		Order newOrder = ss.createOrder(username);
-		
+
 		final URI location = uriInfo.getAbsolutePathBuilder().path(Integer.toString(newOrder.getId())).build();
 		return Response.created(location).build();
 	}
 
-	// Uppdatera en order för en användare 
+	//  Uppdatera en order för en användare
 	@PUT
 	public Response updateOrder(final Order order)
 	{
@@ -63,7 +61,7 @@ public final class OrderService
 		return Response.ok().build();
 	}
 
-	// Ta bort en order för en användare
+	//  Ta bort en order för en användare
 	@DELETE
 	@Path("{orderId}")
 	public Response removeOrder(@PathParam("orderId") final Integer orderId)

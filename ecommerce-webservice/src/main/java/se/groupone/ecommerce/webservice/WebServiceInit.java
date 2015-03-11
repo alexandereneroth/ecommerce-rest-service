@@ -1,159 +1,45 @@
 package se.groupone.ecommerce.webservice;
 
 import se.groupone.ecommerce.exception.RepositoryException;
-
-import se.groupone.ecommerce.model.Customer;
-import se.groupone.ecommerce.model.Product;
-import se.groupone.ecommerce.model.ProductParameters;
-
-import se.groupone.ecommerce.repository.memory.InMemoryCustomerRepository;
-import se.groupone.ecommerce.repository.memory.InMemoryOrderRepository;
-import se.groupone.ecommerce.repository.memory.InMemoryProductRepository;
-import se.groupone.ecommerce.repository.sql.SQLCustomer;
-import se.groupone.ecommerce.repository.sql.SQLOrder;
-import se.groupone.ecommerce.repository.sql.SQLProduct;
+import se.groupone.ecommerce.repository.sql.SQLCustomerRepository;
+import se.groupone.ecommerce.repository.sql.SQLOrderRepository;
+import se.groupone.ecommerce.repository.sql.SQLProductRepository;
 import se.groupone.ecommerce.service.ShopService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 public class WebServiceInit implements ServletContextListener
-{	
-	// Initializes shopService instance and adds it to servlet context so all resources are only
-	// working with this one instance of shopService
+{
+	// Initializes shopService instance and adds it to servlet context so all
+	// resources are only working with this one instance of ShopService.
 	@Override
 	public void contextInitialized(ServletContextEvent sce)
 	{
-		
+
 		try
 		{
-			ShopService newShopService = new ShopService(new SQLCustomer(), 
-			new SQLProduct(), new SQLOrder());
+			ShopService newShopService = new ShopService(
+					new SQLCustomerRepository(),
+					new SQLProductRepository(),
+					new SQLOrderRepository());
 			sce.getServletContext().setAttribute("ss", newShopService);
 		}
 		catch (RepositoryException e)
 		{
-			// TODO Auto-generated catch block
+			System.err.println("WebServiceInit failed to initialize SQL Repositories");
 			e.printStackTrace();
 		}
-		
-//		ShopService ss;
-//		ss = new ShopService(new InMemoryCustomerRepository(), 
-//				new InMemoryProductRepository(), new InMemoryOrderRepository());
-//		sce.getServletContext().setAttribute("ss", ss);
-//		
-//			// add some dummy data for DB
-//			final String pName = "Voffla";
-//			final String pCategory = "Bakverk";
-//			final String pManufacturer = "Steffe";
-//			final String pDescription = "En våffa gjord av steffe!";
-//			final String pImg = "delicious.png";
-//			final double pPrice = 10;
-//			final int pQuantity = 100;
-//			
-//			final String pName2 = "Pannkaka";
-//			final String pCategory2 = "Bakverk";
-//			final String pManufacturer2 = "SteffeKeff";
-//			final String pDescription2 = "En pannkaka gjord av steffe!";
-//			final String pImg2 = "delicious2.png";
-//			final double pPrice2 = 5;
-//			final int pQuantity2 = 200;
-//			
-//			
-//			ProductParameters params1 = new ProductParameters(pName,
-//					pCategory,
-//					pManufacturer,
-//					pDescription,
-//					pImg,
-//					pPrice,
-//					pQuantity);
-//			
-//			ProductParameters params2 = new ProductParameters(pName2,
-//					pCategory2,
-//					pManufacturer2,
-//					pDescription2,
-//					pImg2,
-//					pPrice2,
-//					pQuantity2);
-//			ss.addCustomer(new Customer("tom", "password", "email@email.com", "Tomcat", "Blackmore", "C3LStreet", "123456"));
-//			Product p1 = ss.addProduct(params1);
-//			Product p2 = ss.addProduct(params2);
-//			ss.addProductToCustomer(p1.getId(), "tom", 2);
-//			ss.createOrder("tom");
-//			ss.addProductToCustomer(p2.getId(), "tom");
-//			ss.createOrder("tom");
-		
-//		try
-//		{
-//			ss = new ShopService(new SQLCustomer(), 
-//					new InMemoryProductRepository(), new InMemoryOrderRepository());
-//			sce.getServletContext().setAttribute("ss", ss);
-//			
-//		}
-//		catch (RepositoryException e)
-//		{
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		
-		/////////////////  Uncommet below and Comment above to switch to SQL Repo ///////////////
-//		try
-//		{
-//			ss = new ShopService(new SQLCustomer(), new SQLProduct(), new SQLOrder());
-//			sce.getServletContext().setAttribute("ss", ss);
-			
-//			// add some dummy data for DB
-//			final String pName = "Voffla";
-//			final String pCategory = "Bakverk";
-//			final String pManufacturer = "Steffe";
-//			final String pDescription = "En våffa gjord av steffe!";
-//			final String pImg = "delicious.png";
-//			final double pPrice = 10;
-//			final int pQuantity = 100;
-//			
-//			final String pName2 = "Pannkaka";
-//			final String pCategory2 = "Bakverk";
-//			final String pManufacturer2 = "SteffeKeff";
-//			final String pDescription2 = "En pannkaka gjord av steffe!";
-//			final String pImg2 = "delicious2.png";
-//			final double pPrice2 = 5;
-//			final int pQuantity2 = 200;
-//			
-//			
-//			ProductParameters params1 = new ProductParameters(pName,
-//										   pCategory,
-//										   pManufacturer,
-//										   pDescription,
-//										   pImg,
-//										   pPrice,
-//									       pQuantity);
-//		
-//			ProductParameters params2 = new ProductParameters(pName2,
-//								    	   pCategory2,
-//										   pManufacturer2,
-//										   pDescription2,
-//										   pImg2,
-//										   pPrice2,
-//										   pQuantity2);
-//			ss.addCustomer(new Customer("tom", "password", "email@email.com", "Tomcat", "Blackmore", "C3LStreet", "123456"));
-//			Product p1 = ss.addProduct(params1);
-//			Product p2 = ss.addProduct(params2);
-//			ss.addProductToCustomer(p1.getId(), "tom", 2);
-//			ss.createOrder("tom");
-//			ss.addProductToCustomer(p2.getId(), "tom");
-//			ss.createOrder("tom");
-//		}
-//		catch (RepositoryException e)
-//		{
-//			e.printStackTrace();
-//		}
+
+		// Uncommet below to switch to InMemoryRepo
+		// ShopService ss;
+		// ss = new ShopService(new InMemoryCustomerRepository(),
+		// new InMemoryProductRepository(), new InMemoryOrderRepository());
+		// sce.getServletContext().setAttribute("ss", ss);
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce)
 	{
-		System.out.println("ServletContextListener destroyed");
 	}
-
 }

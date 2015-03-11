@@ -11,14 +11,14 @@ import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Order;
 import se.groupone.ecommerce.repository.OrderRepository;
 
-public class SQLOrder implements OrderRepository
+public class SQLOrderRepository implements OrderRepository
 {
 	private final String dbTableOrders = "order";
 	private final String dbTableOrderItems = "order_items";
 	private final SQLConnector sql;
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-	public SQLOrder() throws RepositoryException
+	public SQLOrderRepository() throws RepositoryException
 	{
 		try
 		{
