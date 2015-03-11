@@ -22,7 +22,7 @@ public class SQLOrderRepository implements OrderRepository
 	{
 		try
 		{
-			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
+			sql = new SQLConnector(DBConnectionConfig.HOST, DBConnectionConfig.PORT, DBConnectionConfig.USERNAME, DBConnectionConfig.PASSWORD, DBConnectionConfig.DATABASE);
 		}
 		catch (SQLException e)
 		{
@@ -47,7 +47,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder orderInsertQuery = new StringBuilder();
-			orderInsertQuery.append("INSERT INTO " + DBInfo.database + ".`" + dbTableOrders + "` ");
+			orderInsertQuery.append("INSERT INTO " + DBConnectionConfig.DATABASE + ".`" + dbTableOrders + "` ");
 			orderInsertQuery.append("(id_order, customer_name, created, shipped) ");
 			orderInsertQuery.append("VALUES(" + order.getId() + ", ");
 			orderInsertQuery.append("'" + order.getUsername() + "', ");
@@ -67,7 +67,7 @@ public class SQLOrderRepository implements OrderRepository
 			StringBuilder toOrderItemsTable = new StringBuilder();
 			for (int i = 0; i < productIDs.size(); i++)
 			{
-				toOrderItemsTable.append("INSERT INTO " + DBInfo.database + "." + dbTableOrderItems + " ");
+				toOrderItemsTable.append("INSERT INTO " + DBConnectionConfig.DATABASE + "." + dbTableOrderItems + " ");
 				toOrderItemsTable.append("(id_order, id_product) ");
 				toOrderItemsTable.append("VALUES(" + order.getId() + ", ");
 				toOrderItemsTable.append("" + productIDs.get(i) + ");");
@@ -93,7 +93,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder orderInfoQuery = new StringBuilder();
-			orderInfoQuery.append("SELECT customer_name, created, shipped FROM " + DBInfo.database + ".`" + dbTableOrders + "` ");
+			orderInfoQuery.append("SELECT customer_name, created, shipped FROM " + DBConnectionConfig.DATABASE + ".`" + dbTableOrders + "` ");
 			orderInfoQuery.append("WHERE id_order = " + orderID + ";");
 
 			rs = sql.queryResult(orderInfoQuery.toString());
@@ -128,7 +128,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder numOfItemIDsQuery = new StringBuilder();
-			numOfItemIDsQuery.append("SELECT count(id_product) FROM " + DBInfo.database + "." + dbTableOrderItems + " ");
+			numOfItemIDsQuery.append("SELECT count(id_product) FROM " + DBConnectionConfig.DATABASE + "." + dbTableOrderItems + " ");
 			numOfItemIDsQuery.append("WHERE id_order = " + orderID + ";");
 
 			rs = sql.queryResult(numOfItemIDsQuery.toString());
@@ -157,7 +157,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder orderIDsQuery = new StringBuilder();
-			orderIDsQuery.append("SELECT id_product FROM " + DBInfo.database + "." + dbTableOrderItems + " ");
+			orderIDsQuery.append("SELECT id_product FROM " + DBConnectionConfig.DATABASE + "." + dbTableOrderItems + " ");
 			orderIDsQuery.append("WHERE id_order = " + orderID + ";");
 
 			rs = sql.queryResult(orderIDsQuery.toString());
@@ -194,7 +194,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder removeOrderItemsQuery = new StringBuilder();
-			removeOrderItemsQuery.append("DELETE FROM " + DBInfo.database + "." + dbTableOrderItems + " ");
+			removeOrderItemsQuery.append("DELETE FROM " + DBConnectionConfig.DATABASE + "." + dbTableOrderItems + " ");
 			removeOrderItemsQuery.append("WHERE id_order = " + orderID + ";");
 
 			sql.query(removeOrderItemsQuery.toString());
@@ -207,7 +207,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder removeOrderQuery = new StringBuilder();
-			removeOrderQuery.append("DELETE FROM " + DBInfo.database + "." + dbTableOrders + " ");
+			removeOrderQuery.append("DELETE FROM " + DBConnectionConfig.DATABASE + "." + dbTableOrders + " ");
 			removeOrderQuery.append("WHERE id_order = " + orderID + ";");
 
 			sql.query(removeOrderQuery.toString());
@@ -226,7 +226,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder countOrderIDsQuery = new StringBuilder();
-			countOrderIDsQuery.append("SELECT count(id_order) FROM " + DBInfo.database + ".`" + dbTableOrders + "` ");
+			countOrderIDsQuery.append("SELECT count(id_order) FROM " + DBConnectionConfig.DATABASE + ".`" + dbTableOrders + "` ");
 			countOrderIDsQuery.append("WHERE customer_name = '" + customerUsername + "';");
 
 			rs = sql.queryResult(countOrderIDsQuery.toString());
@@ -254,7 +254,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder getOrderIDsQuery = new StringBuilder();
-			getOrderIDsQuery.append("SELECT id_order FROM " + DBInfo.database + ".`" + dbTableOrders + "` ");
+			getOrderIDsQuery.append("SELECT id_order FROM " + DBConnectionConfig.DATABASE + ".`" + dbTableOrders + "` ");
 			getOrderIDsQuery.append("WHERE customer_name = '" + customerUsername + "';");
 
 			rs = sql.queryResult(getOrderIDsQuery.toString());
@@ -297,7 +297,7 @@ public class SQLOrderRepository implements OrderRepository
 		ResultSet rs;
 		try
 		{
-			final String highestOrderIDQuery = "SELECT MAX(id_order) FROM " + DBInfo.database + ".`" + dbTableOrders + "` ";
+			final String highestOrderIDQuery = "SELECT MAX(id_order) FROM " + DBConnectionConfig.DATABASE + ".`" + dbTableOrders + "` ";
 			rs = sql.queryResult(highestOrderIDQuery);
 			if (!rs.isBeforeFirst())
 			{
@@ -343,7 +343,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder updateTableOrderQuery = new StringBuilder();
-			updateTableOrderQuery.append("UPDATE " + DBInfo.database + ".`" + dbTableOrders + "` SET ");
+			updateTableOrderQuery.append("UPDATE " + DBConnectionConfig.DATABASE + ".`" + dbTableOrders + "` SET ");
 			updateTableOrderQuery.append("created = '" + sqlDateCreated + "', ");
 			updateTableOrderQuery.append("shipped = '" + sqlDateShipped + "' ");
 			updateTableOrderQuery.append("WHERE id_order = " + order.getId() + ";");
@@ -358,7 +358,7 @@ public class SQLOrderRepository implements OrderRepository
 		try
 		{
 			StringBuilder deleteOrderItemsQuery = new StringBuilder();
-			deleteOrderItemsQuery.append("DELETE FROM " + DBInfo.database + "." + dbTableOrderItems + " ");
+			deleteOrderItemsQuery.append("DELETE FROM " + DBConnectionConfig.DATABASE + "." + dbTableOrderItems + " ");
 			deleteOrderItemsQuery.append("WHERE id_order = " + order.getId() + ";");
 
 			sql.query(deleteOrderItemsQuery.toString());
@@ -374,7 +374,7 @@ public class SQLOrderRepository implements OrderRepository
 			StringBuilder toOrderItemsQuery = new StringBuilder();
 			for (int i = 0; i < productIDs.size(); i++)
 			{
-				toOrderItemsQuery.append("INSERT INTO " + DBInfo.database + "." + dbTableOrderItems + " ");
+				toOrderItemsQuery.append("INSERT INTO " + DBConnectionConfig.DATABASE + "." + dbTableOrderItems + " ");
 				toOrderItemsQuery.append("(id_order, id_product) ");
 				toOrderItemsQuery.append("VALUES(" + order.getId() + ", ");
 				toOrderItemsQuery.append("" + productIDs.get(i) + ");");

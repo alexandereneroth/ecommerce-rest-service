@@ -1,11 +1,9 @@
 package se.groupone.ecommerce.webservice;
 
+import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Customer;
 import se.groupone.ecommerce.model.Order;
 
-import se.groupone.ecommerce.service.ShopService;
-
-import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -29,22 +27,22 @@ import java.util.ArrayList;
 @Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class CustomerService
+public final class CustomerService extends WebService
 {
+	public CustomerService() throws RepositoryException
+	{
+		super();
+	}
 
 	@Context
-	private ServletContext context;
-	@Context
 	private UriInfo uriInfo;
-	private ShopService ss;
 
 	//  Hämta en användare med ett visst id
 	@GET
 	@Path("{username}")
 	public Response getCustomer(@PathParam("username") final String username)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		Customer customer = ss.getCustomer(username);
+		Customer customer = shopService.getCustomer(username);
 		return Response.ok(customer).build();
 	}
 
@@ -53,9 +51,8 @@ public final class CustomerService
 	@POST
 	public Response createCustomer(final Customer customer)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		ss.addCustomer(customer);
-		
+		shopService.addCustomer(customer);
+
 		final URI location = uriInfo.getAbsolutePathBuilder().path(customer.getUsername()).build();
 		return Response.created(location).build();
 	}
@@ -65,12 +62,11 @@ public final class CustomerService
 	@Path("{username}")
 	public Response putCustomer(@PathParam("username") final String username, final Customer customer)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-
-		// if path username and new customer username matches then update repository
+		// if path username and new customer username matches then update
+		// repository
 		if (username.equals(customer.getUsername()))
 		{
-			ss.updateCustomer(customer);
+			shopService.updateCustomer(customer);
 			return Response.status(Status.NO_CONTENT).build();
 		}
 		// otherwise send error code
@@ -82,9 +78,8 @@ public final class CustomerService
 	@Path("{username}")
 	public Response deleteCustomer(@PathParam("username") final String username)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		ss.removeCustomer(username);
-		
+		shopService.removeCustomer(username);
+
 		return Response.noContent().build();
 	}
 
@@ -93,11 +88,12 @@ public final class CustomerService
 	public Response getOrder(@PathParam("username") final String username)
 	{
 		ArrayList<Integer> cartList;
-		ss = (ShopService) context.getAttribute("ss");
-		cartList = ss.getCustomer(username).getShoppingCart();
+		cartList = shopService.getCustomer(username).getShoppingCart();
 
 		// GenericEntity is created for IntegerListMapper generic handling
-		return Response.ok(new GenericEntity<ArrayList<Integer>>(cartList){}).build();
+		return Response.ok(new GenericEntity<ArrayList<Integer>>(cartList)
+		{
+		}).build();
 	}
 
 	@POST
@@ -106,12 +102,11 @@ public final class CustomerService
 			@QueryParam("amount") @DefaultValue("1") final Integer amount,
 			final String productId)
 	{
-		ss = (ShopService) context.getAttribute("ss");
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-			ss.addProductToCustomer(productIdInt, username, amount);
-			
+			shopService.addProductToCustomer(productIdInt, username, amount);
+
 			final URI location = uriInfo.getAbsolutePathBuilder().build();
 			return Response.created(location).build();
 		}
@@ -127,10 +122,11 @@ public final class CustomerService
 	public Response getOrders(@PathParam("username") final String username)
 	{
 		ArrayList<Order> orderList;
-		ShopService ss = (ShopService) context.getAttribute("ss");
-		orderList = new ArrayList<Order>(ss.getOrders(username));
-		
+		orderList = new ArrayList<Order>(shopService.getOrders(username));
+
 		// GenericEntity is created for IntegerListMapper generic handling
-		return Response.ok(new GenericEntity<ArrayList<Order>>(orderList){}).build();
+		return Response.ok(new GenericEntity<ArrayList<Order>>(orderList)
+		{
+		}).build();
 	}
 }

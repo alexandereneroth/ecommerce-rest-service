@@ -14,29 +14,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ShopService
+public final class ShopService
 {
-	// TODO add full repository variable names
-	private final CustomerRepository cR;
-	private final ProductRepository pR;
-	private final OrderRepository oR;
+	private final CustomerRepository customerRepository;
+	private final ProductRepository productRepository;
+	private final OrderRepository orderRepository;
 
 	private final AtomicInteger productIDGenerator;
 	private final AtomicInteger orderIDGenerator;
 
-	public ShopService(CustomerRepository cR, ProductRepository pR, OrderRepository oR)
+	public ShopService(CustomerRepository customerRepository,
+			ProductRepository productRepository,
+			OrderRepository orderRepository)
 	{
-		this.cR = cR;
-		this.pR = pR;
-		this.oR = oR;
+		this.customerRepository = customerRepository;
+		this.productRepository = productRepository;
+		this.orderRepository = orderRepository;
 		try
 		{
-			productIDGenerator = new AtomicInteger(pR.getHighestId());
-			orderIDGenerator = new AtomicInteger(oR.getHighestId());
+			productIDGenerator = new AtomicInteger(productRepository.getHighestId());
+			orderIDGenerator = new AtomicInteger(orderRepository.getHighestId());
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not instantiate ShopService: " + e.getMessage(), e);
+			throw new ShopServiceException("Could not instantiate ShopService: "
+					+ e.getMessage(), e);
 		}
 	}
 
@@ -46,11 +48,12 @@ public class ShopService
 		try
 		{
 			newProduct = new Product(getNextProductId(), productParams);
-			pR.addProduct(newProduct);
+			productRepository.addProduct(newProduct);
 		}
 		catch (RepositoryException e)
 		{
-			throw new ShopServiceException("Could not add product: " + e.getMessage(), e);
+			throw new ShopServiceException("Could not add product: "
+					+ e.getMessage(), e);
 		}
 
 		return newProduct;
@@ -66,16 +69,16 @@ public class ShopService
 	{
 		try
 		{
-			if (pR.getProduct(productId).getQuantity() >= amount)
+			if (productRepository.getProduct(productId).getQuantity() >= amount)
 			{
-				Customer customer = cR.getCustomer(customerUsername);
+				Customer customer = customerRepository.getCustomer(customerUsername);
 
 				for (int i = 0; i < amount; i++)
 				{
 					customer.addProductToShoppingCart(productId);
 				}
 				// Make the repository record the changes to customer
-				cR.updateCustomer(customer);
+				customerRepository.updateCustomer(customer);
 			}
 		}
 		catch (RepositoryException e)
@@ -88,7 +91,7 @@ public class ShopService
 	{
 		try
 		{
-			return pR.getProduct(productId);
+			return productRepository.getProduct(productId);
 		}
 		catch (RepositoryException e)
 		{
@@ -100,7 +103,7 @@ public class ShopService
 	{
 		try
 		{
-			return pR.getProducts();
+			return productRepository.getProducts();
 		}
 		catch (RepositoryException e)
 		{
@@ -114,8 +117,9 @@ public class ShopService
 		{
 			try
 			{
-				// If there are any customers first remove the item from their carts
-				for (Customer c : cR.getCustomers())
+				// If there are any customers first remove the item from their
+				// carts
+				for (Customer c : customerRepository.getCustomers())
 				{
 					boolean aProductWasRemoved = c.removeProductsWithIdFromShoppingCart(productId);
 					if (aProductWasRemoved)
@@ -123,14 +127,14 @@ public class ShopService
 						updateCustomer(c);
 					}
 				}
-				
+
 			}
 			catch (Exception e) // TODO Be more specific and handle exception
 			{
 				// No users in DB - no action needed
 			}
-			
-			pR.removeProduct(productId);
+
+			productRepository.removeProduct(productId);
 		}
 		catch (RepositoryException e)
 		{
@@ -142,7 +146,7 @@ public class ShopService
 	{
 		try
 		{
-			pR.updateProduct(new Product(productId, productParams));
+			productRepository.updateProduct(new Product(productId, productParams));
 		}
 		catch (RepositoryException e)
 		{
@@ -154,7 +158,7 @@ public class ShopService
 	{
 		try
 		{
-			cR.addCustomer(customer);
+			customerRepository.addCustomer(customer);
 		}
 		catch (RepositoryException e)
 		{
@@ -166,7 +170,7 @@ public class ShopService
 	{
 		try
 		{
-			return cR.getCustomer(customerUsername);
+			return customerRepository.getCustomer(customerUsername);
 		}
 		catch (RepositoryException e)
 		{
@@ -178,7 +182,7 @@ public class ShopService
 	{
 		try
 		{
-			cR.updateCustomer(customer);
+			customerRepository.updateCustomer(customer);
 		}
 		catch (RepositoryException e)
 		{
@@ -190,7 +194,7 @@ public class ShopService
 	{
 		try
 		{
-			cR.removeCustomer(customerUsername);
+			customerRepository.removeCustomer(customerUsername);
 		}
 		catch (RepositoryException e)
 		{
@@ -203,37 +207,37 @@ public class ShopService
 		Order newOrder;
 		try
 		{
-			Customer customer = cR.getCustomer(customerUsername);
+			Customer customer = customerRepository.getCustomer(customerUsername);
 			ArrayList<Integer> orderedProductIds = customer.getShoppingCart();
 			if (orderedProductIds.isEmpty())
 			{
 				throw new ShopServiceException("This user has no items in their cart");
 			}
 			// decrease stock quantity of products in product repository
-			pR.decreaseQuantityOfProductsByOne(orderedProductIds);
+			productRepository.decreaseQuantityOfProductsByOne(orderedProductIds);
 			try
 			{
 				// place a order containing the products removed from stock
 				int orderId = getNextOrderId();
 				newOrder = new Order(orderId, customerUsername, orderedProductIds);
-				oR.addOrder(newOrder);
+				orderRepository.addOrder(newOrder);
 				try
 				{
 					// clear the customers shopping cart
 					customer.getShoppingCart().clear();
-					cR.updateCustomer(customer);
+					customerRepository.updateCustomer(customer);
 				}
 				catch (RepositoryException e)
 				{
 					// FIXME Problem: om det går fel med återställningen i catch
 					// satserna, blir det fel i repot
-					oR.removeOrder(orderId);
+					orderRepository.removeOrder(orderId);
 					throw e;
 				}
 			}
 			catch (RepositoryException e)
 			{
-				pR.increaseQuantityOfProductsByOne(orderedProductIds);
+				productRepository.increaseQuantityOfProductsByOne(orderedProductIds);
 				throw e;
 			}
 		}
@@ -248,7 +252,7 @@ public class ShopService
 	{
 		try
 		{
-			Order order = oR.getOrder(orderId);
+			Order order = orderRepository.getOrder(orderId);
 			return order;
 		}
 		catch (RepositoryException e)
@@ -261,9 +265,11 @@ public class ShopService
 	{
 		try
 		{
-			cR.getCustomer(customerUsername); // Should throw exception if user
-												// does not exist
-			return oR.getOrders(customerUsername);
+			customerRepository.getCustomer(customerUsername); // Should throw
+																// exception if
+																// user
+			// does not exist
+			return orderRepository.getOrders(customerUsername);
 		}
 		catch (RepositoryException e)
 		{
@@ -275,7 +281,7 @@ public class ShopService
 	{
 		try
 		{
-			oR.updateOrder(order);
+			orderRepository.updateOrder(order);
 		}
 		catch (RepositoryException e)
 		{
@@ -287,7 +293,7 @@ public class ShopService
 	{
 		try
 		{
-			oR.removeOrder(orderId);
+			orderRepository.removeOrder(orderId);
 		}
 		catch (RepositoryException e)
 		{

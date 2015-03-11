@@ -3,7 +3,6 @@ package se.groupone.ecommerce.webservice;
 import java.net.URI;
 import java.util.ArrayList;
 
-import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,30 +18,31 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Product;
 import se.groupone.ecommerce.model.ProductParameters;
-import se.groupone.ecommerce.service.ShopService;
 
 @Path("products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ProductService
+public class ProductService extends WebService
 {
-	@Context
-	private ServletContext context;
+	public ProductService() throws RepositoryException
+	{
+		super();
+	}
+
 	@Context
 	private UriInfo uriInfo;
-	private ShopService ss;
 
 	//  Skapa en ny produkt – detta ska returnera en länk till den skapade
 	// produkten i Location-headern
 	@POST
 	public Response createProduct(ProductParameters productParameters)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		Product product = ss.addProduct(productParameters);
+		Product product = shopService.addProduct(productParameters);
 		final String createdProductIdString = String.valueOf(product.getId());
-		
+
 		final URI location = uriInfo.getAbsolutePathBuilder().path(createdProductIdString).build();
 		return Response.created(location).build();
 	}
@@ -51,11 +51,12 @@ public class ProductService
 	@GET
 	public Response getProducts()
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		ArrayList<Product> products = (ArrayList<Product>) ss.getProducts();
+		ArrayList<Product> products = (ArrayList<Product>) shopService.getProducts();
 
 		// GenericEntity is created for ProductListMapper generic handling
-		return Response.ok(new GenericEntity<ArrayList<Product>>(products){}).build();
+		return Response.ok(new GenericEntity<ArrayList<Product>>(products)
+		{
+		}).build();
 	}
 
 	//  Hämta en produkt med ett visst id
@@ -63,11 +64,10 @@ public class ProductService
 	@Path("{productId}")
 	public Response getProduct(@PathParam("productId") final String productId)
 	{
-		ss = (ShopService) context.getAttribute("ss");
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-			Product product = ss.getProductWithId(productIdInt);
+			Product product = shopService.getProductWithId(productIdInt);
 
 			return Response.ok(product).build();
 		}
@@ -82,11 +82,10 @@ public class ProductService
 	@Path("{productId}")
 	public Response putProduct(@PathParam("productId") final String productId, final ProductParameters productParameters)
 	{
-		ss = (ShopService) context.getAttribute("ss");
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-			ss.updateProduct(productIdInt, productParameters);
+			shopService.updateProduct(productIdInt, productParameters);
 			return Response.status(Status.NO_CONTENT).build();
 		}
 		catch (NumberFormatException e)
@@ -100,11 +99,10 @@ public class ProductService
 	@Path("{productId}")
 	public Response deleteProduct(@PathParam("productId") final String productId)
 	{
-		ss = (ShopService) context.getAttribute("ss");
 		try
 		{
 			int productIdInt = Integer.parseInt(productId);
-			ss.removeProduct(productIdInt);
+			shopService.removeProduct(productIdInt);
 			return Response.noContent().build();
 		}
 		catch (NumberFormatException e)

@@ -19,7 +19,7 @@ public class SQLProductRepository implements ProductRepository
 	{
 		try
 		{
-			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
+			sql = new SQLConnector(DBConnectionConfig.HOST, DBConnectionConfig.PORT, DBConnectionConfig.USERNAME, DBConnectionConfig.PASSWORD, DBConnectionConfig.DATABASE);
 		}
 		catch (SQLException e)
 		{
@@ -33,7 +33,7 @@ public class SQLProductRepository implements ProductRepository
 		try
 		{
 			StringBuilder addProductQuery = new StringBuilder();
-			addProductQuery.append("INSERT INTO " + DBInfo.database + "." + dbTable + " ");
+			addProductQuery.append("INSERT INTO " + DBConnectionConfig.DATABASE + "." + dbTable + " ");
 			addProductQuery.append("(id_product, title, category, manufacturer, description, img, price, quantity) ");
 			addProductQuery.append("VALUES(" + product.getId() + ", ");
 			addProductQuery.append("'" + product.getTitle() + "', ");
@@ -59,7 +59,7 @@ public class SQLProductRepository implements ProductRepository
 		try
 		{
 			StringBuilder getProductQuery = new StringBuilder();
-			getProductQuery.append("SELECT * FROM " + DBInfo.database + "." + dbTable + " ");
+			getProductQuery.append("SELECT * FROM " + DBConnectionConfig.DATABASE + "." + dbTable + " ");
 			getProductQuery.append("WHERE id_product = " + productID + ";");
 
 			rs = sql.queryResult(getProductQuery.toString());
@@ -102,7 +102,7 @@ public class SQLProductRepository implements ProductRepository
 		final int numRows;
 		try
 		{
-			final String numRowsQuery = "SELECT count(id_product) FROM " + DBInfo.database + "." + dbTable + ";";
+			final String numRowsQuery = "SELECT count(id_product) FROM " + DBConnectionConfig.DATABASE + "." + dbTable + ";";
 
 			rs = sql.queryResult(numRowsQuery);
 			if (!rs.isBeforeFirst())
@@ -128,7 +128,7 @@ public class SQLProductRepository implements ProductRepository
 
 		try
 		{
-			final String fetchAllQuery = "SELECT * FROM " + DBInfo.database + "." + dbTable + ";";
+			final String fetchAllQuery = "SELECT * FROM " + DBConnectionConfig.DATABASE + "." + dbTable + ";";
 			rs = sql.queryResult(fetchAllQuery);
 		}
 		catch (SQLException e)
@@ -168,7 +168,7 @@ public class SQLProductRepository implements ProductRepository
 	{
 		try
 		{
-			final String removeQuery = "DELETE FROM " + DBInfo.database + "." + dbTable + " WHERE id_product = " + productID + ";";
+			final String removeQuery = "DELETE FROM " + DBConnectionConfig.DATABASE + "." + dbTable + " WHERE id_product = " + productID + ";";
 			sql.query(removeQuery);
 		}
 		catch (SQLException e)
@@ -183,7 +183,7 @@ public class SQLProductRepository implements ProductRepository
 		try
 		{
 			StringBuilder updateProductQuery = new StringBuilder();
-			updateProductQuery.append("UPDATE " + DBInfo.database + "." + dbTable + " SET ");
+			updateProductQuery.append("UPDATE " + DBConnectionConfig.DATABASE + "." + dbTable + " SET ");
 			updateProductQuery.append("title = '" + product.getTitle() + "', ");
 			updateProductQuery.append("category = '" + product.getCategory() + "', ");
 			updateProductQuery.append("manufacturer = '" + product.getManufacturer() + "', ");
@@ -219,7 +219,7 @@ public class SQLProductRepository implements ProductRepository
 		ResultSet rs;
 		try
 		{
-			final String highestIDQuery = "SELECT MAX(id_product) FROM " + DBInfo.database + "." + dbTable;
+			final String highestIDQuery = "SELECT MAX(id_product) FROM " + DBConnectionConfig.DATABASE + "." + dbTable;
 			rs = sql.queryResult(highestIDQuery);
 			if (!rs.isBeforeFirst())
 			{
@@ -256,7 +256,7 @@ public class SQLProductRepository implements ProductRepository
 		StringBuilder updateQuantityQuery = new StringBuilder();
 		for (int i = 0; i < ids.size(); i++)
 		{
-			updateQuantityQuery.append("UPDATE " + DBInfo.database + "." + dbTable + " SET ");
+			updateQuantityQuery.append("UPDATE " + DBConnectionConfig.DATABASE + "." + dbTable + " SET ");
 			updateQuantityQuery.append("quantity = " + (product[i].getQuantity() + quantityChange) + " ");
 			updateQuantityQuery.append("WHERE id_product = " + product[i].getId() + ";");
 			try

@@ -1,12 +1,10 @@
 package se.groupone.ecommerce.webservice;
 
+import se.groupone.ecommerce.exception.RepositoryException;
 import se.groupone.ecommerce.model.Order;
 
 import java.net.URI;
 
-import se.groupone.ecommerce.service.ShopService;
-
-import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -23,21 +21,22 @@ import javax.ws.rs.core.UriInfo;
 @Path("orders")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class OrderService
+public final class OrderService extends WebService
 {
-	@Context
-	private ServletContext context;
+	public OrderService() throws RepositoryException
+	{
+		super();
+	}
+
 	@Context
 	private UriInfo uriInfo;
-	private ShopService ss;
 
 	//  Hämta en viss order för en användare
 	@GET
 	@Path("{orderId}")
 	public Response getOrder(@PathParam("orderId") final int orderId)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		Order order = ss.getOrder(orderId);
+		Order order = shopService.getOrder(orderId);
 		return Response.ok(order).build();
 	}
 
@@ -45,8 +44,7 @@ public final class OrderService
 	@POST
 	public Response createOrder(final String username)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		Order newOrder = ss.createOrder(username);
+		Order newOrder = shopService.createOrder(username);
 
 		final URI location = uriInfo.getAbsolutePathBuilder().path(Integer.toString(newOrder.getId())).build();
 		return Response.created(location).build();
@@ -56,8 +54,7 @@ public final class OrderService
 	@PUT
 	public Response updateOrder(final Order order)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		ss.updateOrder(order);
+		shopService.updateOrder(order);
 		return Response.ok().build();
 	}
 
@@ -66,8 +63,7 @@ public final class OrderService
 	@Path("{orderId}")
 	public Response removeOrder(@PathParam("orderId") final Integer orderId)
 	{
-		ss = (ShopService) context.getAttribute("ss");
-		ss.removeOrder(orderId);
+		shopService.removeOrder(orderId);
 		return Response.noContent().build();
 	}
 }

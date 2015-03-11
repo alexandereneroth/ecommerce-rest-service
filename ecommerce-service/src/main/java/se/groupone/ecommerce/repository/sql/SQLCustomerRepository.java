@@ -20,7 +20,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 	{
 		try
 		{
-			sql = new SQLConnector(DBInfo.host, DBInfo.port, DBInfo.username, DBInfo.password, DBInfo.database);
+			sql = new SQLConnector(DBConnectionConfig.HOST, DBConnectionConfig.PORT, DBConnectionConfig.USERNAME, DBConnectionConfig.PASSWORD, DBConnectionConfig.DATABASE);
 		}
 		catch (SQLException e)
 		{
@@ -35,7 +35,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		{
 			// TODO Use prepared statements instead of StringBuilder
 			StringBuilder customerQuery = new StringBuilder();
-			customerQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomer + " ");
+			customerQuery.append("INSERT INTO " + DBConnectionConfig.DATABASE + "." + dbCustomer + " ");
 			customerQuery.append("(user_name, password, email, first_name, last_name, address, phone) ");
 			customerQuery.append("VALUES('" + customer.getUsername() + "', ");
 			customerQuery.append("'" + customer.getPassword() + "', ");
@@ -58,7 +58,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 			StringBuilder customerCartQuery = new StringBuilder();
 			for (int i = 0; i < productIds.size(); i++)
 			{
-				customerCartQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomerItems + " ");
+				customerCartQuery.append("INSERT INTO " + DBConnectionConfig.DATABASE + "." + dbCustomerItems + " ");
 				customerCartQuery.append("(id_item, user_name) ");
 				customerCartQuery.append("VALUES(" + productIds.get(i) + ", ");
 				customerCartQuery.append("'" + customer.getUsername() + "'); ");
@@ -80,7 +80,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		try
 		{
 			StringBuilder customerQuery = new StringBuilder();
-			customerQuery.append("SELECT * FROM " + DBInfo.database + "." + dbCustomer + " ");
+			customerQuery.append("SELECT * FROM " + DBConnectionConfig.DATABASE + "." + dbCustomer + " ");
 			customerQuery.append("WHERE user_name = '" + username + "';");
 
 			rs = sql.queryResult(customerQuery.toString());
@@ -116,7 +116,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		try
 		{
 			StringBuilder numCartItemsQuery = new StringBuilder();
-			numCartItemsQuery.append("SELECT COUNT(id_item) FROM " + DBInfo.database + "." + dbCustomerItems + " ");
+			numCartItemsQuery.append("SELECT COUNT(id_item) FROM " + DBConnectionConfig.DATABASE + "." + dbCustomerItems + " ");
 			numCartItemsQuery.append("WHERE user_name = '" + username + "';");
 
 			rs = sql.queryResult(numCartItemsQuery.toString());
@@ -144,7 +144,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		try
 		{
 			StringBuilder cartItemsQuery = new StringBuilder();
-			cartItemsQuery.append("SELECT id_item FROM " + DBInfo.database + "." + dbCustomerItems + " ");
+			cartItemsQuery.append("SELECT id_item FROM " + DBConnectionConfig.DATABASE + "." + dbCustomerItems + " ");
 			cartItemsQuery.append("WHERE user_name = '" + username + "';");
 
 			rs = sql.queryResult(cartItemsQuery.toString());
@@ -177,7 +177,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		final int numRows;
 		try
 		{
-			final String numRowsQuery = "SELECT COUNT(user_name) FROM " + DBInfo.database + "." + dbCustomer + ";";
+			final String numRowsQuery = "SELECT COUNT(user_name) FROM " + DBConnectionConfig.DATABASE + "." + dbCustomer + ";";
 			rs = sql.queryResult(numRowsQuery);
 			if (!rs.isBeforeFirst())
 			{
@@ -202,7 +202,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 
 		try
 		{
-			final String allCustomersQuery = "SELECT user_name FROM " + DBInfo.database + "." + dbCustomer + ";";
+			final String allCustomersQuery = "SELECT user_name FROM " + DBConnectionConfig.DATABASE + "." + dbCustomer + ";";
 			rs = sql.queryResult(allCustomersQuery);
 			if (!rs.isBeforeFirst())
 			{
@@ -243,7 +243,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		try
 		{
 			StringBuilder updateCustomerQuery = new StringBuilder();
-			updateCustomerQuery.append("UPDATE " + DBInfo.database + "." + dbCustomer + " SET ");
+			updateCustomerQuery.append("UPDATE " + DBConnectionConfig.DATABASE + "." + dbCustomer + " SET ");
 			updateCustomerQuery.append("password = '" + customer.getPassword() + "', ");
 			updateCustomerQuery.append("email = '" + customer.getEmail() + "', ");
 			updateCustomerQuery.append("first_name = '" + customer.getFirstName() + "', ");
@@ -262,7 +262,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		try
 		{
 			StringBuilder removeCartItems = new StringBuilder();
-			removeCartItems.append("DELETE FROM " + DBInfo.database + "." + dbCustomerItems + " ");
+			removeCartItems.append("DELETE FROM " + DBConnectionConfig.DATABASE + "." + dbCustomerItems + " ");
 			removeCartItems.append("WHERE user_name = '" + customer.getUsername() + "';");
 
 			sql.query(removeCartItems.toString());
@@ -278,7 +278,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 			StringBuilder customerCartQuery = new StringBuilder();
 			for (int i = 0; i < productIds.size(); i++)
 			{
-				customerCartQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomerItems + " ");
+				customerCartQuery.append("INSERT INTO " + DBConnectionConfig.DATABASE + "." + dbCustomerItems + " ");
 				customerCartQuery.append("(id_item, user_name) ");
 				customerCartQuery.append("VALUES(" + productIds.get(i) + ", ");
 				customerCartQuery.append("'" + customer.getUsername() + "'); ");
@@ -299,7 +299,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		try
 		{
 			StringBuilder removeQuery = new StringBuilder();
-			removeQuery.append("DELETE FROM " + DBInfo.database + "." + dbCustomer + " ");
+			removeQuery.append("DELETE FROM " + DBConnectionConfig.DATABASE + "." + dbCustomer + " ");
 			removeQuery.append("WHERE user_name = '" + username + "';");
 
 			sql.query(removeQuery.toString());
@@ -312,7 +312,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 		try
 		{
 			StringBuilder removeCartItems = new StringBuilder();
-			removeCartItems.append("DELETE FROM " + DBInfo.database + "." + dbCustomerItems + " ");
+			removeCartItems.append("DELETE FROM " + DBConnectionConfig.DATABASE + "." + dbCustomerItems + " ");
 			removeCartItems.append("WHERE user_name = '" + username + "';");
 
 			sql.query(removeCartItems.toString());
