@@ -10,7 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
 @Path("admin")
-public class AdminService extends WebService
+public class AdminService extends WebShopService
 {
 	public AdminService() throws RepositoryException
 	{

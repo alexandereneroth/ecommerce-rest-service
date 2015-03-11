@@ -27,7 +27,7 @@ import java.util.ArrayList;
 @Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class CustomerService extends WebService
+public final class CustomerService extends WebShopService
 {
 	public CustomerService() throws RepositoryException
 	{

@@ -21,7 +21,7 @@ import javax.ws.rs.core.UriInfo;
 @Path("orders")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class OrderService extends WebService
+public final class OrderService extends WebShopService
 {
 	public OrderService() throws RepositoryException
 	{

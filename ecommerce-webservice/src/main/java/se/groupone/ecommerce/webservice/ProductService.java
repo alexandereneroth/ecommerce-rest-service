@@ -25,7 +25,7 @@ import se.groupone.ecommerce.model.ProductParameters;
 @Path("products")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class ProductService extends WebService
+public class ProductService extends WebShopService
 {
 	public ProductService() throws RepositoryException
 	{
