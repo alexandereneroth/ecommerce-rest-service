@@ -37,12 +37,11 @@ import com.google.gson.stream.JsonWriter;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class ProductListMapper implements MessageBodyWriter<ArrayList<Product>>, MessageBodyReader<ArrayList<Product>>
+public final class ProductListMapper implements MessageBodyWriter<ArrayList<Product>>,
+		MessageBodyReader<ArrayList<Product>>
 {
 	private Gson gson;
-	private Type productListType = new TypeToken<ArrayList<Product>>()
-	{
-	}.getType();
+	private Type productListType = new TypeToken<ArrayList<Product>>(){}.getType();
 
 	public ProductListMapper()
 	{
@@ -57,13 +56,15 @@ public final class ProductListMapper implements MessageBodyWriter<ArrayList<Prod
 	}
 
 	@Override
-	public long getSize(ArrayList<Product> t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
+	public long getSize(ArrayList<Product> t, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType)
 	{
 		return -1;
 	}
 
 	@Override
-	public void writeTo(ArrayList<Product> productList, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public void writeTo(ArrayList<Product> productList, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
@@ -80,14 +81,17 @@ public final class ProductListMapper implements MessageBodyWriter<ArrayList<Prod
 	}
 
 	@Override
-	public ArrayList<Product> readFrom(Class<ArrayList<Product>> type, Type genericType, Annotation[] annotations, MediaType mediaType,
-			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException
+	public ArrayList<Product> readFrom(Class<ArrayList<Product>> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType,
+			MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException,
+			WebApplicationException
 	{
 		final ArrayList<Product> productArrayList = gson.fromJson(new InputStreamReader(entityStream), productListType);
 		return productArrayList;
 	}
 
-	private static final class ProductListAdapter implements JsonSerializer<ArrayList<Product>>, JsonDeserializer<ArrayList<Product>>
+	private static final class ProductListAdapter implements JsonSerializer<ArrayList<Product>>,
+			JsonDeserializer<ArrayList<Product>>
 	{
 		@Override
 		public JsonElement serialize(ArrayList<Product> productList, Type typeOfSrc, JsonSerializationContext context)
@@ -97,7 +101,6 @@ public final class ProductListMapper implements MessageBodyWriter<ArrayList<Prod
 			for (Product product : productList)
 			{
 				final JsonObject productJson = new JsonObject();
-
 				productJson.add("id", new JsonPrimitive(product.getId()));
 				productJson.add("title", new JsonPrimitive(product.getTitle()));
 				productJson.add("category", new JsonPrimitive(product.getCategory()));
@@ -106,20 +109,23 @@ public final class ProductListMapper implements MessageBodyWriter<ArrayList<Prod
 				productJson.add("img", new JsonPrimitive(product.getImg()));
 				productJson.add("price", new JsonPrimitive(product.getPrice()));
 				productJson.add("quantity", new JsonPrimitive(product.getQuantity()));
+				
 				productListJson.add("" + product.getId(), productJson);
 			}
 			return productListJson;
 		}
+
 		@Override
-		public ArrayList<Product> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public ArrayList<Product> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+				throws JsonParseException
 		{
 			final JsonObject productListJson = json.getAsJsonObject();
-			
 			final ArrayList<Product> products = new ArrayList<>();
 			
+			// TODO This looks weird, refactor?
 			final int NUMBER_OF_PRODUCT_PARAMS = 8;
-			
-			for(int i = 1; i < NUMBER_OF_PRODUCT_PARAMS; ++i)
+
+			for (int i = 1; i < NUMBER_OF_PRODUCT_PARAMS; ++i)
 			{
 				JsonObject productJson = (JsonObject) productListJson.get(String.valueOf(i));
 
@@ -132,7 +138,7 @@ public final class ProductListMapper implements MessageBodyWriter<ArrayList<Prod
 						productJson.get("img").getAsString(),
 						productJson.get("price").getAsDouble(),
 						productJson.get("quantity").getAsInt());
-				
+
 				products.add(new Product(id, params));
 			}
 			return products;

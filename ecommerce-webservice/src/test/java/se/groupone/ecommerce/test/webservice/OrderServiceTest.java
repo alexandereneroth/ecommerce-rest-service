@@ -39,10 +39,13 @@ public class OrderServiceTest
 			.build();
 
 	// Models
-	private static final Customer CUSTOMER_ALEX = new Customer("alex", "password", "alex@email.com", "Alexander", "Sol", "Banangatan 1", "543211");
-	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables", "Spain", "A beautiful tomato",
+	private static final Customer CUSTOMER_ALEX = new Customer("alex", "password", "alex@email.com", "Alexander",
+			"Sol", "Banangatan 1", "543211");
+	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables",
+			"Spain", "A beautiful tomato",
 			"http://google.com/tomato.jpg", 45, 500);
-	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vegetables", "France", "A mound of lettuce",
+	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vegetables",
+			"France", "A mound of lettuce",
 			"http://altavista.com/lettuce.jpg", 88, 200);
 
 	// Resource targets
@@ -64,7 +67,7 @@ public class OrderServiceTest
 	@Before
 	public void init()
 	{
-		// Truncate repo tables before tests
+		// Truncate repository tables before tests
 		WebTarget admin = client.target(URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 
@@ -89,7 +92,7 @@ public class OrderServiceTest
 	@AfterClass
 	public static void tearDown()
 	{
-		// Truncate repo tables after all tests are done
+		// Truncate repository tables after all tests are done
 		WebTarget admin = client.target(URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 	}
@@ -157,7 +160,7 @@ public class OrderServiceTest
 
 		assertEquals(PRODUCT_TOMATO.getId(), (int) createdOrder.getProductIds().get(0));
 
-		// PUT - Update created order
+		// PUT - Create updated Order with newShoppingCart
 		ArrayList<Integer> newShoppingCart = new ArrayList<Integer>();
 		newShoppingCart.add(PRODUCT_TOMATO.getId());
 		newShoppingCart.add(PRODUCT_TOMATO.getId());

@@ -59,7 +59,8 @@ public final class OrderMapper implements MessageBodyWriter<Order>, MessageBodyR
 	}
 
 	@Override
-	public void writeTo(Order Order, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+	public void writeTo(Order Order, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
 		try (final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
@@ -76,7 +77,8 @@ public final class OrderMapper implements MessageBodyWriter<Order>, MessageBodyR
 	}
 
 	@Override
-	public Order readFrom(Class<Order> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+	public Order readFrom(Class<Order> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, String> httpHeaders,
 			InputStream entityStream) throws IOException, WebApplicationException
 	{
 		final Order order = gson.fromJson(new InputStreamReader(entityStream), Order.class);
@@ -90,7 +92,7 @@ public final class OrderMapper implements MessageBodyWriter<Order>, MessageBodyR
 		{
 			final JsonObject orderJson = new JsonObject();
 			final JsonArray productIdsJsonArray = new JsonArray();
-			
+
 			orderJson.add("id", new JsonPrimitive(order.getId()));
 			orderJson.add("username", new JsonPrimitive(order.getUsername()));
 			for (int productId : order.getProductIds())
@@ -102,12 +104,13 @@ public final class OrderMapper implements MessageBodyWriter<Order>, MessageBodyR
 		}
 
 		@Override
-		public Order deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public Order deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+				throws JsonParseException
 		{
 			final JsonObject productJson = json.getAsJsonObject();
 			final ArrayList<Integer> productIds = new ArrayList<Integer>();
 			
-			final int id = productJson.get("id").getAsInt();
+			final int orderId = productJson.get("id").getAsInt();
 			final String username = productJson.get("username").getAsString();
 			if (productJson.get("productIds").isJsonArray())
 			{
@@ -121,8 +124,7 @@ public final class OrderMapper implements MessageBodyWriter<Order>, MessageBodyR
 			{
 				throw new JsonParseException("Incorrect Json format, productIds array missing");
 			}
-			return new Order(id, username, productIds);
+			return new Order(orderId, username, productIds);
 		}
 	}
-
 }

@@ -30,9 +30,7 @@ import com.google.gson.stream.JsonWriter;
 public final class IntegerListMapper implements MessageBodyWriter<ArrayList<Integer>>
 {
 	private Gson gson;
-	private Type listOfIntegerType = new TypeToken<ArrayList<Integer>>()
-	{
-	}.getType();
+	private Type listOfIntegerType = new TypeToken<ArrayList<Integer>>(){}.getType();
 
 	public IntegerListMapper()
 	{
@@ -53,7 +51,8 @@ public final class IntegerListMapper implements MessageBodyWriter<ArrayList<Inte
 	}
 
 	@Override
-	public void writeTo(ArrayList<Integer> integerList, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public void writeTo(ArrayList<Integer> integerList, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
@@ -75,7 +74,6 @@ public final class IntegerListMapper implements MessageBodyWriter<ArrayList<Inte
 			{
 				jsonArray.add(new JsonPrimitive(i));
 			}
-			
 			integerListJson.add("integerArray", jsonArray);
 			return integerListJson;
 		}

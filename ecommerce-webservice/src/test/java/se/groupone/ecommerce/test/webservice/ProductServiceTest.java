@@ -40,9 +40,11 @@ public class ProductServiceTest
 			.build();
 
 	// Models
-	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables", "Spain", "A beautiful tomato",
+	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables",
+			"Spain", "A beautiful tomato",
 			"http://google.com/tomato.jpg", 45, 500);
-	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vegetables", "France", "A mound of lettuce",
+	private static final ProductParameters PRODUCT_PARAMETERS_LETTUCE = new ProductParameters("Lettuce", "Vegetables",
+			"France", "A mound of lettuce",
 			"http://altavista.com/lettuce.jpg", 88, 200);
 
 	// Resource targets
@@ -55,7 +57,7 @@ public class ProductServiceTest
 	@Before
 	public void init()
 	{
-		// Truncate repo tables before tests
+		// Truncate repository tables before tests
 		WebTarget admin = client.target(ConnectionConfig.URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 	}
@@ -63,7 +65,7 @@ public class ProductServiceTest
 	@AfterClass
 	public static void tearDown()
 	{
-		// Truncate repo tables after all tests are done
+		// Truncate repository tables after all tests are done
 		WebTarget admin = client.target(ConnectionConfig.URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 	}
@@ -86,10 +88,9 @@ public class ProductServiceTest
 
 		// GET
 		WebTarget createdTarget = client.target(createProductResponse.getLocation());
-		Product createdProduct = createdTarget.request(MediaType.APPLICATION_JSON).get(Product.class);
-
+		Product createdProduct = createdTarget.request(MediaType.APPLICATION_JSON)
+				.get(Product.class);
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
-
 	}
 
 	//  Hämta alla produkter
@@ -118,16 +119,18 @@ public class ProductServiceTest
 
 		String productJson = PRODUCTS_TARGET.request(MediaType.APPLICATION_JSON).get(String.class);
 		HashMap<Integer, Product> productMap = parseProductJson(productJson);
+		
 		assertEquals(tomatoProduct, productMap.get(tomatoProduct.getId()));
 		assertEquals(lettuceProduct, productMap.get(lettuceProduct.getId()));
-
 	}
 
 	private HashMap<Integer, Product> parseProductJson(String productJson)
 	{
+		// Create gson parser that uses adapter from ProductMapper
 		Gson gson = new GsonBuilder().registerTypeAdapter(Product.class, new ProductMapper.ProductAdapter()).create();
 		HashMap<Integer, Product> productMap = new HashMap<>();
 
+		// Parse received ordersJson String and put it in HashMap
 		JsonObject productsJsonObject = gson.fromJson(productJson, JsonObject.class);
 		Set<Map.Entry<String, JsonElement>> productSet = productsJsonObject.entrySet();
 
@@ -157,7 +160,6 @@ public class ProductServiceTest
 		WebTarget createdTarget = client.target(createProductResponse.getLocation());
 		Product createdProduct = createdTarget
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
-
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
 
 		// PUT
@@ -168,7 +170,6 @@ public class ProductServiceTest
 		// GET
 		Product updatedProduct = createdTarget
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
-
 		assertThat(updatedProduct.getTitle(), is(PRODUCT_PARAMETERS_LETTUCE.getTitle()));
 		assertThat(updatedProduct.getQuantity(), is(PRODUCT_PARAMETERS_LETTUCE.getQuantity()));
 	}
@@ -190,7 +191,6 @@ public class ProductServiceTest
 		// GET
 		Product createdProduct = client.target(createProductResponse.getLocation())
 				.request(MediaType.APPLICATION_JSON).get(Product.class);
-
 		assertThat(createdProduct, is(PRODUCT_TOMATO));
 
 		// DELETE
@@ -202,8 +202,6 @@ public class ProductServiceTest
 		// GET
 		Response getDeletedProductResponse = client.target(createProductResponse.getLocation())
 				.request(MediaType.APPLICATION_JSON).get();
-
 		assertThat(getDeletedProductResponse.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
 	}
-
 }

@@ -1,4 +1,4 @@
-package se.groupone.ecommerce.webservice.util;
+package se.groupone.ecommerce.webservice.exception;
 
 import se.groupone.ecommerce.exception.ShopServiceException;
 
@@ -10,7 +10,6 @@ import javax.ws.rs.ext.Provider;
 @Provider
 public final class ShopServiceExceptionMapper implements ExceptionMapper<ShopServiceException> 
 {
-
 	@Override
 	public Response toResponse(ShopServiceException e)
 	{

@@ -34,7 +34,8 @@ import com.google.gson.stream.JsonWriter;
 @Provider
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public final class ProductParamMapper implements MessageBodyReader<ProductParameters>, MessageBodyWriter<ProductParameters>
+public final class ProductParamMapper implements MessageBodyReader<ProductParameters>,
+		MessageBodyWriter<ProductParameters>
 {
 	private Gson gson;
 
@@ -51,21 +52,23 @@ public final class ProductParamMapper implements MessageBodyReader<ProductParame
 	}
 
 	@Override
-	public long getSize(ProductParameters t, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
+	public long getSize(ProductParameters t, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType)
 	{
 		return -1;
 	}
 
 	@Override
-	public void writeTo(ProductParameters productParams, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+	public void writeTo(ProductParameters productParams, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
-		try(final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
+		try (final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
 		{
 			gson.toJson(productParams, ProductParameters.class, writer);
 		}
 	}
-	
+
 	// MessageBodyReader
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
@@ -74,20 +77,21 @@ public final class ProductParamMapper implements MessageBodyReader<ProductParame
 	}
 
 	@Override
-	public ProductParameters readFrom(Class<ProductParameters> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+	public ProductParameters readFrom(Class<ProductParameters> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
 			InputStream entityStream) throws IOException, WebApplicationException
 	{
-		final ProductParameters productParams = gson.fromJson(new InputStreamReader(entityStream), ProductParameters.class);
+		final ProductParameters productParams = gson.fromJson(new InputStreamReader(entityStream),
+				ProductParameters.class);
 		return productParams;
 	}
-	
-	private static final class ProductParametersAdapter implements JsonDeserializer<ProductParameters>, JsonSerializer<ProductParameters>
-	{
 
-		// This is never used, kept for reference, will be removed in final build.
+	private static final class ProductParametersAdapter implements JsonDeserializer<ProductParameters>,
+			JsonSerializer<ProductParameters>
+	{
 		@Override
 		public JsonElement serialize(ProductParameters productParams, Type typeOfSrc, JsonSerializationContext context)
-		{   
+		{
 			final JsonObject productParamsJson = new JsonObject();
 			productParamsJson.add("title", new JsonPrimitive(productParams.getTitle()));
 			productParamsJson.add("category", new JsonPrimitive(productParams.getCategory()));
@@ -96,13 +100,14 @@ public final class ProductParamMapper implements MessageBodyReader<ProductParame
 			productParamsJson.add("img", new JsonPrimitive(productParams.getImg()));
 			productParamsJson.add("price", new JsonPrimitive(productParams.getPrice()));
 			productParamsJson.add("quantity", new JsonPrimitive(productParams.getQuantity()));
-			
+
 			return productParamsJson;
 		}
 
 		@Override
-		public ProductParameters deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-		{		
+		public ProductParameters deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+				throws JsonParseException
+		{
 			final JsonObject productParamsJson = json.getAsJsonObject();
 			final String title = productParamsJson.get("title").getAsString();
 			final String category = productParamsJson.get("category").getAsString();
@@ -111,9 +116,8 @@ public final class ProductParamMapper implements MessageBodyReader<ProductParame
 			final String img = productParamsJson.get("img").getAsString();
 			final Double price = productParamsJson.get("price").getAsDouble();
 			final Integer quantity = productParamsJson.get("quantity").getAsInt();
-			
+
 			return new ProductParameters(title, category, manufacturer, description, img, price, quantity);
 		}
-		
 	}
 }

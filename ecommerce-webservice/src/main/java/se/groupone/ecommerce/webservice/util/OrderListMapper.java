@@ -32,9 +32,7 @@ import com.google.gson.stream.JsonWriter;
 public final class OrderListMapper implements MessageBodyWriter<ArrayList<Order>>
 {
 	private Gson gson;
-	private Type orderListType = new TypeToken<ArrayList<Order>>()
-	{
-	}.getType();
+	private Type orderListType = new TypeToken<ArrayList<Order>>(){}.getType();
 
 	public OrderListMapper()
 	{
@@ -55,7 +53,8 @@ public final class OrderListMapper implements MessageBodyWriter<ArrayList<Order>
 	}
 
 	@Override
-	public void writeTo(ArrayList<Order> integerList, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+	public void writeTo(ArrayList<Order> integerList, Class<?> type, Type genericType, Annotation[] annotations, 
+			MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
@@ -71,22 +70,22 @@ public final class OrderListMapper implements MessageBodyWriter<ArrayList<Order>
 		public JsonElement serialize(ArrayList<Order> orderList, Type typeOfSrc, JsonSerializationContext context)
 		{
 			final JsonObject orderListJson = new JsonObject();
-			final JsonArray orderArray = new JsonArray();
+			final JsonArray orderJsonArray = new JsonArray();
 
 			for (Order order : orderList)
 			{
-				orderArray.add(serializeOrder(order));
+				orderJsonArray.add(serializeOrder(order));
 			}
-			
-			orderListJson.add("orderArray", orderArray);
+			orderListJson.add("orderArray", orderJsonArray);
 			return orderListJson;
 		}
 
+		// TODO refactor this to use existing OrderAdapter in OrderMapper
 		private JsonObject serializeOrder(Order order)
 		{
 			final JsonObject orderJson = new JsonObject();
 			final JsonArray productIdsJsonArray = new JsonArray();
-			
+
 			orderJson.add("id", new JsonPrimitive(order.getId()));
 			orderJson.add("username", new JsonPrimitive(order.getUsername()));
 			for (int productId : order.getProductIds())

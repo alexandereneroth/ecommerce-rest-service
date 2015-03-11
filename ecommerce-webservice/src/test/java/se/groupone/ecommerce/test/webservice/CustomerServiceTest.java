@@ -47,8 +47,10 @@ public class CustomerServiceTest
 			.build();
 
 	// Models
-	private static final Customer CUSTOMER_ALEX = new Customer("alex", "password", "alex@email.com", "Alexander", "Sol", "Banangatan 1", "543211");
-	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables", "Spain", "A beautiful tomato",
+	private static final Customer CUSTOMER_ALEX = new Customer("alex", "password", "alex@email.com", "Alexander",
+			"Sol", "Banangatan 1", "543211");
+	private static final ProductParameters PRODUCT_PARAMETERS_TOMATO = new ProductParameters("Tomato", "Vegetables",
+			"Spain", "A beautiful tomato",
 			"http://google.com/tomato.jpg", 45, 500);
 
 	// Resource targets
@@ -65,7 +67,7 @@ public class CustomerServiceTest
 	@Before
 	public void init()
 	{
-		// Truncate repo tables before tests
+		// Truncate repository tables before each test
 		WebTarget admin = client.target(URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 	}
@@ -73,7 +75,7 @@ public class CustomerServiceTest
 	@AfterClass
 	public static void tearDown()
 	{
-		// Truncate repo tables after all tests are done
+		// Truncate repository tables after all tests are done
 		WebTarget admin = client.target(ConnectionConfig.URL_BASE + "/admin");
 		admin.request().buildPost(Entity.entity("reset-repo", MediaType.TEXT_HTML)).invoke();
 	}
@@ -102,6 +104,7 @@ public class CustomerServiceTest
 	{
 		final URI EXPECTED_URI = new URI("http://localhost:8080/ecommerce-webservice/customers/"
 				+ CUSTOMER_ALEX.getUsername());
+		
 		// POST - Create new customer
 		Response response = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
@@ -126,6 +129,7 @@ public class CustomerServiceTest
 		Customer updatedCustomer2 = new Customer(CUSTOMER_ALEX.getUsername(), "secret", CUSTOMER_ALEX.getEmail(),
 				CUSTOMER_ALEX.getFirstName(), CUSTOMER_ALEX.getLastName(),
 				CUSTOMER_ALEX.getAddress(), CUSTOMER_ALEX.getPhoneNumber());
+		
 		// POST - Update customer
 		Response putResponse = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
@@ -150,7 +154,7 @@ public class CustomerServiceTest
 				.invoke();
 		assertEquals(201, postResponse.getStatus());
 
-		// GET - Check that it is in repo
+		// GET - Check that it is in repository
 		Response thisShouldSucceedResponse = CUSTOMERS_TARGET.path(CUSTOMER_ALEX.getUsername())
 				.request(MediaType.APPLICATION_JSON)
 				.get();
@@ -173,7 +177,6 @@ public class CustomerServiceTest
 	@Test
 	public void canAddProductToCart()
 	{
-
 		// POST - Create customer
 		Response createCustomerAlexResponse = CUSTOMERS_TARGET.request(MediaType.APPLICATION_JSON)
 				.buildPost(Entity.entity(CUSTOMER_ALEX, MediaType.APPLICATION_JSON))
@@ -201,21 +204,24 @@ public class CustomerServiceTest
 		System.out.println(addProductToCartResponse.readEntity(String.class));
 		assertEquals(201, addProductToCartResponse.getStatus());
 
-		// GET - Get cart contents and verify
+		// GET - Get cart contents
 		final String shoppingCartJson = CUSTOMERS_TARGET
 				.path(CUSTOMER_ALEX.getUsername())
 				.path("cart")
 				.request(MediaType.APPLICATION_JSON)
 				.get(String.class);
 
-		// Fulkod... TODO Avfula detta...
+		// Create gson parser that uses adapter from IntegerListMapper
 		Type integerListType = new TypeToken<ArrayList<Integer>>(){}.getType();
-		Gson gson = new GsonBuilder().registerTypeAdapter(integerListType, new IntegerListMapper.IntegerListAdapter()).create();
+		Gson gson = new GsonBuilder().registerTypeAdapter(integerListType, new IntegerListMapper.IntegerListAdapter())
+				.create();
+		
+		// Parse received shoppingartJson
 		JsonObject shoppingCartJsonObject = gson.fromJson(shoppingCartJson, JsonObject.class);
 		JsonArray cartJsonArray = shoppingCartJsonObject.get("integerArray").getAsJsonArray();
-		
 		ArrayList<Integer> cartArrayList = gson.fromJson(cartJsonArray, integerListType);
-		
+
+		// And verify content
 		assertEquals(PRODUCT_TOMATO.getId(), (int) cartArrayList.get(0));
 	}
 
@@ -240,7 +246,7 @@ public class CustomerServiceTest
 				.request()
 				.get(String.class);
 
-		// Check orderlist
+		// Verify received ordersJson String
 		HashMap<Integer, Order> customerOrders = parseOrderJsonArrayList(ordersJson);
 
 		assertTrue(customerOrders.containsKey(orderToBeChecked1.getId()));
@@ -258,8 +264,11 @@ public class CustomerServiceTest
 
 	private HashMap<Integer, Order> parseOrderJsonArrayList(String ordersJson)
 	{
+		// Create gson parser that uses adapter from OrderMapper
 		Gson gson = new GsonBuilder().registerTypeAdapter(Order.class, new OrderMapper.OrderAdapter()).create();
 		HashMap<Integer, Order> customerOrders = new HashMap<>();
+		
+		// Parse received ordersJson String and put it in HashMap
 		JsonObject orderJsonObject = gson.fromJson(ordersJson, JsonObject.class);
 		JsonArray orderJsonArray = orderJsonObject.get("orderArray").getAsJsonArray();
 
@@ -271,6 +280,7 @@ public class CustomerServiceTest
 		return customerOrders;
 	}
 
+	// Handles POSTs and GET needed to addOrder and returns finished Order object
 	private Order addOrder(Customer customer)
 	{
 		// POST - Create products
@@ -304,7 +314,6 @@ public class CustomerServiceTest
 		final Order createdOrder = client.target(createOrderResponse.getLocation())
 				.request()
 				.get(Order.class);
-
 		assertEquals(PRODUCT_TOMATO.getId(), (int) createdOrder.getProductIds().get(0));
 
 		return createdOrder;

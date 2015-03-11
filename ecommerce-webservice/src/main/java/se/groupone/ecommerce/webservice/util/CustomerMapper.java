@@ -60,12 +60,12 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 	public void writeTo(Customer customer, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
-		try(final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
+		try (final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
 		{
 			gson.toJson(customer, Customer.class, writer);
 		}
 	}
-	
+
 	// MessageBodyReader
 	@Override
 	public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType)
@@ -80,13 +80,13 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 		final Customer customer = gson.fromJson(new InputStreamReader(entityStream), Customer.class);
 		return customer;
 	}
-	
+
 	private static final class CustomerAdapter implements JsonDeserializer<Customer>, JsonSerializer<Customer>
 	{
 
 		@Override
 		public JsonElement serialize(Customer customer, Type typeOfSrc, JsonSerializationContext context)
-		{   
+		{
 			final JsonObject customerJson = new JsonObject();
 			customerJson.add("username", new JsonPrimitive(customer.getUsername()));
 			customerJson.add("password", new JsonPrimitive(customer.getPassword()));
@@ -95,13 +95,13 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 			customerJson.add("lastName", new JsonPrimitive(customer.getLastName()));
 			customerJson.add("address", new JsonPrimitive(customer.getAddress()));
 			customerJson.add("phoneNumber", new JsonPrimitive(customer.getPhoneNumber()));
-			
+
 			return customerJson;
 		}
 
 		@Override
 		public Customer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-		{		
+		{
 			final JsonObject customerJson = json.getAsJsonObject();
 			final String username = customerJson.get("username").getAsString();
 			final String password = customerJson.get("password").getAsString();
@@ -110,9 +110,8 @@ public final class CustomerMapper implements MessageBodyReader<Customer>, Messag
 			final String lastName = customerJson.get("lastName").getAsString();
 			final String address = customerJson.get("address").getAsString();
 			final String mobileNumber = customerJson.get("phoneNumber").getAsString();
-			
-			return new Customer(username, password, email, firstName, lastName, address, mobileNumber );
+
+			return new Customer(username, password, email, firstName, lastName, address, mobileNumber);
 		}
-		
 	}
 }

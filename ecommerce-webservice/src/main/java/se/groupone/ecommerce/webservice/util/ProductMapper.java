@@ -58,7 +58,8 @@ public final class ProductMapper implements MessageBodyWriter<Product>, MessageB
 	}
 
 	@Override
-	public void writeTo(Product product, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
+	public void writeTo(Product product, Class<?> type, Type genericType, Annotation[] annotations,
+			MediaType mediaType, MultivaluedMap<String, Object> httpHeaders,
 			OutputStream entityStream) throws IOException, WebApplicationException
 	{
 		try (final JsonWriter writer = new JsonWriter(new OutputStreamWriter(entityStream)))
@@ -75,7 +76,8 @@ public final class ProductMapper implements MessageBodyWriter<Product>, MessageB
 	}
 
 	@Override
-	public Product readFrom(Class<Product> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, String> httpHeaders,
+	public Product readFrom(Class<Product> type, Type genericType, Annotation[] annotations, MediaType mediaType,
+			MultivaluedMap<String, String> httpHeaders,
 			InputStream entityStream) throws IOException, WebApplicationException
 	{
 		final Product product = gson.fromJson(new InputStreamReader(entityStream), Product.class);
@@ -101,7 +103,8 @@ public final class ProductMapper implements MessageBodyWriter<Product>, MessageB
 		}
 
 		@Override
-		public Product deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+		public Product deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+				throws JsonParseException
 		{
 			final JsonObject productJson = json.getAsJsonObject();
 			final int id = productJson.get("id").getAsInt();
@@ -116,5 +119,4 @@ public final class ProductMapper implements MessageBodyWriter<Product>, MessageB
 			return new Product(id, params);
 		}
 	}
-
 }
