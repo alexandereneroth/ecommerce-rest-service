@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ShopService
 {
+	// TODO add full repository variable names
 	private final CustomerRepository cR;
 	private final ProductRepository pR;
 	private final OrderRepository oR;
@@ -124,7 +125,7 @@ public class ShopService
 				}
 				
 			}
-			catch (Exception e)
+			catch (Exception e) // TODO Be more specific and handle exception
 			{
 				// No users in DB - no action needed
 			}

@@ -29,7 +29,7 @@ import se.groupone.ecommerce.service.ShopService;
 public class ProductService
 {
 	@Context
-	ServletContext context;
+	private ServletContext context;
 	@Context
 	private UriInfo uriInfo;
 	private ShopService ss;

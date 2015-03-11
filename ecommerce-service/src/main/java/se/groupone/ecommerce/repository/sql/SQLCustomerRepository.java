@@ -33,6 +33,7 @@ public final class SQLCustomerRepository implements CustomerRepository
 	{
 		try
 		{
+			// TODO Use prepared statements instead of StringBuilder
 			StringBuilder customerQuery = new StringBuilder();
 			customerQuery.append("INSERT INTO " + DBInfo.database + "." + dbCustomer + " ");
 			customerQuery.append("(user_name, password, email, first_name, last_name, address, phone) ");

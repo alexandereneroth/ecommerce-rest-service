@@ -29,7 +29,7 @@ import java.util.ArrayList;
 @Path("customers")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class CustomerService
+public final class CustomerService
 {
 
 	@Context

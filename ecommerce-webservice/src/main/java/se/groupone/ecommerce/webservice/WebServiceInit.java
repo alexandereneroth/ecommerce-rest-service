@@ -16,7 +16,8 @@ public class WebServiceInit implements ServletContextListener
 	@Override
 	public void contextInitialized(ServletContextEvent sce)
 	{
-
+		
+		// Abstract ShopService with static
 		try
 		{
 			ShopService newShopService = new ShopService(

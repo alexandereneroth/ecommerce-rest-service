@@ -32,7 +32,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class ProductServiceTest
+public final class ProductServiceTest
 {
 	private static final Client client = ClientBuilder.newBuilder()
 			.register(ProductMapper.class)
